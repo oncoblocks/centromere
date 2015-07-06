@@ -4,20 +4,15 @@ import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.oncoblocks.centromere.core.repository.GenericMongoRepository;
 import org.oncoblocks.centromere.core.repository.QueryCriteria;
 import org.oncoblocks.centromere.core.test.config.TestMongoConfig;
 import org.oncoblocks.centromere.core.test.models.Gene;
-import org.oncoblocks.centromere.core.web.service.GenericService;
+import org.oncoblocks.centromere.core.test.repository.mongo.GeneRepository;
+import org.oncoblocks.centromere.core.test.repository.mongo.MongoRepositoryConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.Assert;
@@ -31,8 +26,7 @@ import java.util.List;
  */
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { TestMongoConfig.class,
-		GenericServiceTests.GenericServiceTestConfig.class})
+@ContextConfiguration(classes = { TestMongoConfig.class, MongoRepositoryConfig.class, ServiceConfig.class})
 @FixMethodOrder
 public class GenericServiceTests {
 
@@ -41,26 +35,6 @@ public class GenericServiceTests {
 
 	private static boolean isConfigured = false;
 	
-	@Repository
-	public static class GeneRepository extends GenericMongoRepository<Gene, Long> {
-		@Autowired
-		public GeneRepository(MongoTemplate mongoTemplate) {
-			super(mongoTemplate, Gene.class);
-		}
-	}
-	
-	@Service
-	public static class GeneService extends GenericService<Gene, Long> {
-		@Autowired
-		public GeneService(GeneRepository repository) {
-			super(repository);
-		}
-	}
-
-	@Configuration
-	@ComponentScan(basePackages =  { "org.oncoblocks.centromere.core.test.web.service"})
-	public static class GenericServiceTestConfig { }
-
 	@Before
 	public void setup(){
 

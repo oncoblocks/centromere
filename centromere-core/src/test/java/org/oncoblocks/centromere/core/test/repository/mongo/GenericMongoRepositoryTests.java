@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.oncoblocks.centromere.core.repository.GenericMongoRepository;
 import org.oncoblocks.centromere.core.repository.QueryCriteria;
 import org.oncoblocks.centromere.core.test.config.TestMongoConfig;
 import org.oncoblocks.centromere.core.test.models.Gene;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.Assert;
@@ -26,16 +24,11 @@ import java.util.List;
  */
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { TestMongoConfig.class })
+@ContextConfiguration(classes = { TestMongoConfig.class, MongoRepositoryConfig.class})
 @FixMethodOrder
 public class GenericMongoRepositoryTests {
-	
-	private GenericMongoRepository<Gene, Long> geneRepository;
-	
-	@Autowired
-	public void setMongoTemplate(MongoTemplate mongoTemplate){
-		this.geneRepository = new GenericMongoRepository<>(mongoTemplate, Gene.class);
-	}
+		
+	@Autowired private GeneRepository geneRepository;
 	
 	private static boolean isConfigured = false;
 	

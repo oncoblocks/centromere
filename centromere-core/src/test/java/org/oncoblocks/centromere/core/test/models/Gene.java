@@ -4,6 +4,7 @@ import org.oncoblocks.centromere.core.model.Attribute;
 import org.oncoblocks.centromere.core.model.Attributes;
 import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.model.SimpleAliases;
+import org.oncoblocks.centromere.core.web.controller.Filterable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -13,6 +14,7 @@ import java.util.*;
 /**
  * @author woemler
  */
+@Filterable
 @Document(collection = "genes")
 public class Gene implements Model<Long>, SimpleAliases, Attributes {
 
@@ -170,5 +172,20 @@ public class Gene implements Model<Long>, SimpleAliases, Attributes {
 	public boolean hasAlias(String alias) {
 		return aliases.contains(alias);
 	}
-	
+
+	@Override public String toString() {
+		return "Gene{" +
+				"entrezGeneId=" + entrezGeneId +
+				", primaryGeneSymbol='" + primaryGeneSymbol + '\'' +
+				", taxId=" + taxId +
+				", locusTag='" + locusTag + '\'' +
+				", chromosome='" + chromosome + '\'' +
+				", chromosomeLocation='" + chromosomeLocation + '\'' +
+				", description='" + description + '\'' +
+				", geneType='" + geneType + '\'' +
+				", attributes=" + attributes +
+				", dbXrefs=" + dbXrefs +
+				", aliases=" + aliases +
+				'}';
+	}
 }
