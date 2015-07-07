@@ -1,0 +1,5 @@
+language: java
+services: mongodb
+before_script:
+  - sleep 15
+  - mongo centromere-test --eval 'db.addUser("centromere", "centromere");'
