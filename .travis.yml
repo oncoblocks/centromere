@@ -1,0 +1,9 @@
+language: java
+services: mongodb
+before_script:
+  - sleep 15
+  - mongo centromere-test --eval 'db.addUser("centromere", "centromere");'
+script:
+  - cd centromere-core
+  - mvn install -DskipTests
+  - mvn test
