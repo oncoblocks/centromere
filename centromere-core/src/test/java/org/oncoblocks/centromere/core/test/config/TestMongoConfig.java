@@ -36,11 +36,11 @@ public class TestMongoConfig extends AbstractMongoConfiguration {
 
 		ServerAddress serverAddress = new ServerAddress(env.getRequiredProperty("mongo.host"));
 		List<MongoCredential> credentials = new ArrayList<>();
-		credentials.add(MongoCredential.createScramSha1Credential(
-				env.getRequiredProperty("mongo.username"),
-				env.getRequiredProperty("mongo.name"),
-				env.getRequiredProperty("mongo.password").toCharArray()
-		));
+//		credentials.add(MongoCredential.createScramSha1Credential(
+//				env.getRequiredProperty("mongo.username"),
+//				env.getRequiredProperty("mongo.name"),
+//				env.getRequiredProperty("mongo.password").toCharArray()
+//		));
 		return new MongoClient(serverAddress, credentials);
 	}
 	
