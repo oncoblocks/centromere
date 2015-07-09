@@ -8,3 +8,9 @@ script:
   - cd centromere-core
   - mvn clean install -DskipTests
   - mvn test
+notifications:
+  email:
+    recipients:
+      - willoemler@gmail.com
+    on_success: change
+    on_failure: always
