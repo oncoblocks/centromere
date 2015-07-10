@@ -168,20 +168,11 @@
             <artifactId>xstream</artifactId>
         </dependency>
 
-        <!-- MySQL -->
+        <!-- H2 -->
 
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- HikariCP -->
-
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP-java6</artifactId>
-            <scope>test</scope>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
         </dependency>
 
         <!-- Servlet -->
