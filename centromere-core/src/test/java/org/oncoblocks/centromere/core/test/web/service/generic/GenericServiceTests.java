@@ -1,4 +1,4 @@
-package org.oncoblocks.centromere.core.test.web.service;
+package org.oncoblocks.centromere.core.test.web.service.generic;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -26,7 +26,8 @@ import java.util.List;
  */
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { TestMongoConfig.class, MongoRepositoryConfig.class, ServiceConfig.class})
+@ContextConfiguration(classes = { TestMongoConfig.class, MongoRepositoryConfig.class, 
+		GenericServiceConfig.class})
 @FixMethodOrder
 public class GenericServiceTests {
 

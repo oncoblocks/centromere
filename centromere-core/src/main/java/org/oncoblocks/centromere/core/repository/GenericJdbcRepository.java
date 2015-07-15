@@ -28,6 +28,10 @@ import java.util.*;
 import static org.oncoblocks.centromere.core.repository.sqlbuilder.SqlBuilder.*;
 
 /**
+ * Generic implementation of {@link org.oncoblocks.centromere.core.repository.RepositoryOperations}, 
+ *   designed for use with a {@link org.oncoblocks.centromere.core.repository.sqlbuilder.SqlBuilder}
+ *   that generates SQL queries to be executed in a {@link org.springframework.jdbc.core.JdbcTemplate}.
+ * 
  * @author woemler
  */
 public class GenericJdbcRepository<T extends Model<ID>, ID extends Serializable>  implements RepositoryOperations<T, ID> {

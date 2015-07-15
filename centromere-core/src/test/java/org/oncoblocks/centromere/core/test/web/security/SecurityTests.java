@@ -12,7 +12,7 @@ import org.oncoblocks.centromere.core.test.config.TestWebConfig;
 import org.oncoblocks.centromere.core.test.repository.mongo.GeneRepository;
 import org.oncoblocks.centromere.core.test.repository.mongo.MongoRepositoryConfig;
 import org.oncoblocks.centromere.core.test.repository.mongo.UserRepository;
-import org.oncoblocks.centromere.core.test.web.service.ServiceConfig;
+import org.oncoblocks.centromere.core.test.web.service.generic.GenericServiceConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.FilterChainProxy;
@@ -29,7 +29,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static com.jayway.jsonassert.impl.matcher.IsMapContainingKey.hasKey;
-import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -41,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {TestMongoConfig.class, TestWebConfig.class, ServiceConfig.class,
+@ContextConfiguration(classes = {TestMongoConfig.class, TestWebConfig.class, GenericServiceConfig.class,
 		TestSecurityConfig.class, SecurityContextConfig.class, MongoRepositoryConfig.class})
 @WebAppConfiguration
 @FixMethodOrder

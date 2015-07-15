@@ -13,7 +13,7 @@ import org.oncoblocks.centromere.core.test.config.TestWebConfig;
 import org.oncoblocks.centromere.core.test.models.Gene;
 import org.oncoblocks.centromere.core.test.repository.mongo.GeneRepository;
 import org.oncoblocks.centromere.core.test.repository.mongo.MongoRepositoryConfig;
-import org.oncoblocks.centromere.core.test.web.service.ServiceConfig;
+import org.oncoblocks.centromere.core.test.web.service.generic.GenericServiceConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
@@ -27,7 +27,8 @@ import java.util.Arrays;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * @author woemler
@@ -36,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {
 		TestMongoConfig.class, TestWebConfig.class, MongoRepositoryConfig.class, 
-		ServiceConfig.class, ControllerConfig.class})
+		GenericServiceConfig.class, ControllerConfig.class})
 @WebAppConfiguration
 @FixMethodOrder
 public class CrudControllerTests {

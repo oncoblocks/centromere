@@ -1,4 +1,4 @@
-package org.oncoblocks.centromere.core.test.web.service;
+package org.oncoblocks.centromere.core.test.web.service.generic;
 
 import org.oncoblocks.centromere.core.test.models.Gene;
 import org.oncoblocks.centromere.core.test.repository.mongo.GeneRepository;

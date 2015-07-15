@@ -9,7 +9,7 @@ import org.oncoblocks.centromere.core.test.config.TestWebConfig;
 import org.oncoblocks.centromere.core.test.models.Gene;
 import org.oncoblocks.centromere.core.test.repository.mongo.GeneRepository;
 import org.oncoblocks.centromere.core.test.repository.mongo.MongoRepositoryConfig;
-import org.oncoblocks.centromere.core.test.web.service.ServiceConfig;
+import org.oncoblocks.centromere.core.test.web.service.generic.GenericServiceConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {
 		TestMongoConfig.class, TestWebConfig.class, MongoRepositoryConfig.class,
-		ServiceConfig.class, ControllerConfig.class})
+		GenericServiceConfig.class, ControllerConfig.class})
 @WebAppConfiguration
 @FixMethodOrder
 public class EntityQueryControllerTests {

@@ -1,7 +1,7 @@
 package org.oncoblocks.centromere.core.test.web.controller;
 
 import org.oncoblocks.centromere.core.test.models.Gene;
-import org.oncoblocks.centromere.core.test.web.service.GeneService;
+import org.oncoblocks.centromere.core.test.web.service.generic.GeneService;
 import org.oncoblocks.centromere.core.web.controller.EntityQueryController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

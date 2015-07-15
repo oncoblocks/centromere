@@ -78,7 +78,7 @@ public class GenericService<T, ID extends Serializable>
 	 * {@link RepositoryOperations#findSorted}
 	 */
 	public List<T> findSorted(Iterable<QueryCriteria> queryCriterias, Sort sort) {
-		return (List<T>) findSorted(queryCriterias, sort);
+		return (List<T>) repository.findSorted(queryCriterias, sort);
 	}
 
 	/**
