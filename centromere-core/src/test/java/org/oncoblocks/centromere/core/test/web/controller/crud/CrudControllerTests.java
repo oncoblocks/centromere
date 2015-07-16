@@ -1,4 +1,4 @@
-package org.oncoblocks.centromere.core.test.web.controller;
+package org.oncoblocks.centromere.core.test.web.controller.crud;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {
 		TestMongoConfig.class, TestWebConfig.class, MongoRepositoryConfig.class, 
-		GenericServiceConfig.class, ControllerConfig.class})
+		GenericServiceConfig.class, CrudControllerConfig.class})
 @WebAppConfiguration
 @FixMethodOrder
 public class CrudControllerTests {

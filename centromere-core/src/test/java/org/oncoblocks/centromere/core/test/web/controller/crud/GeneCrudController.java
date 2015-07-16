@@ -1,6 +1,7 @@
-package org.oncoblocks.centromere.core.test.web.controller;
+package org.oncoblocks.centromere.core.test.web.controller.crud;
 
 import org.oncoblocks.centromere.core.test.models.Gene;
+import org.oncoblocks.centromere.core.test.web.controller.GeneAssembler;
 import org.oncoblocks.centromere.core.test.web.service.generic.GeneService;
 import org.oncoblocks.centromere.core.web.controller.AbstractCrudController;
 import org.springframework.beans.factory.annotation.Autowired;

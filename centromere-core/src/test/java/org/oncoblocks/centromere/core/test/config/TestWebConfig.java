@@ -19,7 +19,6 @@ import java.util.List;
  */
 
 @Configuration
-@ComponentScan(basePackages = { "org.oncoblocks.centromere.core.test.web.controller" })
 @EnableWebMvc
 @EnableSpringDataWebSupport
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)

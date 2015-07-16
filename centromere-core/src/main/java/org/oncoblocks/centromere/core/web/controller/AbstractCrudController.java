@@ -142,7 +142,7 @@ public abstract class AbstractCrudController<T extends Model<ID>, ID extends Ser
 	 * {@link AbstractCrudController#options}
 	 */
 	public HttpEntity doOptions() {
-		return null;
+		return null; //TODO
 	}
 	
 }

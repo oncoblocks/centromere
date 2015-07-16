@@ -1,6 +1,7 @@
 package org.oncoblocks.centromere.core.test.web.controller;
 
 import org.oncoblocks.centromere.core.test.models.Gene;
+import org.oncoblocks.centromere.core.test.web.controller.crud.GeneCrudController;
 import org.oncoblocks.centromere.core.web.controller.FilterableResource;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 

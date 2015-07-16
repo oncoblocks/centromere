@@ -79,41 +79,65 @@ public abstract class QueryParameterRemappingService<T, ID extends Serializable>
 		}
 	}
 
+	/**
+	 * {@link org.oncoblocks.centromere.core.web.service.ServiceOperations#find}
+	 */
 	@Override 
 	public List<T> find(Iterable<QueryCriteria> queryCriterias) {
 		return super.find(remapQueryCriteria(queryCriterias));
 	}
 
+	/**
+	 * {@link org.oncoblocks.centromere.core.web.service.ServiceOperations#findSorted}
+	 */
 	@Override 
 	public List<T> findSorted(Iterable<QueryCriteria> queryCriterias, Sort sort) {
 		return super.findSorted(remapQueryCriteria(queryCriterias), remapSort(sort));
 	}
 
+	/**
+	 * {@link org.oncoblocks.centromere.core.web.service.ServiceOperations#findPaged}
+	 */
 	@Override 
 	public Page<T> findPaged(Iterable<QueryCriteria> queryCriterias, Pageable pageable) {
 		return super.findPaged(remapQueryCriteria(queryCriterias), remapPageable(pageable));
 	}
 
+	/**
+	 * {@link org.oncoblocks.centromere.core.web.service.ServiceOperations#count}
+	 */
 	@Override 
 	public long count(Iterable<QueryCriteria> queryCriterias) {
 		return super.count(remapQueryCriteria(queryCriterias));
 	}
 
+	/**
+	 * {@link org.oncoblocks.centromere.core.web.service.ServiceOperations#findAllSorted}
+	 */
 	@Override 
 	public List<T> findAllSorted(Sort sort) {
 		return super.findAllSorted(remapSort(sort));
 	}
 
+	/**
+	 * {@link org.oncoblocks.centromere.core.web.service.ServiceOperations#findSorted}
+	 */
 	@Override 
 	public List<T> findSorted(T entityQuery, Sort sort) {
 		return super.findSorted(entityQuery, remapSort(sort));
 	}
 
+	/**
+	 * {@link org.oncoblocks.centromere.core.web.service.ServiceOperations#findAllPaged}
+	 */
 	@Override 
 	public Page<T> findAllPaged(Pageable pageable) {
 		return super.findAllPaged(remapPageable(pageable));
 	}
 
+	/**
+	 * {@link org.oncoblocks.centromere.core.web.service.ServiceOperations#findPaged}
+	 */
 	@Override 
 	public Page<T> findPaged(T entityQuery, Pageable pageable) {
 		return super.findPaged(entityQuery, remapPageable(pageable));
