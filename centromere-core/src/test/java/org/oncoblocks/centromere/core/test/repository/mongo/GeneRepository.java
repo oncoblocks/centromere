@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class GeneRepository extends GenericMongoRepository<Gene, Long> {
-
 	@Autowired
 	public GeneRepository(MongoTemplate mongoTemplate) {
 		super(mongoTemplate, Gene.class);

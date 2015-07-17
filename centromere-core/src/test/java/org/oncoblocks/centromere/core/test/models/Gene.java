@@ -7,6 +7,7 @@ import org.oncoblocks.centromere.core.model.SimpleAliases;
 import org.oncoblocks.centromere.core.web.controller.Filterable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.*;
@@ -19,7 +20,7 @@ import java.util.*;
 public class Gene implements Model<Long>, SimpleAliases, Attributes {
 
 	@Id private Long entrezGeneId;
-	private String primaryGeneSymbol;
+	@Indexed private String primaryGeneSymbol;
 	private Integer taxId;
 	private String locusTag;
 	private String chromosome;
