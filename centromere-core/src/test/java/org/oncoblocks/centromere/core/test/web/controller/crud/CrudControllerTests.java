@@ -1,3 +1,19 @@
+/*
+ * Copyright 2015 William Oemler, Blueprint Medicines
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.oncoblocks.centromere.core.test.web.controller.crud;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -10,7 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.oncoblocks.centromere.core.test.config.TestMongoConfig;
 import org.oncoblocks.centromere.core.test.config.TestWebConfig;
-import org.oncoblocks.centromere.core.test.models.Gene;
+import org.oncoblocks.centromere.core.test.models.EntrezGene;
 import org.oncoblocks.centromere.core.test.repository.mongo.GeneRepository;
 import org.oncoblocks.centromere.core.test.repository.mongo.MongoRepositoryConfig;
 import org.oncoblocks.centromere.core.test.web.service.generic.GenericServiceConfig;
@@ -55,22 +71,27 @@ public class CrudControllerTests {
 		if (isConfigured) return;
 
 		geneRepository.deleteAll();
-		Gene geneA = new Gene(1L, "GeneA", 9606, null, "1", null, "Test Gene A", "protein-coding", null, null, null);
+		EntrezGene
+				geneA = new EntrezGene(1L, "GeneA", 9606, null, "1", null, "Test Gene A", "protein-coding", null, null, null);
 		geneA.setAttribute("isKinase:Y");
 		geneA.setAlias("ABC");
-		Gene geneB = new Gene(2L, "GeneB", 9606, null, "3", null, "Test Gene B", "protein-coding", null, null, null);
+		EntrezGene
+				geneB = new EntrezGene(2L, "GeneB", 9606, null, "3", null, "Test Gene B", "protein-coding", null, null, null);
 		geneB.setAttribute("isKinase:N");
 		geneB.setAlias("DEF");
-		Gene geneC = new Gene(3L, "GeneC", 9606, null, "11", null, "Test Gene C", "pseudo", null, null, null);
+		EntrezGene
+				geneC = new EntrezGene(3L, "GeneC", 9606, null, "11", null, "Test Gene C", "pseudo", null, null, null);
 		geneC.setAttribute("isKinase:N");
 		geneC.setAlias("GHI");
-		Gene geneD = new Gene(4L, "GeneD", 9606, null, "9", null, "Test Gene D", "protein-coding", null, null, null);
+		EntrezGene
+				geneD = new EntrezGene(4L, "GeneD", 9606, null, "9", null, "Test Gene D", "protein-coding", null, null, null);
 		geneD.setAttribute("isKinase:Y");
 		geneD.setAlias("JKL");
-		Gene geneE = new Gene(5L, "GeneE", 9606, null, "X", null, "Test Gene E", "pseudo", null, null, null);
+		EntrezGene
+				geneE = new EntrezGene(5L, "GeneE", 9606, null, "X", null, "Test Gene E", "pseudo", null, null, null);
 		geneE.setAttribute("isKinase:N");
 		geneE.setAlias("MNO");
-		geneRepository.insert(Arrays.asList(new Gene[] {geneA, geneB, geneC, geneD, geneE}));
+		geneRepository.insert(Arrays.asList(new EntrezGene[] {geneA, geneB, geneC, geneD, geneE}));
 
 		isConfigured = true;
 
@@ -106,7 +127,8 @@ public class CrudControllerTests {
 	@Test
 	public void createTest() throws Exception {
 
-		Gene gene = new Gene(6L, "GeneF", 9606, "", "10", "", "", "protein-coding", null, null, null);
+		EntrezGene
+				gene = new EntrezGene(6L, "GeneF", 9606, "", "10", "", "", "protein-coding", null, null, null);
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setFilters(new SimpleFilterProvider().addFilter("fieldFilter",
 				SimpleBeanPropertyFilter.serializeAllExcept()).setFailOnUnknownId(false));
@@ -130,7 +152,8 @@ public class CrudControllerTests {
 	@Test
 	public void updateTest() throws Exception {
 
-		Gene gene = new Gene(7L, "GeneG", 9606, "", "10", "", "", "protein-coding", null, null, null);
+		EntrezGene
+				gene = new EntrezGene(7L, "GeneG", 9606, "", "10", "", "", "protein-coding", null, null, null);
 		ObjectMapper mapper = new ObjectMapper();
 				mapper.setFilters(new SimpleFilterProvider().addFilter("fieldFilter",
 						SimpleBeanPropertyFilter.serializeAllExcept()).setFailOnUnknownId(false));
@@ -163,7 +186,8 @@ public class CrudControllerTests {
 	@Test
 	public void deleteTest() throws Exception {
 
-		Gene gene = new Gene(8L, "GeneH", 9606, "", "10", "", "", "protein-coding", null, null, null);
+		EntrezGene
+				gene = new EntrezGene(8L, "GeneH", 9606, "", "10", "", "", "protein-coding", null, null, null);
 		geneRepository.insert(gene);
 
 		mockMvc.perform(delete("/crud/genes/{id}", 8L))

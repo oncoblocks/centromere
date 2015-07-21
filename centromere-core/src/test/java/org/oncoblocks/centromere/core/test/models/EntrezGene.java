@@ -1,3 +1,19 @@
+/*
+ * Copyright 2015 William Oemler, Blueprint Medicines
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.oncoblocks.centromere.core.test.models;
 
 import org.oncoblocks.centromere.core.model.Attribute;
@@ -17,7 +33,7 @@ import java.util.*;
  */
 @Filterable
 @Document(collection = "genes")
-public class Gene implements Model<Long>, SimpleAliases, Attributes {
+public class EntrezGene implements Model<Long>, SimpleAliases, Attributes {
 
 	@Id private Long entrezGeneId;
 	@Indexed private String primaryGeneSymbol;
@@ -31,12 +47,12 @@ public class Gene implements Model<Long>, SimpleAliases, Attributes {
 	private Map<String, Object> dbXrefs;
 	private Set<String> aliases;
 	
-	public Gene() { }
+	public EntrezGene() { }
 	
 	@PersistenceConstructor
-	public Gene(Long entrezGeneId, String primaryGeneSymbol, Integer taxId, String locusTag,
-		String chromosome, String chromosomeLocation, String description, String geneType,
-		List<Attribute> attributes, Set<String> aliases, Map<String,Object> dbXrefs) {
+	public EntrezGene(Long entrezGeneId, String primaryGeneSymbol, Integer taxId, String locusTag,
+			String chromosome, String chromosomeLocation, String description, String geneType,
+			List<Attribute> attributes, Set<String> aliases, Map<String, Object> dbXrefs) {
 		this.entrezGeneId = entrezGeneId;
 		this.primaryGeneSymbol = primaryGeneSymbol;
 		this.taxId = taxId;

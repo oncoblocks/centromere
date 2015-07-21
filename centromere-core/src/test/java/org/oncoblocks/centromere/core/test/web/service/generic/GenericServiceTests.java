@@ -1,3 +1,19 @@
+/*
+ * Copyright 2015 William Oemler, Blueprint Medicines
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.oncoblocks.centromere.core.test.web.service.generic;
 
 import org.junit.Before;
@@ -6,7 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.oncoblocks.centromere.core.repository.QueryCriteria;
 import org.oncoblocks.centromere.core.test.config.TestMongoConfig;
-import org.oncoblocks.centromere.core.test.models.Gene;
+import org.oncoblocks.centromere.core.test.models.EntrezGene;
 import org.oncoblocks.centromere.core.test.repository.mongo.GeneRepository;
 import org.oncoblocks.centromere.core.test.repository.mongo.MongoRepositoryConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,22 +58,27 @@ public class GenericServiceTests {
 		if (isConfigured) return;
 
 		geneRepository.deleteAll();
-		Gene geneA = new Gene(1L, "GeneA", 9606, null, "1", null, "Test Gene A", "protein-coding", null, null, null);
+		EntrezGene
+				geneA = new EntrezGene(1L, "GeneA", 9606, null, "1", null, "Test Gene A", "protein-coding", null, null, null);
 		geneA.setAttribute("isKinase:Y");
 		geneA.setAlias("ABC");
-		Gene geneB = new Gene(2L, "GeneB", 9606, null, "3", null, "Test Gene B", "protein-coding", null, null, null);
+		EntrezGene
+				geneB = new EntrezGene(2L, "GeneB", 9606, null, "3", null, "Test Gene B", "protein-coding", null, null, null);
 		geneB.setAttribute("isKinase:N");
 		geneB.setAlias("DEF");
-		Gene geneC = new Gene(3L, "GeneC", 9606, null, "11", null, "Test Gene C", "pseudo", null, null, null);
+		EntrezGene
+				geneC = new EntrezGene(3L, "GeneC", 9606, null, "11", null, "Test Gene C", "pseudo", null, null, null);
 		geneC.setAttribute("isKinase:N");
 		geneC.setAlias("GHI");
-		Gene geneD = new Gene(4L, "GeneD", 9606, null, "9", null, "Test Gene D", "protein-coding", null, null, null);
+		EntrezGene
+				geneD = new EntrezGene(4L, "GeneD", 9606, null, "9", null, "Test Gene D", "protein-coding", null, null, null);
 		geneD.setAttribute("isKinase:Y");
 		geneD.setAlias("JKL");
-		Gene geneE = new Gene(5L, "GeneE", 9606, null, "X", null, "Test Gene E", "pseudo", null, null, null);
+		EntrezGene
+				geneE = new EntrezGene(5L, "GeneE", 9606, null, "X", null, "Test Gene E", "pseudo", null, null, null);
 		geneE.setAttribute("isKinase:N");
 		geneE.setAlias("MNO");
-		geneRepository.insert(Arrays.asList(new Gene[] {geneA, geneB, geneC, geneD, geneE}));
+		geneRepository.insert(Arrays.asList(new EntrezGene[] {geneA, geneB, geneC, geneD, geneE}));
 
 		isConfigured = true;
 
@@ -67,7 +88,7 @@ public class GenericServiceTests {
 	@Test
 	public void findByIdTest(){
 
-		Gene gene = geneService.findById(1L);
+		EntrezGene gene = geneService.findById(1L);
 		Assert.notNull(gene);
 		Assert.isTrue(gene.getEntrezGeneId().equals(1L));
 		Assert.isTrue(gene.getPrimaryGeneSymbol().equals("GeneA"));
@@ -80,12 +101,12 @@ public class GenericServiceTests {
 	@Test
 	public void findAllTest(){
 
-		List<Gene> genes = geneService.findAll();
+		List<EntrezGene> genes = geneService.findAll();
 		Assert.notNull(genes);
 		Assert.notEmpty(genes);
 		Assert.isTrue(genes.size() == 5);
 
-		Gene gene = genes.get(0);
+		EntrezGene gene = genes.get(0);
 		Assert.notNull(gene);
 		Assert.isTrue(gene.getEntrezGeneId().equals(1L));
 		Assert.isTrue(gene.getPrimaryGeneSymbol().equals("GeneA"));
@@ -110,12 +131,12 @@ public class GenericServiceTests {
 
 		List<QueryCriteria> searchCriterias = new ArrayList<>();
 		searchCriterias.add(new QueryCriteria("primaryGeneSymbol", "GeneB"));
-		List<Gene> genes = geneService.find(searchCriterias);
+		List<EntrezGene> genes = geneService.find(searchCriterias);
 		Assert.notNull(genes);
 		Assert.notEmpty(genes);
 		Assert.isTrue(genes.size() == 1);
 
-		Gene gene = genes.get(0);
+		EntrezGene gene = genes.get(0);
 		Assert.notNull(gene);
 		Assert.isTrue(gene.getEntrezGeneId().equals(2L));
 		Assert.isTrue(gene.getPrimaryGeneSymbol().equals("GeneB"));
@@ -127,12 +148,12 @@ public class GenericServiceTests {
 
 		List<QueryCriteria> searchCriterias = new ArrayList<>();
 		searchCriterias.add(new QueryCriteria("aliases", "DEF"));
-		List<Gene> genes = geneService.find(searchCriterias);
+		List<EntrezGene> genes = geneService.find(searchCriterias);
 		Assert.notNull(genes);
 		Assert.notEmpty(genes);
 		Assert.isTrue(genes.size() == 1);
 
-		Gene gene = genes.get(0);
+		EntrezGene gene = genes.get(0);
 		Assert.notNull(gene);
 		Assert.isTrue(gene.getEntrezGeneId().equals(2L));
 		Assert.isTrue(gene.getPrimaryGeneSymbol().equals("GeneB"));
@@ -146,12 +167,12 @@ public class GenericServiceTests {
 		List<QueryCriteria> searchCriterias = new ArrayList<>();
 		searchCriterias.add(new QueryCriteria("attributes.name", "isKinase"));
 		searchCriterias.add(new QueryCriteria("attributes.value", "Y"));
-		List<Gene> genes = geneService.find(searchCriterias);
+		List<EntrezGene> genes = geneService.find(searchCriterias);
 		Assert.notNull(genes);
 		Assert.notEmpty(genes);
 		Assert.isTrue(genes.size() == 2);
 
-		Gene gene = genes.get(0);
+		EntrezGene gene = genes.get(0);
 		Assert.notNull(gene);
 		Assert.isTrue(gene.getEntrezGeneId().equals(1L));
 		Assert.isTrue(gene.getPrimaryGeneSymbol().equals("GeneA"));
@@ -165,12 +186,12 @@ public class GenericServiceTests {
 	public void findSortedTest(){
 
 		Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC, "primaryGeneSymbol"));
-		List<Gene> genes = geneService.findAllSorted(sort);
+		List<EntrezGene> genes = geneService.findAllSorted(sort);
 		Assert.notNull(genes);
 		Assert.notEmpty(genes);
 		Assert.isTrue(genes.size() == 5);
 
-		Gene gene = genes.get(0);
+		EntrezGene gene = genes.get(0);
 		Assert.notNull(gene);
 		Assert.isTrue(gene.getEntrezGeneId().equals(5L));
 		Assert.isTrue(gene.getPrimaryGeneSymbol().equals("GeneE"));
@@ -181,17 +202,17 @@ public class GenericServiceTests {
 	public void findPagedTest(){
 
 		PageRequest pageRequest = new PageRequest(1, 2);
-		Page<Gene> page = geneService.findAllPaged(pageRequest);
+		Page<EntrezGene> page = geneService.findAllPaged(pageRequest);
 		Assert.notNull(page);
 		Assert.isTrue(page.getTotalPages() == 3);
 		Assert.isTrue(page.getTotalElements() == 5);
 
-		List<Gene> genes = page.getContent();
+		List<EntrezGene> genes = page.getContent();
 		Assert.notNull(genes);
 		Assert.notEmpty(genes);
 		Assert.isTrue(genes.size() == 2);
 
-		Gene gene = genes.get(0);
+		EntrezGene gene = genes.get(0);
 		Assert.notNull(gene);
 		Assert.isTrue(gene.getEntrezGeneId().equals(3l));
 
@@ -203,17 +224,17 @@ public class GenericServiceTests {
 		List<QueryCriteria> searchCriterias = new ArrayList<>();
 		searchCriterias.add(new QueryCriteria("geneType", "protein-coding"));
 		PageRequest pageRequest = new PageRequest(1, 2);
-		Page<Gene> page = geneService.findPaged(searchCriterias, pageRequest);
+		Page<EntrezGene> page = geneService.findPaged(searchCriterias, pageRequest);
 		Assert.notNull(page);
 		Assert.isTrue(page.getTotalElements() == 3);
 		Assert.isTrue(page.getTotalPages() == 2);
 
-		List<Gene> genes = page.getContent();
+		List<EntrezGene> genes = page.getContent();
 		Assert.notNull(genes);
 		Assert.notEmpty(genes);
 		Assert.isTrue(genes.size() == 1);
 
-		Gene gene = genes.get(0);
+		EntrezGene gene = genes.get(0);
 		Assert.notNull(gene);
 		Assert.isTrue(gene.getEntrezGeneId().equals(4L));
 
@@ -222,10 +243,11 @@ public class GenericServiceTests {
 	@Test
 	public void insertTest(){
 
-		Gene gene = new Gene(100L, "TEST", 9606, null, "1", "1", "Test gene", "protein-coding", null, null, null);
+		EntrezGene
+				gene = new EntrezGene(100L, "TEST", 9606, null, "1", "1", "Test gene", "protein-coding", null, null, null);
 		geneService.insert(gene);
 
-		Gene created = geneService.findById(100L);
+		EntrezGene created = geneService.findById(100L);
 		Assert.notNull(created);
 		Assert.isTrue(created.getId().equals(100L));
 		Assert.isTrue(created.getPrimaryGeneSymbol().equals("TEST"));
@@ -237,14 +259,15 @@ public class GenericServiceTests {
 	@Test
 	public void updateTest(){
 
-		Gene gene = new Gene(100L, "TEST", 9606, null, "1", "1", "Test gene", "protein-coding", null, null, null);
+		EntrezGene
+				gene = new EntrezGene(100L, "TEST", 9606, null, "1", "1", "Test gene", "protein-coding", null, null, null);
 		geneService.insert(gene);
 
 		gene.setPrimaryGeneSymbol("TEST_TEST");
 		gene.setGeneType("pseudogene");
 		geneService.update(gene);
 
-		Gene updated = geneService.findById(100L);
+		EntrezGene updated = geneService.findById(100L);
 		Assert.notNull(updated);
 		Assert.isTrue(updated.getPrimaryGeneSymbol().equals("TEST_TEST"));
 		Assert.isTrue(updated.getGeneType().equals("pseudogene"));
@@ -256,15 +279,16 @@ public class GenericServiceTests {
 	@Test
 	public void deleteTest(){
 
-		Gene gene = new Gene(100L, "TEST", 9606, null, "1", "1", "Test gene", "protein-coding", null, null, null);
+		EntrezGene
+				gene = new EntrezGene(100L, "TEST", 9606, null, "1", "1", "Test gene", "protein-coding", null, null, null);
 		geneService.insert(gene);
 
-		Gene created = geneService.findById(100L);
+		EntrezGene created = geneService.findById(100L);
 		Assert.notNull(created);
 		Assert.isTrue(created.getId().equals(100L));
 
 		geneService.delete(100L);
-		Gene deleted = geneService.findById(100L);
+		EntrezGene deleted = geneService.findById(100L);
 		Assert.isNull(deleted);
 
 	}
@@ -272,9 +296,9 @@ public class GenericServiceTests {
 	@Test
 	public void rawJsonTestById() throws Exception {
 
-		Gene gene = new Gene();
+		EntrezGene gene = new EntrezGene();
 		gene.setEntrezGeneId(1L);
-		List<Gene> genes = geneService.find(gene);
+		List<EntrezGene> genes = geneService.find(gene);
 		Assert.notNull(genes);
 		Assert.notEmpty(genes);
 		Assert.isTrue(genes.get(0).getEntrezGeneId().equals(1L));
@@ -285,9 +309,9 @@ public class GenericServiceTests {
 	@Test
 	public void rawJsonTestByGeneType() throws Exception {
 
-		Gene gene = new Gene();
+		EntrezGene gene = new EntrezGene();
 		gene.setGeneType("protein-coding");
-		List<Gene> genes = geneService.find(gene);
+		List<EntrezGene> genes = geneService.find(gene);
 		Assert.notNull(genes);
 		Assert.notEmpty(genes);
 		Assert.isTrue(genes.size() == 3);
@@ -299,11 +323,11 @@ public class GenericServiceTests {
 	@Test
 	public void rawJsonTestByConflictingAttributes() throws Exception {
 
-		Gene gene = new Gene();
+		EntrezGene gene = new EntrezGene();
 		gene.setGeneType("protein-coding");
 		gene.setEntrezGeneId(11L);
 
-		List<Gene> genes = geneService.find(gene);
+		List<EntrezGene> genes = geneService.find(gene);
 		Assert.notNull(genes);
 		Assert.isTrue(genes.size() == 0);
 
@@ -313,10 +337,10 @@ public class GenericServiceTests {
 	@Test
 	public void rawJsonTestByNestedAttributes() throws Exception {
 
-		Gene gene = new Gene();
+		EntrezGene gene = new EntrezGene();
 		gene.setAttribute("isKinase:Y");
 
-		List<Gene> genes = geneService.find(gene);
+		List<EntrezGene> genes = geneService.find(gene);
 		Assert.notNull(genes);
 		Assert.notEmpty(genes);
 		Assert.isTrue(genes.size() == 2);
@@ -327,10 +351,10 @@ public class GenericServiceTests {
 	@Test
 	public void rawJsonTestByPartialNestedAttributes() throws Exception {
 
-		Gene gene = new Gene();
+		EntrezGene gene = new EntrezGene();
 		gene.setAttributeName("isKinase");
 
-		List<Gene> genes = geneService.find(gene);
+		List<EntrezGene> genes = geneService.find(gene);
 
 		Assert.notNull(genes);
 		Assert.notEmpty(genes);
