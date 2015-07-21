@@ -44,7 +44,7 @@ import java.util.List;
 @FixMethodOrder
 public class GenericMongoRepositoryTests {
 		
-	@Autowired private GeneRepository geneRepository;
+	@Autowired private EntrezGeneRepository geneRepository;
 	
 	private static boolean isConfigured = false;
 	
@@ -356,6 +356,55 @@ public class GenericMongoRepositoryTests {
 		Assert.isTrue(genes.size() == 5);
 		Assert.isTrue(genes.get(0).getEntrezGeneId().equals(1L));
 
+	}
+	
+	@Test
+	public void findByPrimaryIdTest() throws Exception {
+		
+		EntrezGene gene = geneRepository.findByPrimaryGeneId(1L);
+		Assert.notNull(gene);
+		Assert.isTrue(gene.getEntrezGeneId().equals(1L));
+		
+	}
+	
+	@Test
+	public void findByPrimaryGeneSymbolTest() throws Exception {
+		
+		List<EntrezGene> genes = geneRepository.findByPrimaryGeneSymbol("GeneA");
+		Assert.notNull(genes);
+		Assert.notEmpty(genes);
+		Assert.isTrue(genes.size() == 1);
+		EntrezGene gene = genes.get(0);
+		Assert.isTrue(gene.getPrimaryGeneSymbol().equals("GeneA"));
+		
+	}
+
+	@Test
+	public void findByAliasTest() throws Exception {
+
+		List<EntrezGene> genes = geneRepository.findByAlias("ABC");
+		Assert.notNull(genes);
+		Assert.notEmpty(genes);
+		Assert.isTrue(genes.size() == 1);
+		EntrezGene gene = genes.get(0);
+		Assert.isTrue(gene.getEntrezGeneId().equals(1L));
+
+	}
+	
+	@Test
+	public void guessGeneTest() throws Exception {
+		
+		EntrezGene gene = geneRepository.guessGene("GeneA");
+		Assert.notNull(gene);
+		Assert.isTrue(gene.getEntrezGeneId().equals(1L));
+		
+		gene = geneRepository.guessGene("MNO");
+		Assert.notNull(gene);
+		Assert.isTrue(gene.getEntrezGeneId().equals(5L));
+		
+		gene = geneRepository.guessGene("XYZ");
+		Assert.isNull(gene);
+		
 	}
 	
 }

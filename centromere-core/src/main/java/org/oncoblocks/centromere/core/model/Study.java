@@ -17,13 +17,12 @@
 package org.oncoblocks.centromere.core.model;
 
 import java.io.Serializable;
-import java.util.Collection;
 
 /**
  * @author woemler
  */
-public interface Study {
-	<ID extends Serializable> ID getStudyId();
+public interface Study<ID extends Serializable> extends Model<ID> {
+	Serializable getStudyId();
 	String getName();
-	<S extends Serializable> Collection<S> getSampleIds();
+	Serializable getSampleIds();
 }

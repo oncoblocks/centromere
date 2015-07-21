@@ -25,7 +25,7 @@ import java.util.List;
  * 
  * @author woemler
  */
-public interface DataSetRepository {
-	DataSet findByName(String name);
-	List<DataSet> findByDataType(String dataType);
+public interface DataSetRepository<T extends DataSet> {
+	T findByName(String name);
+	List<T> findByDataType(String dataType);
 }

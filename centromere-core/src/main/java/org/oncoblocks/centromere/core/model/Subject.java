@@ -21,9 +21,9 @@ import java.io.Serializable;
 /**
  * @author woemler
  */
-public interface Subject extends SourcedAliases, Attributes {
-	<ID extends Serializable> ID getSubjectId();
-	<D extends Serializable> D getDiseaseId();
+public interface Subject<ID extends Serializable> extends Model<ID>, SourcedAliases, Attributes {
+	Serializable getSubjectId();
+	Serializable getDiseaseId();
 	String getName();
 	String getGender();
 	String getSpecies();

@@ -26,10 +26,10 @@ import java.util.List;
  * 
  * @author woemler
  */
-public interface SubjectRepository {
-	<ID extends Serializable> Subject findBySubjectId(ID subjectId);
-	List<Subject> findByName(String name);
-	<D extends Serializable> List<Subject> findByDiseaseId(D diseaseId);
-	List<Subject> findByAlias(String alias);
-	Subject guessSubject(String keyword);
+public interface SubjectRepository<T extends Subject> {
+	<S extends Serializable> T findBySubjectId(S subjectId);
+	List<T> findByName(String name);
+	<S extends Serializable> List<T> findByDiseaseId(S diseaseId);
+	List<T> findByAlias(String alias);
+	T guessSubject(String keyword);
 }

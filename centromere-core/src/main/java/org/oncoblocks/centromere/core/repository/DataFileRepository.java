@@ -24,8 +24,8 @@ import java.util.List;
 /**
  * @author woemler
  */
-public interface DataFileRepository {
-	<ID extends Serializable> DataFile findByDataFileId(ID dataFileId);
-	<D extends Serializable> List<DataFile> findByDataSetId(D dataSetId);
-	List<DataFile> findByFileName(String fileName);
+public interface DataFileRepository<T extends DataFile> {
+	<S extends Serializable> T findByDataFileId(S dataFileId);
+	<S extends Serializable> List<T> findByDataSetId(S dataSetId);
+	List<T> findByFileName(String fileName);
 }

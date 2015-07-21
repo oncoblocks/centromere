@@ -21,8 +21,8 @@ import java.io.Serializable;
 /**
  * @author woemler
  */
-public interface DataFile {
-	<ID extends Serializable> ID getDataFileId();
-	<D extends Serializable> D getDataSetId();
+public interface DataFile<ID extends Serializable> extends Model<ID> {
+	Serializable getDataFileId();
+	Serializable getDataSetId();
 	String getFilePath();
 }

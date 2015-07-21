@@ -25,7 +25,7 @@ import org.junit.runner.RunWith;
 import org.oncoblocks.centromere.core.test.config.TestMongoConfig;
 import org.oncoblocks.centromere.core.test.config.TestSecurityConfig;
 import org.oncoblocks.centromere.core.test.config.TestWebConfig;
-import org.oncoblocks.centromere.core.test.repository.mongo.GeneRepository;
+import org.oncoblocks.centromere.core.test.repository.mongo.EntrezGeneRepository;
 import org.oncoblocks.centromere.core.test.repository.mongo.MongoRepositoryConfig;
 import org.oncoblocks.centromere.core.test.repository.mongo.UserRepository;
 import org.oncoblocks.centromere.core.test.web.service.generic.GenericServiceConfig;
@@ -70,7 +70,7 @@ public class SecurityTests {
 	@SuppressWarnings("SpringJavaAutowiringInspection")
 	private FilterChainProxy springSecurityFilterChain;
 
-	@Autowired private GeneRepository geneRepository;
+	@Autowired private EntrezGeneRepository geneRepository;
 	
 	private static boolean isConfigured = false;
 

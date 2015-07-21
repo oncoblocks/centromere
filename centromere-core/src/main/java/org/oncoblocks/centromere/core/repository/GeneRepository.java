@@ -24,9 +24,9 @@ import java.util.List;
 /**
  * @author woemler
  */
-public interface GeneRepository {
-	<ID extends Serializable> Gene findByPrimaryGeneId(ID primaryGeneId);
-	List<Gene> findByPrimaryGeneSymbol(String primaryGeneSymbol);
-	List<Gene> findByAlias(String alias);
-	Gene guessGene(String keyword);
+public interface GeneRepository<T extends Gene> {
+	<S extends Serializable> T findByPrimaryGeneId(S primaryGeneId);
+	List<T> findByPrimaryGeneSymbol(String primaryGeneSymbol);
+	List<T> findByAlias(String alias);
+	T guessGene(String keyword);
 }

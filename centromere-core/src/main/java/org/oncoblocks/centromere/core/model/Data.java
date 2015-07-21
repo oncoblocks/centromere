@@ -21,8 +21,8 @@ import java.io.Serializable;
 /**
  * @author woemler
  */
-public interface Data {
-	<S extends Serializable> S getSampleId();
-	<D extends Serializable> D getDataFileId();
-	<G extends Serializable> G getGeneId();
+public interface Data <ID extends Serializable> extends Model<ID> {
+	Serializable getSampleId();
+	Serializable getDataFileId();
+	Serializable getGeneId();
 }

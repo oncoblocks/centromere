@@ -23,7 +23,7 @@ import org.junit.runner.RunWith;
 import org.oncoblocks.centromere.core.repository.QueryCriteria;
 import org.oncoblocks.centromere.core.test.config.TestMongoConfig;
 import org.oncoblocks.centromere.core.test.models.EntrezGene;
-import org.oncoblocks.centromere.core.test.repository.mongo.GeneRepository;
+import org.oncoblocks.centromere.core.test.repository.mongo.EntrezGeneRepository;
 import org.oncoblocks.centromere.core.test.repository.mongo.MongoRepositoryConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -47,7 +47,7 @@ import java.util.List;
 @FixMethodOrder
 public class GenericServiceTests {
 
-	@Autowired private GeneRepository geneRepository;
+	@Autowired private EntrezGeneRepository geneRepository;
 	@Autowired private GeneService geneService;
 
 	private static boolean isConfigured = false;

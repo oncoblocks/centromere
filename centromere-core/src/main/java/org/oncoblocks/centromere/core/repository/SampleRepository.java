@@ -26,10 +26,10 @@ import java.util.List;
  * 
  * @author woemler
  */
-public interface SampleRepository {
-	<ID extends Serializable> Sample findBySampleId(ID sampleId);
-	<S extends Serializable> List<Sample> findBySubjectId(S subjectId);
-	<D extends Serializable> List<Sample> findByDataSetId(D dataSetId);
-	List<Sample> findByName(String name);
-	<T extends Serializable> List<Sample> findByStudyId(T studyId);
+public interface SampleRepository<T extends Sample> {
+	<S extends Serializable> T findBySampleId(S sampleId);
+	<S extends Serializable> List<T> findBySubjectId(S subjectId);
+	<S extends Serializable> List<T> findByDataSetId(S dataSetId);
+	List<T> findByName(String name);
+	<S extends Serializable> List<T> findByStudyId(S studyId);
 }

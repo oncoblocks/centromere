@@ -23,8 +23,8 @@ import java.io.Serializable;
  * 
  * @author woemler
  */
-public interface Gene extends SimpleAliases, Attributes  {
-	<ID extends Serializable> ID getPrimaryGeneId();
+public interface Gene<ID extends Serializable> extends Model<ID>, SimpleAliases, Attributes  {
+	Serializable getPrimaryGeneId();
 	String getPrimaryGeneSymbol();
 	String getChromosome();
 }

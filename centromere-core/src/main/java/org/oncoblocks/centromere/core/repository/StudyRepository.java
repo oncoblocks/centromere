@@ -26,8 +26,8 @@ import java.util.List;
  * 
  * @author woemler
  */
-public interface StudyRepository {
-	<ID extends Serializable> Study findByStudyId(ID studyId);
-	List<Study> findByName(String name);
-	<S extends Serializable> List<Study> findBySampleId(S sampleId);
+public interface StudyRepository<T extends Study> {
+	<S extends Serializable> T findByStudyId(S studyId);
+	List<T> findByName(String name);
+	<S extends Serializable> List<T> findBySampleId(S sampleId);
 }

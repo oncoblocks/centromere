@@ -21,7 +21,7 @@ import java.io.Serializable;
 /**
  * @author woemler
  */
-public interface Disease {
-	<ID extends Serializable> ID getDiseaseId();
+public interface Disease<ID extends Serializable> extends Model<ID> {
+	Serializable getDiseaseId();
 	String getName();
 }

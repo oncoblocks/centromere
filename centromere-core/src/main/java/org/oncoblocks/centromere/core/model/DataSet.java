@@ -23,8 +23,8 @@ import java.io.Serializable;
  * 
  * @author woemler
  */
-public interface DataSet {
-	<ID extends Serializable> ID getDataSetId();
+public interface DataSet<ID extends Serializable> extends Model<ID> {
+	Serializable getDataSetId();
 	String getSource();
 	String getName();
 	String getDataType();

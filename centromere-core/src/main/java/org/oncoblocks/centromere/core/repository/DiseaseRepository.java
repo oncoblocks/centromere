@@ -26,7 +26,7 @@ import java.util.List;
  * 
  * @author woemler
  */
-public interface DiseaseRepository {
-	<ID extends Serializable> Disease findByDiseaseId(ID diseaseId);
-	List<Disease> findByName(String name);
+public interface DiseaseRepository<T extends Disease> {
+	<S extends Serializable> T findByDiseaseId(S diseaseId);
+	List<T> findByName(String name);
 }

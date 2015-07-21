@@ -17,17 +17,16 @@
 package org.oncoblocks.centromere.core.model;
 
 import java.io.Serializable;
-import java.util.Collection;
 
 /**
  * Required getters for Sample resources.
  * 
  * @author woemler
  */
-public interface Sample {
-	<ID extends Serializable> ID getSampleId();
-	<D extends Serializable>  D getDataSetId();
-	<S extends Serializable> S getSubjectId();
-	<T extends Serializable> Collection<T> getStudyIds();
+public interface Sample<ID extends Serializable> extends Model<ID> {
+	Serializable getSampleId();
+	Serializable getDataSetId();
+	Serializable getSubjectId();
+	Serializable getStudyIds();
 	String getName();
 }
