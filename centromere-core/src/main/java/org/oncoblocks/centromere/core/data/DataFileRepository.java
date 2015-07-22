@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.model;
+package org.oncoblocks.centromere.core.data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author woemler
  */
-public interface Data <ID extends Serializable> extends Model<ID> {
-	Serializable getSampleId();
-	Serializable getDataFileId();
-	Serializable getGeneId();
+public interface DataFileRepository<T extends DataFile> {
+	<S extends Serializable> T findByDataFileId(S dataFileId);
+	<S extends Serializable> List<T> findByDataSetId(S dataSetId);
+	List<T> findByFileName(String fileName);
 }

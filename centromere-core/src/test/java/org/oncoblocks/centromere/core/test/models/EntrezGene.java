@@ -17,8 +17,8 @@
 package org.oncoblocks.centromere.core.test.models;
 
 import org.oncoblocks.centromere.core.model.Attribute;
-import org.oncoblocks.centromere.core.model.Gene;
-import org.oncoblocks.centromere.core.web.controller.Filterable;
+import org.oncoblocks.centromere.core.data.Gene;
+import org.oncoblocks.centromere.core.model.Filterable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.index.Indexed;

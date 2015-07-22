@@ -19,6 +19,10 @@ What Centromere is _**not**_:
 
 ## Quick Start
 
+### Note
+
+This project is still in early development.  Components can and will change, and the documentation below may become out of sync with the latest build of the project.  I will do my best to keep the documentation up-to-date.
+
 ### Configuration
 
 The easiest way to configure Centromere is to use the `@AutoConfigureCentromereWeb` annotation in your configuration class.  This will handle all of the required web context configuration and bean registration.

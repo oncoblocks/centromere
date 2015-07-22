@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.web.controller;
+package org.oncoblocks.centromere.core.model;
 
-import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
-import com.fasterxml.jackson.annotation.JsonFilter;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
- * Allows field filtering during JSON serialization, XML marshalling, etc.
+ * Used for annotating {@link org.oncoblocks.centromere.core.model.Model} fields to denote that it
+ *   is a foreign key, referencing a different class, {@code type}.  Used in building hypermedia links
+ *   to related entities, where {@code rel} is the relationship identifier, and {@code qsParameter} is
+ *   the query string parameter that references the parent class's field in many-to-one relationships..
  * 
  * @author woemler
  */
-
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-@JacksonAnnotationsInside
-@JsonFilter("fieldFilter")
-public @interface Filterable {
+@Inherited
+@Target(ElementType.FIELD)
+public @interface ForeignKey {
+	Class<? extends Model> type();
+	String relString() default "";
+	String qsParameter() default "";
 }

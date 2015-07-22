@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.repository;
+package org.oncoblocks.centromere.core.data;
 
-import org.oncoblocks.centromere.core.model.DataSet;
-
+import java.io.Serializable;
 import java.util.List;
 
 /**
- * Required operations for Data Set repositories.
+ * Required repository operations for Samples.
  * 
  * @author woemler
  */
-public interface DataSetRepository<T extends DataSet> {
-	T findByName(String name);
-	List<T> findByDataType(String dataType);
+public interface SampleRepository<T extends Sample> {
+	<S extends Serializable> T findBySampleId(S sampleId);
+	<S extends Serializable> List<T> findBySubjectId(S subjectId);
+	<S extends Serializable> List<T> findByDataSetId(S dataSetId);
+	List<T> findByName(String name);
+	<S extends Serializable> List<T> findByStudyId(S studyId);
 }

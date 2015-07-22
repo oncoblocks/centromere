@@ -18,7 +18,7 @@ package org.oncoblocks.centromere.core.test.models;
 
 import org.oncoblocks.centromere.core.model.*;
 import org.oncoblocks.centromere.core.repository.sqlbuilder.ComplexTableDescription;
-import org.oncoblocks.centromere.core.web.controller.Filterable;
+import org.oncoblocks.centromere.core.model.Filterable;
 
 import java.util.ArrayList;
 import java.util.Arrays;

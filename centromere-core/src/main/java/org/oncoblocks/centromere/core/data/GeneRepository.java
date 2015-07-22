@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.repository;
-
-import org.oncoblocks.centromere.core.model.Gene;
+package org.oncoblocks.centromere.core.data;
 
 import java.io.Serializable;
 import java.util.List;

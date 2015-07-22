@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.repository;
+package org.oncoblocks.centromere.core.data;
 
-import org.oncoblocks.centromere.core.model.Subject;
+import org.oncoblocks.centromere.core.model.Model;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
- * Required operations for Subject repositories.
+ * Required getters for Sample resources.
  * 
  * @author woemler
  */
-public interface SubjectRepository<T extends Subject> {
-	<S extends Serializable> T findBySubjectId(S subjectId);
-	List<T> findByName(String name);
-	<S extends Serializable> List<T> findByDiseaseId(S diseaseId);
-	List<T> findByAlias(String alias);
-	T guessSubject(String keyword);
+public interface Sample<ID extends Serializable> extends Model<ID> {
+	Serializable getDataSetId();
+	Serializable getSubjectId();
+	Serializable getStudyIds();
+	String getName();
 }

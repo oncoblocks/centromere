@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.repository;
+package org.oncoblocks.centromere.core.data;
 
-import org.oncoblocks.centromere.core.model.Disease;
-
-import java.io.Serializable;
 import java.util.List;
 
 /**
- * Required operations for Disease repository.
+ * Required operations for Data Set repositories.
  * 
  * @author woemler
  */
-public interface DiseaseRepository<T extends Disease> {
-	<S extends Serializable> T findByDiseaseId(S diseaseId);
-	List<T> findByName(String name);
+public interface DataSetRepository<T extends DataSet> {
+	T findByName(String name);
+	List<T> findByDataType(String dataType);
 }

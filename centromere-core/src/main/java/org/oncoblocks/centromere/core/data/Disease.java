@@ -14,25 +14,15 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.web.controller;
+package org.oncoblocks.centromere.core.data;
 
-import org.oncoblocks.centromere.core.model.Filterable;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.Resource;
+import org.oncoblocks.centromere.core.model.Model;
+
+import java.io.Serializable;
 
 /**
- * Allows filtering of the 'links' attribute using {@link org.oncoblocks.centromere.core.web.util.FilteringJackson2HttpMessageConverter}
- * 
  * @author woemler
  */
-
-@Filterable
-public class FilterableResource<T> extends Resource<T> {
-	public FilterableResource(T content, Link... links) {
-		super(content, links);
-	}
-
-	public FilterableResource(T content, Iterable<Link> links) {
-		super(content, links);
-	}
+public interface Disease<ID extends Serializable> extends Model<ID> {
+	String getName();
 }

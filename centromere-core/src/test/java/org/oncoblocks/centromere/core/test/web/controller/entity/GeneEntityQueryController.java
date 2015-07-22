@@ -16,7 +16,7 @@
 
 package org.oncoblocks.centromere.core.test.web.controller.entity;
 
-import org.oncoblocks.centromere.core.model.Gene;
+import org.oncoblocks.centromere.core.data.Gene;
 import org.oncoblocks.centromere.core.test.models.EntrezGene;
 import org.oncoblocks.centromere.core.test.web.controller.GeneAssembler;
 import org.oncoblocks.centromere.core.test.web.service.generic.GeneService;

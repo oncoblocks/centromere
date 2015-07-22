@@ -16,7 +16,7 @@
 
 package org.oncoblocks.centromere.core.test.repository.mongo;
 
-import org.oncoblocks.centromere.core.repository.GeneRepository;
+import org.oncoblocks.centromere.core.data.GeneRepository;
 import org.oncoblocks.centromere.core.repository.GenericMongoRepository;
 import org.oncoblocks.centromere.core.test.models.EntrezGene;
 import org.springframework.beans.factory.annotation.Autowired;

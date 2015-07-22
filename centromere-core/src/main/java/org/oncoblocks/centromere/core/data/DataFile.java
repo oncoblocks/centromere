@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.model;
+package org.oncoblocks.centromere.core.data;
+
+import org.oncoblocks.centromere.core.model.Model;
 
 import java.io.Serializable;
 
 /**
- * Required property getters for Data Set resources.
- * 
  * @author woemler
  */
-public interface DataSet<ID extends Serializable> extends Model<ID> {
+public interface DataFile<ID extends Serializable> extends Model<ID> {
 	Serializable getDataSetId();
-	String getSource();
-	String getName();
-	String getDataType();
+	String getFilePath();
 }
