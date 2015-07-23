@@ -19,7 +19,7 @@ package org.oncoblocks.centromere.core.model;
 import java.lang.annotation.*;
 
 /**
- * Used for annotating {@link org.oncoblocks.centromere.core.model.Model} fields to denote that it
+ * Used for annotating {@link Model} fields to denote that it
  *   is a foreign key, referencing a different class, {@code type}.  Used in building hypermedia links
  *   to related entities, where {@code rel} is the relationship identifier, and {@code qsParameter} is
  *   the query string parameter that references the parent class's field in many-to-one relationships..

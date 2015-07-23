@@ -14,20 +14,11 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.data;
-
-import org.oncoblocks.centromere.core.model.Model;
-
-import java.io.Serializable;
+package org.oncoblocks.centromere.model.common;
 
 /**
- * Required getters for Sample resources.
- * 
  * @author woemler
  */
-public interface Sample<ID extends Serializable> extends Model<ID> {
-	Serializable getDataSetId();
-	Serializable getSubjectId();
-	Serializable getStudyIds();
+public interface Disease {
 	String getName();
 }

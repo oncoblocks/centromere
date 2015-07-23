@@ -16,7 +16,6 @@
 
 package org.oncoblocks.centromere.core.test.repository.mongo;
 
-import org.oncoblocks.centromere.core.data.GeneRepository;
 import org.oncoblocks.centromere.core.repository.GenericMongoRepository;
 import org.oncoblocks.centromere.core.test.models.EntrezGene;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +33,7 @@ import java.util.List;
  */
 
 @Repository
-public class EntrezGeneRepository extends GenericMongoRepository<EntrezGene, Long> implements
-		GeneRepository<EntrezGene> {
+public class EntrezGeneRepository extends GenericMongoRepository<EntrezGene, Long>  {
 	@Autowired
 	public EntrezGeneRepository(MongoTemplate mongoTemplate) {
 		super(mongoTemplate, EntrezGene.class);

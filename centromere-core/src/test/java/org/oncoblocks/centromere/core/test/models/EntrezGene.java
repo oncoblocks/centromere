@@ -16,15 +16,12 @@
 
 package org.oncoblocks.centromere.core.test.models;
 
-import org.oncoblocks.centromere.core.model.Attribute;
-import org.oncoblocks.centromere.core.data.Gene;
-import org.oncoblocks.centromere.core.model.Filterable;
+import org.oncoblocks.centromere.core.model.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -32,7 +29,7 @@ import java.util.*;
  */
 @Filterable
 @Document(collection = "genes")
-public class EntrezGene implements Gene<Long> {
+public class EntrezGene implements Model<Long>, SimpleAliases, Attributes {
 
 	@Id private Long entrezGeneId;
 	@Indexed private String primaryGeneSymbol;
@@ -183,10 +180,6 @@ public class EntrezGene implements Gene<Long> {
 	public void setAlias(String alias) {
 		if (aliases == null) aliases = new HashSet<>();
 		aliases.add(alias);
-	}
-
-	public Serializable getPrimaryGeneId() {
-		return entrezGeneId;
 	}
 
 	public boolean hasAlias(String alias) {

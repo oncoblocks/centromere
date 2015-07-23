@@ -62,7 +62,7 @@ public class GenericJdbcRepository<T extends Model<ID>, ID extends Serializable>
 	 *   {@link org.springframework.jdbc.core.JdbcTemplate}, a {@link org.oncoblocks.centromere.core.repository.sqlbuilder.ComplexTableDescription} 
 	 *   used to create a {@link org.oncoblocks.centromere.core.repository.sqlbuilder.SqlBuilder} for
 	 *   query generation, a {@link org.springframework.jdbc.core.RowMapper} for mapping database records
-	 *   to {@link org.oncoblocks.centromere.core.model.Model} objects, and a {@link com.nurkiewicz.jdbcrepository.RowUnmapper}
+	 *   to {@link Model} objects, and a {@link com.nurkiewicz.jdbcrepository.RowUnmapper}
 	 *   for mapping model objects back to database records.
 	 * 
 	 * @param dataSource {@link javax.sql.DataSource}

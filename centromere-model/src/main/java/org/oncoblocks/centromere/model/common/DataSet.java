@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.data;
-
-import java.io.Serializable;
-import java.util.List;
+package org.oncoblocks.centromere.model.common;
 
 /**
+ * Required property getters for Data Set resources.
+ * 
  * @author woemler
  */
-public interface GeneRepository<T extends Gene> {
-	<S extends Serializable> T findByPrimaryGeneId(S primaryGeneId);
-	List<T> findByPrimaryGeneSymbol(String primaryGeneSymbol);
-	List<T> findByAlias(String alias);
-	T guessGene(String keyword);
+public interface DataSet {
+	String getSource();
+	String getName();
+	String getDataType();
 }

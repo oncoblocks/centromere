@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.data;
+package org.oncoblocks.centromere.model.repository;
 
-import org.oncoblocks.centromere.core.model.Model;
+import org.oncoblocks.centromere.model.common.DataSet;
 
-import java.io.Serializable;
+import java.util.List;
 
 /**
+ * Required operations for Data Set repositories.
+ * 
  * @author woemler
  */
-public interface DataFile<ID extends Serializable> extends Model<ID> {
-	Serializable getDataSetId();
-	String getFilePath();
+public interface DataSetRepository<T extends DataSet> {
+	T findByName(String name);
+	List<T> findByDataType(String dataType);
 }

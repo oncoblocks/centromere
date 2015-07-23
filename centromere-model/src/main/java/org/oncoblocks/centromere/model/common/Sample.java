@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.data;
+package org.oncoblocks.centromere.model.common;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
- * Required repository operations for Samples.
+ * Required getters for Sample resources.
  * 
  * @author woemler
  */
-public interface SampleRepository<T extends Sample> {
-	<S extends Serializable> T findBySampleId(S sampleId);
-	<S extends Serializable> List<T> findBySubjectId(S subjectId);
-	<S extends Serializable> List<T> findByDataSetId(S dataSetId);
-	List<T> findByName(String name);
-	<S extends Serializable> List<T> findByStudyId(S studyId);
+public interface Sample {
+	Serializable getDataSetId();
+	Serializable getSubjectId();
+	Serializable getStudyIds();
+	String getName();
 }

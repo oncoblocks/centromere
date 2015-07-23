@@ -14,15 +14,27 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.data;
+package org.oncoblocks.centromere.model.support;
 
+import org.oncoblocks.centromere.core.model.Filterable;
 import org.oncoblocks.centromere.core.model.Model;
+import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
 
 /**
  * @author woemler
  */
-public interface Disease<ID extends Serializable> extends Model<ID> {
-	String getName();
+@Filterable
+public abstract class AbstractModel<ID extends Serializable> implements Model<ID> {
+	
+	@Id private ID id;
+
+	public ID getId() {
+		return id;
+	}
+
+	public void setId(ID id) {
+		this.id = id;
+	}
 }

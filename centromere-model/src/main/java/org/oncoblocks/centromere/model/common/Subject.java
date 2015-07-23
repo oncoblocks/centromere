@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.data;
+package org.oncoblocks.centromere.model.common;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
- * Requires Study repository operations.
- * 
  * @author woemler
  */
-public interface StudyRepository<T extends Study> {
-	<S extends Serializable> T findByStudyId(S studyId);
-	List<T> findByName(String name);
-	<S extends Serializable> List<T> findBySampleId(S sampleId);
+public interface Subject {
+	Serializable getDiseaseId();
+	String getName();
+	String getGender();
+	String getSpecies();
 }

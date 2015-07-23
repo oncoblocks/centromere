@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.data;
+package org.oncoblocks.centromere.model.repository;
 
-import org.oncoblocks.centromere.core.model.Attributes;
-import org.oncoblocks.centromere.core.model.Model;
-import org.oncoblocks.centromere.core.model.SimpleAliases;
+import org.oncoblocks.centromere.model.common.Subject;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
- * Required getters for Gene resources.
+ * Required operations for Subject repositories.
  * 
  * @author woemler
  */
-public interface Gene<ID extends Serializable> extends Model<ID>, SimpleAliases, Attributes {
-	Serializable getPrimaryGeneId();
-	String getPrimaryGeneSymbol();
-	String getChromosome();
+public interface SubjectRepository<T extends Subject> {
+	<S extends Serializable> T findBySubjectId(S subjectId);
+	List<T> findByName(String name);
+	<S extends Serializable> List<T> findByDiseaseId(S diseaseId);
+	List<T> findByAlias(String alias);
+	T guessSubject(String keyword);
 }

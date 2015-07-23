@@ -18,7 +18,6 @@ package org.oncoblocks.centromere.core.test.models;
 
 import org.oncoblocks.centromere.core.model.*;
 import org.oncoblocks.centromere.core.repository.sqlbuilder.ComplexTableDescription;
-import org.oncoblocks.centromere.core.model.Filterable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +29,7 @@ import java.util.List;
  */
 
 @Filterable
-public class Subject implements Model<Long>, Attributes, SourcedAliases {
+public class Subject implements Model<Long>, SourcedAliases, Attributes {
 	
 	private Long subjectId;
 	private String name;
@@ -136,21 +135,18 @@ public class Subject implements Model<Long>, Attributes, SourcedAliases {
 		this.gender = gender;
 	}
 
-	@Override
 	public List<SourcedAlias> getAliases() {
 		return aliases;
 	}
 
-	@Override
 	public void setAliases(Collection<SourcedAlias> aliases) {
 		this.aliases = (List<SourcedAlias>) aliases;
 	}
 
-	@Override
 	public List<Attribute> getAttributes() {
 		return attributes;
 	}
-	@Override
+
 	public void setAttributes(Collection<Attribute> attributes) {
 		this.attributes = (List<Attribute>) attributes;
 	}

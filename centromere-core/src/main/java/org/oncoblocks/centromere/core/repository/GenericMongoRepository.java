@@ -51,7 +51,7 @@ public class GenericMongoRepository<T extends Model<ID>, ID extends Serializable
 	/**
 	 * Creates a new {@link GenericMongoRepository} instance.
 	 * @param mongoOperations {@link org.springframework.data.mongodb.core.MongoOperations}
-	 * @param model class implementing {@link org.oncoblocks.centromere.core.model.Model}
+	 * @param model class implementing {@link Model}
 	 */
 	public GenericMongoRepository(MongoOperations mongoOperations, Class<T> model) {
 		Assert.notNull(mongoOperations);

@@ -96,6 +96,12 @@ public class CrudControllerTests {
 		isConfigured = true;
 
 	}
+	
+	@Test
+	public void headTest() throws Exception {
+		mockMvc.perform(head("/crud/genes"))
+				.andExpect(status().isOk());
+	}
 
 	@Test
 	public void findById() throws Exception {

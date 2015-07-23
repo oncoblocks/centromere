@@ -50,6 +50,17 @@ public abstract class AbstractCrudController<T extends Model<ID>, ID extends Ser
 	}
 
 	/**
+	 * {@code HEAD /**}
+	 * Performs a test on the resource endpoints availability.
+	 * 
+	 * @return 
+	 */
+	@RequestMapping(value = { "", "/**" }, method = RequestMethod.HEAD)
+	public HttpEntity head(){
+		return new ResponseEntity(HttpStatus.OK);
+	}
+
+	/**
 	 * {@code GET /{id}}
 	 * Fetches a single record by its primary ID and returns it, or a {@code Not Found} exception if not.
 	 *

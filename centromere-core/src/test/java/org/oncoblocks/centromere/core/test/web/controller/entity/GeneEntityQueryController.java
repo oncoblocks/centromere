@@ -16,7 +16,6 @@
 
 package org.oncoblocks.centromere.core.test.web.controller.entity;
 
-import org.oncoblocks.centromere.core.data.Gene;
 import org.oncoblocks.centromere.core.test.models.EntrezGene;
 import org.oncoblocks.centromere.core.test.web.controller.GeneAssembler;
 import org.oncoblocks.centromere.core.test.web.service.generic.GeneService;
@@ -29,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 /**
  * @author woemler
  */
-@ExposesResourceFor(Gene.class)
+@ExposesResourceFor(EntrezGene.class)
 @Controller
 @RequestMapping(value = "/eq/genes")
 public class GeneEntityQueryController extends EntityQueryController<EntrezGene, Long> {

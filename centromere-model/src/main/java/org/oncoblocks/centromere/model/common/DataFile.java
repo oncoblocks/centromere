@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.data;
-
-import org.oncoblocks.centromere.core.model.Attributes;
-import org.oncoblocks.centromere.core.model.Model;
-import org.oncoblocks.centromere.core.model.SourcedAliases;
+package org.oncoblocks.centromere.model.common;
 
 import java.io.Serializable;
 
 /**
  * @author woemler
  */
-public interface Subject<ID extends Serializable> extends Model<ID>, SourcedAliases, Attributes {
-	Serializable getDiseaseId();
-	String getName();
-	String getGender();
-	String getSpecies();
+public interface DataFile {
+	Serializable getDataSetId();
+	String getFilePath();
 }
