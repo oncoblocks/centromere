@@ -70,20 +70,27 @@ public abstract class AbstractCrudController<T extends Model<ID>, ID extends Ser
 	 * @return {@code T} instance
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public HttpEntity findById(@PathVariable ID id, @RequestParam(required = false) Set<String> fields, 
-			@RequestParam(required = false) Set<String> exclude) {
-		return doFindById(id, fields, exclude);
+	public HttpEntity findById(@PathVariable ID id, 
+			@RequestParam(required = false) Set<String> fields, 
+			@RequestParam(required = false) Set<String> exclude,
+			@RequestParam(value = "hal", defaultValue = "true") boolean showLinks) {
+		return doFindById(id, fields, exclude, showLinks);
 	}
 
 	/**
 	 * {@link AbstractCrudController#findById}
 	 */
-	protected HttpEntity doFindById(ID id, Set<String> fields, Set<String> exclude) {
+	protected HttpEntity doFindById(ID id, Set<String> fields, Set<String> exclude, boolean showLinks) {
 		T entity = service.findById(id);
 		if (entity == null) throw new ResourceNotFoundException();
-		FilterableResource resource = assembler.toResource(entity);
-		ResponseEnvelope<FilterableResource> envelope = new ResponseEnvelope<>(resource, fields, exclude);
-		return new ResponseEntity<>(envelope, HttpStatus.OK);
+		if (showLinks){
+			FilterableResource resource = assembler.toResource(entity);
+			ResponseEnvelope<FilterableResource> envelope = new ResponseEnvelope<>(resource, fields, exclude);
+			return new ResponseEntity<>(envelope, HttpStatus.OK);
+		} else {
+			ResponseEnvelope<T> envelope = new ResponseEnvelope<>(entity, fields, exclude);
+			return new ResponseEntity<>(envelope, HttpStatus.OK);
+		}
 	}
 
 	/**

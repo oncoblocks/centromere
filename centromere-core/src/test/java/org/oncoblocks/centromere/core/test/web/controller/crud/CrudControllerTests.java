@@ -131,6 +131,16 @@ public class CrudControllerTests {
 	}
 
 	@Test
+	public void findByIdWithoutLinks() throws Exception {
+
+		mockMvc.perform(get("/crud/genes/{id}?hal=false", 1L))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.entrezGeneId", is(1)))
+				.andExpect(jsonPath("$.primaryGeneSymbol", is("GeneA")))
+				.andExpect(jsonPath("$", not(hasKey("links"))));
+	}
+
+	@Test
 	public void createTest() throws Exception {
 
 		EntrezGene
