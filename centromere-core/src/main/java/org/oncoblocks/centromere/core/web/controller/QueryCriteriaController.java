@@ -24,7 +24,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedResources;
-import org.springframework.hateoas.ResourceSupport;
 import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.http.HttpStatus;
@@ -48,7 +47,7 @@ public abstract class QueryCriteriaController<T extends Model<ID>, ID extends Se
 		extends AbstractCrudController<T, ID> {
 
 	public QueryCriteriaController(ServiceOperations<T, ID> service,
-			ResourceAssemblerSupport<T, FilterableResource> assembler) {
+			ResourceAssemblerSupport<T, FilterableResource<T>> assembler) {
 		super(service, assembler);
 	}
 
@@ -81,8 +80,8 @@ public abstract class QueryCriteriaController<T extends Model<ID>, ID extends Se
 	 * @param request {@link javax.servlet.http.HttpServletRequest}
 	 * @return
 	 */
-	protected ResponseEntity doFind(Iterable<QueryCriteria> queryCriterias, Set<String> fields, Set<String> exclude,
-			boolean showLinks, Pageable pageable, PagedResourcesAssembler resourcesAssembler, HttpServletRequest request) {
+	protected ResponseEntity<?> doFind(Iterable<QueryCriteria> queryCriterias, Set<String> fields, Set<String> exclude,
+			boolean showLinks, Pageable pageable, PagedResourcesAssembler<T> resourcesAssembler, HttpServletRequest request) {
 		ResponseEnvelope envelope = null;
 		Map<String,String[]> params = request.getParameterMap();
 
@@ -91,7 +90,7 @@ public abstract class QueryCriteriaController<T extends Model<ID>, ID extends Se
 		if (params.containsKey("page") || params.containsKey("size")){
 			Page<T> page = service.findPaged(queryCriterias, pageable);
 			if (showLinks){
-				PagedResources<ResourceSupport> pagedResources = resourcesAssembler.toResource(page, assembler, selfLink);
+				PagedResources<FilterableResource<T>> pagedResources = resourcesAssembler.toResource(page, assembler, selfLink);
 				envelope = new ResponseEnvelope<>(pagedResources, fields, exclude);
 			} else {
 				envelope = new ResponseEnvelope<>(page, fields, exclude);
@@ -99,8 +98,8 @@ public abstract class QueryCriteriaController<T extends Model<ID>, ID extends Se
 		} else if (params.containsKey("sort")){
 			List<T> entities = (List<T>) service.findSorted(queryCriterias, pageable.getSort());
 			if (showLinks){
-				List<FilterableResource> resourceList = assembler.toResources(entities);
-				Resources<FilterableResource> resources = new Resources<>(resourceList);
+				List<FilterableResource<T>> resourceList = assembler.toResources(entities);
+				Resources<FilterableResource<T>> resources = new Resources<>(resourceList);
 				resources.add(selfLink);
 				envelope = new ResponseEnvelope<>(resources, fields, exclude);
 			} else {
@@ -109,8 +108,8 @@ public abstract class QueryCriteriaController<T extends Model<ID>, ID extends Se
 		} else {
 			List<T> entities = (List<T>) service.find(queryCriterias);
 			if (showLinks){
-				List<FilterableResource> resourceList = assembler.toResources(entities);
-				Resources<FilterableResource> resources = new Resources<>(resourceList);
+				List<FilterableResource<T>> resourceList = assembler.toResources(entities);
+				Resources<FilterableResource<T>> resources = new Resources<>(resourceList);
 				resources.add(selfLink);
 				envelope = new ResponseEnvelope<>(resources, fields, exclude);
 			} else {

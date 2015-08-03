@@ -24,7 +24,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedResources;
-import org.springframework.hateoas.ResourceSupport;
 import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.http.HttpStatus;
@@ -49,7 +48,7 @@ public class EntityQueryController<T extends Model<ID>, ID extends Serializable>
 		extends AbstractCrudController<T, ID> {
 
 	public EntityQueryController(ServiceOperations<T, ID> service,
-			ResourceAssemblerSupport<T, FilterableResource> assembler) {
+			ResourceAssemblerSupport<T, FilterableResource<T>> assembler) {
 		super(service, assembler);
 	}
 
@@ -70,7 +69,7 @@ public class EntityQueryController<T extends Model<ID>, ID extends Serializable>
 	 * @return
 	 */
 	@RequestMapping(value = "", method = RequestMethod.GET)
-	public ResponseEntity find(
+	public ResponseEntity<?> find(
 			@ModelAttribute T entity,
 			@RequestParam(value = "fields", required = false) Set<String> fields,
 			@RequestParam(value = "exclude", required = false) Set<String> exclude,
@@ -84,8 +83,8 @@ public class EntityQueryController<T extends Model<ID>, ID extends Serializable>
 	/**
 	 * {@link EntityQueryController#find}
 	 */
-	protected ResponseEntity doFind(T entity, Set<String> fields, Set<String> exclude, boolean showLinks,
-			Pageable pageable, PagedResourcesAssembler resourcesAssembler, HttpServletRequest request) {
+	protected ResponseEntity<?> doFind(T entity, Set<String> fields, Set<String> exclude, boolean showLinks,
+			Pageable pageable, PagedResourcesAssembler<T> resourcesAssembler, HttpServletRequest request) {
 		ResponseEnvelope envelope = null;
 		Map<String,String[]> params = request.getParameterMap();
 		Link selfLink = new Link(linkTo(this.getClass()).slash("").toString() +
@@ -93,7 +92,7 @@ public class EntityQueryController<T extends Model<ID>, ID extends Serializable>
 		if (params.containsKey("page") || params.containsKey("size")){
 			Page<T> page = service.findPaged(entity, pageable);
 			if (showLinks){
-				PagedResources<ResourceSupport> pagedResources = resourcesAssembler.toResource(page, assembler, selfLink);
+				PagedResources<FilterableResource<T>> pagedResources = resourcesAssembler.toResource(page, assembler, selfLink);
 				envelope = new ResponseEnvelope<>(pagedResources, fields, exclude);
 			} else {
 				envelope = new ResponseEnvelope<>(page, fields, exclude);
@@ -102,8 +101,8 @@ public class EntityQueryController<T extends Model<ID>, ID extends Serializable>
 		} else if (params.containsKey("sort")){
 			List<T> entities = (List<T>) service.findSorted(entity, pageable.getSort());
 			if (showLinks){
-				List<FilterableResource> resourceList = assembler.toResources(entities);
-				Resources<FilterableResource> resources = new Resources<>(resourceList);
+				List<FilterableResource<T>> resourceList = assembler.toResources(entities);
+				Resources<FilterableResource<T>> resources = new Resources<>(resourceList);
 				resources.add(selfLink);
 				envelope = new ResponseEnvelope<>(resources, fields, exclude);
 			} else {
@@ -112,8 +111,8 @@ public class EntityQueryController<T extends Model<ID>, ID extends Serializable>
 		} else {
 			List<T> entities = (List<T>) service.find(entity);
 			if (showLinks){
-				List<FilterableResource> resourceList = assembler.toResources(entities);
-				Resources<FilterableResource> resources = new Resources<>(resourceList);
+				List<FilterableResource<T>> resourceList = assembler.toResources(entities);
+				Resources<FilterableResource<T>> resources = new Resources<>(resourceList);
 				resources.add(selfLink);
 				envelope = new ResponseEnvelope<>(resources, fields, exclude);
 			} else {

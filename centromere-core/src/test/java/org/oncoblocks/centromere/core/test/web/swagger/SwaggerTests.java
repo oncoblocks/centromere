@@ -16,6 +16,7 @@
 
 package org.oncoblocks.centromere.core.test.web.swagger;
 
+import io.github.robwin.markup.builder.MarkupLanguage;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,12 +27,14 @@ import org.oncoblocks.centromere.core.test.repository.mongo.MongoRepositoryConfi
 import org.oncoblocks.centromere.core.test.web.controller.entity.EntityControllerConfig;
 import org.oncoblocks.centromere.core.test.web.service.generic.GenericServiceConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import springfox.documentation.staticdocs.Swagger2MarkupResultHandler;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -61,11 +64,29 @@ public class SwaggerTests {
 				.andExpect(status().isOk());
 	}
 	
-//	@Test
-//	public void swaggerTest() throws Exception {
-//		mockMvc.perform(get("/v2/api-docs")
-//				.accept(MediaType.APPLICATION_JSON))
-//				.andExpect(status().isOk());
-//	}
+	@Test
+	public void swaggerTest() throws Exception {
+		mockMvc.perform(get("/v2/api-docs")
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void generateAsciiStaticDocs() throws Exception {
+		mockMvc.perform(get("/v2/api-docs")
+		.accept(MediaType.APPLICATION_JSON))
+				.andDo(Swagger2MarkupResultHandler.outputDirectory("src/docs/asciidoc/generated").build())
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void generateMarkdownStaticDocs() throws Exception {
+		mockMvc.perform(get("/v2/api-docs")
+				.accept(MediaType.APPLICATION_JSON))
+				.andDo(Swagger2MarkupResultHandler.outputDirectory("src/docs/markdown/generated")
+						.withMarkupLanguage(MarkupLanguage.MARKDOWN)
+						.build())
+				.andExpect(status().isOk());
+	}
 	
 }

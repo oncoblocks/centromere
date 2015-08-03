@@ -21,7 +21,6 @@ import org.oncoblocks.centromere.core.web.exceptions.RequestFailureException;
 import org.oncoblocks.centromere.core.web.exceptions.ResourceNotFoundException;
 import org.oncoblocks.centromere.core.web.service.ServiceOperations;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,10 +40,10 @@ import java.util.Set;
 public abstract class AbstractCrudController<T extends Model<ID>, ID extends Serializable> {
 	
 	protected ServiceOperations<T, ID> service;
-	protected ResourceAssemblerSupport<T, FilterableResource> assembler;
+	protected ResourceAssemblerSupport<T, FilterableResource<T>> assembler;
 
 	public AbstractCrudController(ServiceOperations<T, ID> service, 
-			ResourceAssemblerSupport<T, FilterableResource> assembler) {
+			ResourceAssemblerSupport<T, FilterableResource<T>> assembler) {
 		this.service = service;
 		this.assembler = assembler;
 	}
@@ -56,8 +55,8 @@ public abstract class AbstractCrudController<T extends Model<ID>, ID extends Ser
 	 * @return 
 	 */
 	@RequestMapping(value = { "", "/**" }, method = RequestMethod.HEAD)
-	public HttpEntity head(){
-		return new ResponseEntity(HttpStatus.OK);
+	public ResponseEntity<?> head(){
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	/**
@@ -70,7 +69,7 @@ public abstract class AbstractCrudController<T extends Model<ID>, ID extends Ser
 	 * @return {@code T} instance
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public HttpEntity findById(@PathVariable ID id, 
+	public ResponseEntity<?> findById(@PathVariable ID id, 
 			@RequestParam(required = false) Set<String> fields, 
 			@RequestParam(required = false) Set<String> exclude,
 			@RequestParam(value = "hal", defaultValue = "true") boolean showLinks) {
@@ -80,12 +79,12 @@ public abstract class AbstractCrudController<T extends Model<ID>, ID extends Ser
 	/**
 	 * {@link AbstractCrudController#findById}
 	 */
-	protected HttpEntity doFindById(ID id, Set<String> fields, Set<String> exclude, boolean showLinks) {
+	protected ResponseEntity<?> doFindById(ID id, Set<String> fields, Set<String> exclude, boolean showLinks) {
 		T entity = service.findById(id);
 		if (entity == null) throw new ResourceNotFoundException();
 		if (showLinks){
-			FilterableResource resource = assembler.toResource(entity);
-			ResponseEnvelope<FilterableResource> envelope = new ResponseEnvelope<>(resource, fields, exclude);
+			FilterableResource<T> resource = assembler.toResource(entity);
+			ResponseEnvelope<FilterableResource<T>> envelope = new ResponseEnvelope<>(resource, fields, exclude);
 			return new ResponseEntity<>(envelope, HttpStatus.OK);
 		} else {
 			ResponseEnvelope<T> envelope = new ResponseEnvelope<>(entity, fields, exclude);
@@ -102,17 +101,17 @@ public abstract class AbstractCrudController<T extends Model<ID>, ID extends Ser
 	 * @return updated representation of the submitted entity
 	 */
 	@RequestMapping(value = "", method = RequestMethod.POST)
-	public HttpEntity create(@RequestBody T entity) {
+	public ResponseEntity<?> create(@RequestBody T entity) {
 		return doCreate(entity);
 	}
 
 	/**
 	 * {@link AbstractCrudController#create}
 	 */
-	protected ResponseEntity doCreate(T entity){
+	protected ResponseEntity<?> doCreate(T entity){
 		T created = service.insert(entity);
 		if (created == null) throw new RequestFailureException(40003, "There was a problem creating the record.", "", "");
-		FilterableResource resource = assembler.toResource(created);
+		FilterableResource<T> resource = assembler.toResource(created);
 		return new ResponseEntity<>(resource, HttpStatus.CREATED);
 	}
 
@@ -126,18 +125,18 @@ public abstract class AbstractCrudController<T extends Model<ID>, ID extends Ser
 	 * @return updated representation of the submitted entity.
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-	public HttpEntity update(@RequestBody T entity, @PathVariable ID id) {
+	public ResponseEntity<?> update(@RequestBody T entity, @PathVariable ID id) {
 		return doUpdate(entity, id);
 	}
 
 	/**
 	 * {@link AbstractCrudController#update}
 	 */
-	protected ResponseEntity doUpdate(T entity, ID id){
+	protected ResponseEntity<?> doUpdate(T entity, ID id){
 		if (!service.exists(id)) throw new ResourceNotFoundException();
 		T updated = service.update(entity);
 		if (updated == null) throw new RequestFailureException(40004, "There was a problem updating the record.", "", "");
-		FilterableResource resource = assembler.toResource(updated);
+		FilterableResource<T> resource = assembler.toResource(updated);
 		return new ResponseEntity<>(resource, HttpStatus.CREATED);
 	}
 
@@ -149,16 +148,16 @@ public abstract class AbstractCrudController<T extends Model<ID>, ID extends Ser
 	 * @return {@link org.springframework.http.HttpStatus} indicating success or failure.
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-	public HttpEntity delete(@PathVariable ID id) {
+	public ResponseEntity<?> delete(@PathVariable ID id) {
 		return doDelete(id);
 	}
 
 	/**
 	 * {@link AbstractCrudController#delete}
 	 */
-	protected ResponseEntity doDelete(ID id){
+	protected ResponseEntity<?> doDelete(ID id){
 		service.delete(id);
-		return new ResponseEntity(HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	/**
@@ -167,15 +166,15 @@ public abstract class AbstractCrudController<T extends Model<ID>, ID extends Ser
 	 *
 	 * @return
 	 */
-	@RequestMapping(method = RequestMethod.OPTIONS)
-	public HttpEntity options() {
+	@RequestMapping(value = { "", "/**" }, method = RequestMethod.OPTIONS)
+	public ResponseEntity<?> options() {
 		return doOptions();
 	}
 
 	/**
 	 * {@link AbstractCrudController#options}
 	 */
-	public HttpEntity doOptions() {
+	public ResponseEntity<?> doOptions() {
 		return null; //TODO
 	}
 	

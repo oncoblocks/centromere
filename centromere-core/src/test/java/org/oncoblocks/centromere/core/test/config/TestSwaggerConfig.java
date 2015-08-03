@@ -41,14 +41,13 @@ public class TestSwaggerConfig {
 	@Bean
 	public Docket api(){
 		return new Docket(DocumentationType.SWAGGER_2)
-				.groupName("centromere-api")
-				.apiInfo(apiInfo())
 				.select()
 					.apis(RequestHandlerSelectors.any())
 					.paths(regex("/swagger.*"))
-					.build();
+					.build()
+					.apiInfo(apiInfo());
 	}
-	
+
 	private ApiInfo apiInfo(){
 		return new ApiInfo(
 				"Centromere Test",

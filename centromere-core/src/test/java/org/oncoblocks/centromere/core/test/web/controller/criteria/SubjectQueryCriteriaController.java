@@ -75,14 +75,14 @@ public class SubjectQueryCriteriaController extends QueryCriteriaController<Subj
 		return doFind(criterias, fields, exclude, showLinks, pageable, pagedResourcesAssembler, request);
 	}
 
-	public static class SubjectAssembler extends ResourceAssemblerSupport<Subject, FilterableResource> {
+	public static class SubjectAssembler extends ResourceAssemblerSupport<Subject, FilterableResource<Subject>> {
 
 		public SubjectAssembler() {
-			super(SubjectQueryCriteriaController.class, FilterableResource.class);
+			super(SubjectQueryCriteriaController.class, (Class<FilterableResource<Subject>>)(Class<?>) FilterableResource.class );
 		}
 
 		@Override 
-		public FilterableResource toResource(Subject subject) {
+		public FilterableResource<Subject> toResource(Subject subject) {
 			FilterableResource<Subject> resource = new FilterableResource<>(subject);
 			resource.add(linkTo(SubjectQueryCriteriaController.class).slash(subject.getId()).withSelfRel());
 			return resource;

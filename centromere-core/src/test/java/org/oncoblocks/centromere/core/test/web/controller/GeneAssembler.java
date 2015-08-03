@@ -26,12 +26,12 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 /**
  * @author woemler
  */
-public class GeneAssembler extends ResourceAssemblerSupport<EntrezGene, FilterableResource> {
+public class GeneAssembler extends ResourceAssemblerSupport<EntrezGene, FilterableResource<EntrezGene>> {
 	public GeneAssembler() {
-		super(GeneCrudController.class, FilterableResource.class);
+		super(GeneCrudController.class, (Class<FilterableResource<EntrezGene>>)(Class<?>) FilterableResource.class);
 	}
 
-	@Override public FilterableResource toResource(EntrezGene gene) {
+	@Override public FilterableResource<EntrezGene> toResource(EntrezGene gene) {
 		FilterableResource<EntrezGene> resource = new FilterableResource<EntrezGene>(gene);
 		resource.add(linkTo(GeneCrudController.class).slash(gene.getId()).withSelfRel());
 		return resource;
