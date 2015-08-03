@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.model.common;
+package org.oncoblocks.centromere.model.repository;
+
+import org.oncoblocks.centromere.core.model.Model;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
- * Required getters for Gene resources.
- * 
  * @author woemler
  */
-public interface Gene {
-	Serializable getPrimaryGeneId();
-	String getPrimaryGeneSymbol();
-	String getChromosome();
+public interface DataRepository<T extends Model<ID>, ID extends Serializable> {
+	List<T> findBySampleId(ID sampleId);
+	List<T> findByDataFileId(ID dataFileId);
+	List<T> findByGeneId(ID geneId);
 }

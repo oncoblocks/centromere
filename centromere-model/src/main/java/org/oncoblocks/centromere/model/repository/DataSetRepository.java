@@ -16,8 +16,9 @@
 
 package org.oncoblocks.centromere.model.repository;
 
-import org.oncoblocks.centromere.model.common.DataSet;
+import org.oncoblocks.centromere.core.model.Model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -25,7 +26,7 @@ import java.util.List;
  * 
  * @author woemler
  */
-public interface DataSetRepository<T extends DataSet> {
-	T findByName(String name);
+public interface DataSetRepository<T extends Model<ID>, ID extends Serializable> {
+	List<T> findByName(String name);
 	List<T> findByDataType(String dataType);
 }

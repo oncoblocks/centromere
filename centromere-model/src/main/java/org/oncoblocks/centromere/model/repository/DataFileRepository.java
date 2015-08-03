@@ -16,7 +16,7 @@
 
 package org.oncoblocks.centromere.model.repository;
 
-import org.oncoblocks.centromere.model.common.DataFile;
+import org.oncoblocks.centromere.core.model.Model;
 
 import java.io.Serializable;
 import java.util.List;
@@ -24,8 +24,7 @@ import java.util.List;
 /**
  * @author woemler
  */
-public interface DataFileRepository<T extends DataFile> {
-	<S extends Serializable> T findByDataFileId(S dataFileId);
-	<S extends Serializable> List<T> findByDataSetId(S dataSetId);
+public interface DataFileRepository<T extends Model<ID>, ID extends Serializable> {
+	List<T> findByDataSetId(ID dataSetId);
 	List<T> findByFileName(String fileName);
 }

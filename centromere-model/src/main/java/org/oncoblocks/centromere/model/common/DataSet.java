@@ -16,13 +16,71 @@
 
 package org.oncoblocks.centromere.model.common;
 
+import org.oncoblocks.centromere.core.model.Filterable;
+import org.oncoblocks.centromere.core.model.Model;
+
+import java.io.Serializable;
+
 /**
- * Required property getters for Data Set resources.
- * 
  * @author woemler
  */
-public interface DataSet {
-	String getSource();
-	String getName();
-	String getDataType();
+
+@Filterable
+public class DataSet<ID extends Serializable> implements Model<ID> {
+	
+	private ID id;
+	private String source;
+	private String name;
+	private String dataType;
+	private String notes;
+
+	public DataSet() { }
+
+	public DataSet(ID id, String source, String name, String dataType, String notes) {
+		this.id = id;
+		this.source = source;
+		this.name = name;
+		this.dataType = dataType;
+		this.notes = notes;
+	}
+
+	public ID getId() {
+		return id;
+	}
+
+	public void setId(ID id) {
+		this.id = id;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDataType() {
+		return dataType;
+	}
+
+	public void setDataType(String dataType) {
+		this.dataType = dataType;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
 }

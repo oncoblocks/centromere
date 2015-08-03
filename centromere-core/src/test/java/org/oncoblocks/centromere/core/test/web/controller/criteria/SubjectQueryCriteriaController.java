@@ -56,6 +56,7 @@ public class SubjectQueryCriteriaController extends QueryCriteriaController<Subj
 	public ResponseEntity find(
 			@RequestParam(value = "fields", required = false) Set<String> fields,
 			@RequestParam(value = "exclude", required = false) Set<String> exclude,
+			@RequestParam(value = "hal", defaultValue = "true") boolean showLinks,
 			@PageableDefault(size = 1000) Pageable pageable,
 			PagedResourcesAssembler<Subject> pagedResourcesAssembler, 
 			HttpServletRequest request,
@@ -71,7 +72,7 @@ public class SubjectQueryCriteriaController extends QueryCriteriaController<Subj
 		if (aliasName != null) criterias.add(new QueryCriteria("aliasName", aliasName));
 		if (attributeName != null) criterias.add(new QueryCriteria("attributeName", attributeName));
 		if (attributeValue != null) criterias.add(new QueryCriteria("attributeValue", attributeValue));
-		return doFind(criterias, fields, exclude, pageable, pagedResourcesAssembler, request);
+		return doFind(criterias, fields, exclude, showLinks, pageable, pagedResourcesAssembler, request);
 	}
 
 	public static class SubjectAssembler extends ResourceAssemblerSupport<Subject, FilterableResource> {

@@ -16,7 +16,7 @@
 
 package org.oncoblocks.centromere.model.repository;
 
-import org.oncoblocks.centromere.model.common.Disease;
+import org.oncoblocks.centromere.core.model.Model;
 
 import java.io.Serializable;
 import java.util.List;
@@ -26,7 +26,6 @@ import java.util.List;
  * 
  * @author woemler
  */
-public interface DiseaseRepository<T extends Disease> {
-	<S extends Serializable> T findByDiseaseId(S diseaseId);
+public interface DiseaseRepository<T extends Model<ID>, ID extends Serializable> {
 	List<T> findByName(String name);
 }

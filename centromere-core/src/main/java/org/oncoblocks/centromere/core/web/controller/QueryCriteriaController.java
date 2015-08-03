@@ -82,7 +82,7 @@ public abstract class QueryCriteriaController<T extends Model<ID>, ID extends Se
 	 * @return
 	 */
 	protected ResponseEntity doFind(Iterable<QueryCriteria> queryCriterias, Set<String> fields, Set<String> exclude,
-			Pageable pageable, PagedResourcesAssembler resourcesAssembler, HttpServletRequest request) {
+			boolean showLinks, Pageable pageable, PagedResourcesAssembler resourcesAssembler, HttpServletRequest request) {
 		ResponseEnvelope envelope = null;
 		Map<String,String[]> params = request.getParameterMap();
 
@@ -90,20 +90,33 @@ public abstract class QueryCriteriaController<T extends Model<ID>, ID extends Se
 				(request.getQueryString() != null ? "?" + request.getQueryString() : ""), "self");
 		if (params.containsKey("page") || params.containsKey("size")){
 			Page<T> page = service.findPaged(queryCriterias, pageable);
-			PagedResources<ResourceSupport> pagedResources = resourcesAssembler.toResource(page, assembler, selfLink);
-			envelope = new ResponseEnvelope<>(pagedResources, fields, exclude);
+			if (showLinks){
+				PagedResources<ResourceSupport> pagedResources = resourcesAssembler.toResource(page, assembler, selfLink);
+				envelope = new ResponseEnvelope<>(pagedResources, fields, exclude);
+			} else {
+				envelope = new ResponseEnvelope<>(page, fields, exclude);
+			}
 		} else if (params.containsKey("sort")){
 			List<T> entities = (List<T>) service.findSorted(queryCriterias, pageable.getSort());
-			List<FilterableResource> resourceList = assembler.toResources(entities);
-			Resources<FilterableResource> resources = new Resources<>(resourceList);
-			resources.add(selfLink);
-			envelope = new ResponseEnvelope<>(resources, fields, exclude);
+			if (showLinks){
+				List<FilterableResource> resourceList = assembler.toResources(entities);
+				Resources<FilterableResource> resources = new Resources<>(resourceList);
+				resources.add(selfLink);
+				envelope = new ResponseEnvelope<>(resources, fields, exclude);
+			} else {
+				envelope = new ResponseEnvelope<>(entities, fields, exclude);
+			}
 		} else {
 			List<T> entities = (List<T>) service.find(queryCriterias);
-			List<FilterableResource> resourceList = assembler.toResources(entities);
-			Resources<FilterableResource> resources = new Resources<>(resourceList);
-			resources.add(selfLink);
-			envelope = new ResponseEnvelope<>(resources, fields, exclude);
+			if (showLinks){
+				List<FilterableResource> resourceList = assembler.toResources(entities);
+				Resources<FilterableResource> resources = new Resources<>(resourceList);
+				resources.add(selfLink);
+				envelope = new ResponseEnvelope<>(resources, fields, exclude);
+			} else {
+				envelope = new ResponseEnvelope<>(entities, fields, exclude);
+			}
+			
 		}
 		return new ResponseEntity<>(envelope, HttpStatus.OK);
 	}

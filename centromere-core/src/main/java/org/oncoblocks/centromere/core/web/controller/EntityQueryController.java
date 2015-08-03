@@ -61,6 +61,7 @@ public class EntityQueryController<T extends Model<ID>, ID extends Serializable>
 	 * @param entity Instance of a model entity, composed of fragments from request parameters. 
 	 * @param fields set of field names to be included in response object.
 	 * @param exclude set of field names to be excluded from the response object.
+	 * @param showLinks flag to enable HAL links for entities 
 	 * @param pageable {@link org.springframework.data.domain.Pageable} request object, created using 
 	 *   'page', 'size', or 'sort' as query string parameters. 
 	 * @param pagedResourcesAssembler {@link org.springframework.data.web.PagedResourcesAssembler} for 
@@ -73,38 +74,51 @@ public class EntityQueryController<T extends Model<ID>, ID extends Serializable>
 			@ModelAttribute T entity,
 			@RequestParam(value = "fields", required = false) Set<String> fields,
 			@RequestParam(value = "exclude", required = false) Set<String> exclude,
+			@RequestParam(value = "hal", defaultValue = "true") boolean showLinks,
 			@PageableDefault(size = 1000) Pageable pageable,
 			PagedResourcesAssembler<T> pagedResourcesAssembler, 
 			HttpServletRequest request) {
-		return doFind(entity, fields, exclude, pageable, pagedResourcesAssembler, request);
+		return doFind(entity, fields, exclude, showLinks, pageable, pagedResourcesAssembler, request);
 	}
 
 	/**
 	 * {@link EntityQueryController#find}
 	 */
-	protected ResponseEntity doFind(T entity, Set<String> fields, Set<String> exclude,
+	protected ResponseEntity doFind(T entity, Set<String> fields, Set<String> exclude, boolean showLinks,
 			Pageable pageable, PagedResourcesAssembler resourcesAssembler, HttpServletRequest request) {
 		ResponseEnvelope envelope = null;
 		Map<String,String[]> params = request.getParameterMap();
-
 		Link selfLink = new Link(linkTo(this.getClass()).slash("").toString() +
 				(request.getQueryString() != null ? "?" + request.getQueryString() : ""), "self");
 		if (params.containsKey("page") || params.containsKey("size")){
 			Page<T> page = service.findPaged(entity, pageable);
-			PagedResources<ResourceSupport> pagedResources = resourcesAssembler.toResource(page, assembler, selfLink);
-			envelope = new ResponseEnvelope<>(pagedResources, fields, exclude);
+			if (showLinks){
+				PagedResources<ResourceSupport> pagedResources = resourcesAssembler.toResource(page, assembler, selfLink);
+				envelope = new ResponseEnvelope<>(pagedResources, fields, exclude);
+			} else {
+				envelope = new ResponseEnvelope<>(page, fields, exclude);
+			}
+			
 		} else if (params.containsKey("sort")){
 			List<T> entities = (List<T>) service.findSorted(entity, pageable.getSort());
-			List<FilterableResource> resourceList = assembler.toResources(entities);
-			Resources<FilterableResource> resources = new Resources<>(resourceList);
-			resources.add(selfLink);
-			envelope = new ResponseEnvelope<>(resources, fields, exclude);
+			if (showLinks){
+				List<FilterableResource> resourceList = assembler.toResources(entities);
+				Resources<FilterableResource> resources = new Resources<>(resourceList);
+				resources.add(selfLink);
+				envelope = new ResponseEnvelope<>(resources, fields, exclude);
+			} else {
+				envelope = new ResponseEnvelope<>(entity, fields, exclude);	
+			}
 		} else {
 			List<T> entities = (List<T>) service.find(entity);
-			List<FilterableResource> resourceList = assembler.toResources(entities);
-			Resources<FilterableResource> resources = new Resources<>(resourceList);
-			resources.add(selfLink);
-			envelope = new ResponseEnvelope<>(resources, fields, exclude);
+			if (showLinks){
+				List<FilterableResource> resourceList = assembler.toResources(entities);
+				Resources<FilterableResource> resources = new Resources<>(resourceList);
+				resources.add(selfLink);
+				envelope = new ResponseEnvelope<>(resources, fields, exclude);
+			} else {
+				envelope = new ResponseEnvelope<>(entities, fields, exclude);	
+			}
 		}
 		return new ResponseEntity<>(envelope, HttpStatus.OK);
 	}

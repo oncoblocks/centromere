@@ -16,7 +16,7 @@
 
 package org.oncoblocks.centromere.model.repository;
 
-import org.oncoblocks.centromere.model.common.Subject;
+import org.oncoblocks.centromere.core.model.Model;
 
 import java.io.Serializable;
 import java.util.List;
@@ -26,10 +26,9 @@ import java.util.List;
  * 
  * @author woemler
  */
-public interface SubjectRepository<T extends Subject> {
-	<S extends Serializable> T findBySubjectId(S subjectId);
+public interface SubjectRepository<T extends Model<ID>, ID extends Serializable> {
 	List<T> findByName(String name);
-	<S extends Serializable> List<T> findByDiseaseId(S diseaseId);
+	List<T> findByDiseaseId(ID diseaseId);
 	List<T> findByAlias(String alias);
-	T guessSubject(String keyword);
+	List<T> guessSubject(String keyword);
 }

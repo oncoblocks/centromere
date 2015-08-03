@@ -16,7 +16,7 @@
 
 package org.oncoblocks.centromere.model.repository;
 
-import org.oncoblocks.centromere.model.common.Sample;
+import org.oncoblocks.centromere.core.model.Model;
 
 import java.io.Serializable;
 import java.util.List;
@@ -26,10 +26,9 @@ import java.util.List;
  * 
  * @author woemler
  */
-public interface SampleRepository<T extends Sample> {
-	<S extends Serializable> T findBySampleId(S sampleId);
-	<S extends Serializable> List<T> findBySubjectId(S subjectId);
-	<S extends Serializable> List<T> findByDataSetId(S dataSetId);
+public interface SampleRepository<T extends Model<ID>, ID extends Serializable> {
+	List<T> findBySubjectId(ID subjectId);
+	List<T> findByDataSetId(ID dataSetId);
 	List<T> findByName(String name);
-	<S extends Serializable> List<T> findByStudyId(S studyId);
+	List<T> findByStudyId(ID studyId);
 }

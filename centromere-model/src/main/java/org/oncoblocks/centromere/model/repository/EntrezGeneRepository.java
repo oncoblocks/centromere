@@ -16,7 +16,7 @@
 
 package org.oncoblocks.centromere.model.repository;
 
-import org.oncoblocks.centromere.model.common.Gene;
+import org.oncoblocks.centromere.core.model.Model;
 
 import java.io.Serializable;
 import java.util.List;
@@ -24,9 +24,9 @@ import java.util.List;
 /**
  * @author woemler
  */
-public interface GeneRepository<T extends Gene> {
-	<S extends Serializable> T findByPrimaryGeneId(S primaryGeneId);
+public interface EntrezGeneRepository<T extends Model<ID>, ID extends Serializable> {
+	List<T> findByEntrezGeneId(Long entrezGeneId);
 	List<T> findByPrimaryGeneSymbol(String primaryGeneSymbol);
 	List<T> findByAlias(String alias);
-	T guessGene(String keyword);
+	List<T> guessGene(String keyword);
 }

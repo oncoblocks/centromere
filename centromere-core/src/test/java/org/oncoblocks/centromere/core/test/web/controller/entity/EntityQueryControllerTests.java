@@ -108,6 +108,17 @@ public class EntityQueryControllerTests {
 	}
 
 	@Test
+	public void findAllWithoutLinks() throws Exception {
+		mockMvc.perform(get("/eq/genes?hal=false"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$", hasSize(5)))
+				.andExpect(jsonPath("$[0]", hasKey("entrezGeneId")))
+				.andExpect(jsonPath("$[0].entrezGeneId", is(1)))
+				.andExpect(jsonPath("$[0]", not(hasKey("links"))))
+				.andExpect(jsonPath("$", not(hasKey("pageMetadata"))));
+	}
+
+	@Test
 	public void findFiltered() throws Exception {
 		mockMvc.perform(get("/eq/genes?exclude=links,primaryGeneSymbol"))
 				.andExpect(status().isOk())
@@ -161,6 +172,18 @@ public class EntityQueryControllerTests {
 				.andExpect(jsonPath("$.page.number", is(1)))
 				.andExpect(jsonPath("$.page.size", is(3)))
 				.andExpect(jsonPath("$.page.totalPages", is(2)));
+	}
+
+	@Test
+	public void findPagedWithoutLinks() throws Exception {
+		mockMvc.perform(get("/eq/genes?page=1&size=3&hal=false"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$", hasKey("content")))
+				.andExpect(jsonPath("$.content", hasSize(2)))
+				.andExpect(jsonPath("$.content[0]", hasKey("entrezGeneId")))
+				.andExpect(jsonPath("$.content[0].entrezGeneId", is(4)))
+				.andExpect(jsonPath("$.content[0]", not(hasKey("links"))))
+				.andExpect(jsonPath("$", not(hasKey("links"))));
 	}
 
 	@Test

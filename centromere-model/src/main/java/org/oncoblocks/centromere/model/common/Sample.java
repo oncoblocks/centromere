@@ -16,16 +16,113 @@
 
 package org.oncoblocks.centromere.model.common;
 
+import org.oncoblocks.centromere.core.model.Filterable;
+import org.oncoblocks.centromere.core.model.Model;
+
 import java.io.Serializable;
+import java.util.Set;
 
 /**
- * Required getters for Sample resources.
- * 
  * @author woemler
  */
-public interface Sample {
-	Serializable getDataSetId();
-	Serializable getSubjectId();
-	Serializable getStudyIds();
-	String getName();
+
+@Filterable
+public class Sample<ID extends Serializable> implements Model<ID> {
+
+	private ID id;
+	private ID subjectId;
+	private ID dataSetId;
+	private String name;
+	private String type;
+	private String tissue;
+	private String histology;
+	private String notes;
+	private Set<ID> studyIds;
+
+	public Sample() { }
+
+	public Sample(ID id, ID subjectId, ID dataSetId, String name, String type, String tissue,
+			String histology, String notes, Set<ID> studyIds) {
+		this.id = id;
+		this.subjectId = subjectId;
+		this.dataSetId = dataSetId;
+		this.name = name;
+		this.type = type;
+		this.tissue = tissue;
+		this.histology = histology;
+		this.notes = notes;
+		this.studyIds = studyIds;
+	}
+
+	public ID getId() {
+		return id;
+	}
+
+	public void setId(ID id) {
+		this.id = id;
+	}
+
+	public ID getSubjectId() {
+		return subjectId;
+	}
+
+	public void setSubjectId(ID subjectId) {
+		this.subjectId = subjectId;
+	}
+
+	public ID getDataSetId() {
+		return dataSetId;
+	}
+
+	public void setDataSetId(ID dataSetId) {
+		this.dataSetId = dataSetId;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getTissue() {
+		return tissue;
+	}
+
+	public void setTissue(String tissue) {
+		this.tissue = tissue;
+	}
+
+	public String getHistology() {
+		return histology;
+	}
+
+	public void setHistology(String histology) {
+		this.histology = histology;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+
+	public Set<ID> getStudyIds() {
+		return studyIds;
+	}
+
+	public void setStudyIds(Set<ID> studyIds) {
+		this.studyIds = studyIds;
+	}
 }

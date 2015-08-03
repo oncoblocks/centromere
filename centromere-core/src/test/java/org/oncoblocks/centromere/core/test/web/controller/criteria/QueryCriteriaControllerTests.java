@@ -113,6 +113,17 @@ public class QueryCriteriaControllerTests {
 	}
 
 	@Test
+	public void findAllWithoutLinks() throws Exception {
+		mockMvc.perform(get("/subjects?hal=false"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$", hasSize(5)))
+				.andExpect(jsonPath("$[0]", hasKey("subjectId")))
+				.andExpect(jsonPath("$[0].subjectId", is(1)))
+				.andExpect(jsonPath("$[0]", not(hasKey("links"))))
+				.andExpect(jsonPath("$", not(hasKey("pageMetadata"))));
+	}
+
+	@Test
 	public void findFiltered() throws Exception {
 		mockMvc.perform(get("/subjects?exclude=links,name"))
 				.andExpect(status().isOk())
@@ -166,6 +177,17 @@ public class QueryCriteriaControllerTests {
 				.andExpect(jsonPath("$.page.number", is(1)))
 				.andExpect(jsonPath("$.page.size", is(3)))
 				.andExpect(jsonPath("$.page.totalPages", is(2)));
+	}
+
+	@Test
+	public void findPagedWithoutLinks() throws Exception {
+		mockMvc.perform(get("/subjects?page=1&size=3&hal=false"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$", hasKey("content")))
+				.andExpect(jsonPath("$.content", hasSize(2)))
+				.andExpect(jsonPath("$.content[0]", hasKey("subjectId")))
+				.andExpect(jsonPath("$.content[0].subjectId", is(4)))
+				.andExpect(jsonPath("$", not(hasKey("links"))));
 	}
 
 	@Test

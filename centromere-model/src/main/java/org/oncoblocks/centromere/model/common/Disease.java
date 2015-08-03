@@ -16,9 +16,61 @@
 
 package org.oncoblocks.centromere.model.common;
 
+import org.oncoblocks.centromere.core.model.Filterable;
+import org.oncoblocks.centromere.core.model.Model;
+
+import java.io.Serializable;
+
 /**
  * @author woemler
  */
-public interface Disease {
-	String getName();
+
+@Filterable
+public class Disease<ID extends Serializable> implements Model<ID> {
+	
+	private ID id;
+	private String name;
+	private String type;
+	private String meshId;
+
+	public Disease() { }
+
+	public Disease(ID id, String name, String type, String meshId) {
+		this.id = id;
+		this.name = name;
+		this.type = type;
+		this.meshId = meshId;
+	}
+
+	public ID getId() {
+		return id;
+	}
+
+	public void setId(ID id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getMeshId() {
+		return meshId;
+	}
+
+	public void setMeshId(String meshId) {
+		this.meshId = meshId;
+	}
 }
