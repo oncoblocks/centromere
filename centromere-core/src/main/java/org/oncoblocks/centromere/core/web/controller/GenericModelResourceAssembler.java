@@ -26,7 +26,7 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 
 /**
- * Convenience class for automatically generating links for {@link org.oncoblocks.centromere.core.data.Data}
+ * Convenience class for automatically generating links for ???
  *   subclasses.  Uses the {@link org.oncoblocks.centromere.core.model.ForeignKey} annotation to 
  *   identify referenced fields and generate appropriate links, based on their relationship.
  * 

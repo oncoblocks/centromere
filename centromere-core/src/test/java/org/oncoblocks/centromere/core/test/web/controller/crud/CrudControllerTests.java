@@ -30,6 +30,7 @@ import org.oncoblocks.centromere.core.test.models.EntrezGene;
 import org.oncoblocks.centromere.core.test.repository.mongo.EntrezGeneRepository;
 import org.oncoblocks.centromere.core.test.repository.mongo.MongoRepositoryConfig;
 import org.oncoblocks.centromere.core.test.web.service.generic.GenericServiceConfig;
+import org.oncoblocks.centromere.core.web.controller.HalMediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
@@ -106,7 +107,8 @@ public class CrudControllerTests {
 	@Test
 	public void findById() throws Exception {
 
-		mockMvc.perform(get("/crud/genes/{id}", 1L))
+		mockMvc.perform(get("/crud/genes/{id}", 1L)
+				.accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.entrezGeneId", is(1)))
 				.andExpect(jsonPath("$.primaryGeneSymbol", is("GeneA")))

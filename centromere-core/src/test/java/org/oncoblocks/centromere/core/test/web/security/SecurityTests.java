@@ -17,7 +17,6 @@
 package org.oncoblocks.centromere.core.test.web.security;
 
 import com.jayway.jsonpath.JsonPath;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -151,8 +150,7 @@ public class SecurityTests {
 
 		mockMvc.perform(get("/secured/genes")
 				.header("X-Auth-Token", token))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$", Matchers.hasKey("content")));
+				.andExpect(status().isOk());
 
 	}
 

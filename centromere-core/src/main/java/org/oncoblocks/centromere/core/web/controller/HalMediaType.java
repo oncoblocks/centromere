@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.config;
-
-import org.springframework.context.annotation.Import;
-
-import java.lang.annotation.*;
+package org.oncoblocks.centromere.core.web.controller;
 
 /**
  * @author woemler
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
-@Inherited
-@Import({ WebServicesConfig.class, SpringBootConfig.class, CentromerePropertiesConfig.class, 
-		SwaggerConfig.class })
-public @interface AutoConfigureCentromereWeb {
+public class HalMediaType {
+	public static final String APPLICATION_JSON_HAL_VALUE = "application/hal+json";
+	public static final String APPLICATION_XML_HAL_VALUE = "application/hal+json";
 }

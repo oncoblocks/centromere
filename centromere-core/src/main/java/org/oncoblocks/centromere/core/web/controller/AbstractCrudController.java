@@ -22,6 +22,7 @@ import org.oncoblocks.centromere.core.web.exceptions.ResourceNotFoundException;
 import org.oncoblocks.centromere.core.web.service.ServiceOperations;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,7 +48,7 @@ public abstract class AbstractCrudController<T extends Model<ID>, ID extends Ser
 		this.service = service;
 		this.assembler = assembler;
 	}
-
+	
 	/**
 	 * {@code HEAD /**}
 	 * Performs a test on the resource endpoints availability.
@@ -68,28 +69,55 @@ public abstract class AbstractCrudController<T extends Model<ID>, ID extends Ser
 	 * @param exclude set of field names to be excluded from the response object.
 	 * @return {@code T} instance
 	 */
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public ResponseEntity<?> findById(@PathVariable ID id, 
-			@RequestParam(required = false) Set<String> fields, 
-			@RequestParam(required = false) Set<String> exclude,
-			@RequestParam(value = "hal", defaultValue = "true") boolean showLinks) {
-		return doFindById(id, fields, exclude, showLinks);
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET,
+			produces = { HalMediaType.APPLICATION_JSON_HAL_VALUE })
+	public ResponseEntity<ResponseEnvelope<FilterableResource<T>>> findByIdWithHal(
+			@PathVariable ID id,
+			@RequestParam(required = false) Set<String> fields,
+			@RequestParam(required = false) Set<String> exclude) {
+		T entity = service.findById(id);
+		if (entity == null) throw new ResourceNotFoundException();
+		FilterableResource<T> resource = assembler.toResource(entity);
+		ResponseEnvelope<FilterableResource<T>> envelope = new ResponseEnvelope<>(resource, fields, exclude);
+		return new ResponseEntity<>(envelope, HttpStatus.OK);
 	}
 
 	/**
-	 * {@link AbstractCrudController#findById}
+	 * {@code GET /{id}}
+	 * Fetches a single record by its primary ID and returns it, or a {@code Not Found} exception if not.
+	 *
+	 * @param id primary ID for the target record.
+	 * @param fields set of field names to be included in response object.
+	 * @param exclude set of field names to be excluded from the response object.
+	 * @return {@code T} instance
 	 */
-	protected ResponseEntity<?> doFindById(ID id, Set<String> fields, Set<String> exclude, boolean showLinks) {
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET, 
+			produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<ResponseEnvelope<T>> findById(@PathVariable ID id, 
+			@RequestParam(required = false) Set<String> fields, 
+			@RequestParam(required = false) Set<String> exclude) {
 		T entity = service.findById(id);
 		if (entity == null) throw new ResourceNotFoundException();
-		if (showLinks){
-			FilterableResource<T> resource = assembler.toResource(entity);
-			ResponseEnvelope<FilterableResource<T>> envelope = new ResponseEnvelope<>(resource, fields, exclude);
-			return new ResponseEntity<>(envelope, HttpStatus.OK);
-		} else {
-			ResponseEnvelope<T> envelope = new ResponseEnvelope<>(entity, fields, exclude);
-			return new ResponseEntity<>(envelope, HttpStatus.OK);
-		}
+		ResponseEnvelope<T> envelope = new ResponseEnvelope<>(entity, fields, exclude);
+		return new ResponseEntity<>(envelope, HttpStatus.OK);
+	}
+
+	
+
+	/**
+	 * {@code POST /}
+	 * Attempts to create a new record using the submitted entity. Throws an exception if the
+	 *   entity already exists.
+	 *
+	 * @param entity entity representation to be persisted
+	 * @return updated representation of the submitted entity
+	 */
+	@RequestMapping(value = "", method = RequestMethod.POST, 
+			produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<T> create(@RequestBody T entity) {
+		T created = service.insert(entity);
+		if (created == null) throw new RequestFailureException(40003, "There was a problem creating the record.", "", "");
+		return new ResponseEntity<>(created, HttpStatus.CREATED);
 	}
 
 	/**
@@ -100,15 +128,9 @@ public abstract class AbstractCrudController<T extends Model<ID>, ID extends Ser
 	 * @param entity entity representation to be persisted
 	 * @return updated representation of the submitted entity
 	 */
-	@RequestMapping(value = "", method = RequestMethod.POST)
-	public ResponseEntity<?> create(@RequestBody T entity) {
-		return doCreate(entity);
-	}
-
-	/**
-	 * {@link AbstractCrudController#create}
-	 */
-	protected ResponseEntity<?> doCreate(T entity){
+	@RequestMapping(value = "", method = RequestMethod.POST, 
+			produces = { HalMediaType.APPLICATION_JSON_HAL_VALUE })
+	public ResponseEntity<FilterableResource<T>> createWithHal(@RequestBody T entity) {
 		T created = service.insert(entity);
 		if (created == null) throw new RequestFailureException(40003, "There was a problem creating the record.", "", "");
 		FilterableResource<T> resource = assembler.toResource(created);
@@ -124,15 +146,27 @@ public abstract class AbstractCrudController<T extends Model<ID>, ID extends Ser
 	 * @param id primary ID of the target entity
 	 * @return updated representation of the submitted entity.
 	 */
-	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<?> update(@RequestBody T entity, @PathVariable ID id) {
-		return doUpdate(entity, id);
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, 
+			produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<T> update(@RequestBody T entity, @PathVariable ID id) {
+		if (!service.exists(id)) throw new ResourceNotFoundException();
+		T updated = service.update(entity);
+		if (updated == null) throw new RequestFailureException(40004, "There was a problem updating the record.", "", "");
+		return new ResponseEntity<>(updated, HttpStatus.CREATED);
 	}
 
 	/**
-	 * {@link AbstractCrudController#update}
+	 * {@code PUT /{id}}
+	 * Attempts to update an existing entity record, replacing it with the submitted entity. Throws
+	 *   an exception if the target entity does not exist.
+	 *
+	 * @param entity entity representation to update.
+	 * @param id primary ID of the target entity
+	 * @return updated representation of the submitted entity.
 	 */
-	protected ResponseEntity<?> doUpdate(T entity, ID id){
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, 
+			produces = { HalMediaType.APPLICATION_JSON_HAL_VALUE })
+	public ResponseEntity<FilterableResource<T>> updateWithHal(@RequestBody T entity, @PathVariable ID id) {
 		if (!service.exists(id)) throw new ResourceNotFoundException();
 		T updated = service.update(entity);
 		if (updated == null) throw new RequestFailureException(40004, "There was a problem updating the record.", "", "");
@@ -149,13 +183,6 @@ public abstract class AbstractCrudController<T extends Model<ID>, ID extends Ser
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<?> delete(@PathVariable ID id) {
-		return doDelete(id);
-	}
-
-	/**
-	 * {@link AbstractCrudController#delete}
-	 */
-	protected ResponseEntity<?> doDelete(ID id){
 		service.delete(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
@@ -166,16 +193,11 @@ public abstract class AbstractCrudController<T extends Model<ID>, ID extends Ser
 	 *
 	 * @return
 	 */
-	@RequestMapping(value = { "", "/**" }, method = RequestMethod.OPTIONS)
+	@RequestMapping(value = { "", "/**" }, method = RequestMethod.OPTIONS, 
+			produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<?> options() {
-		return doOptions();
-	}
-
-	/**
-	 * {@link AbstractCrudController#options}
-	 */
-	public ResponseEntity<?> doOptions() {
 		return null; //TODO
 	}
+
 	
 }

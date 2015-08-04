@@ -26,6 +26,7 @@ import org.oncoblocks.centromere.core.test.models.EntrezGene;
 import org.oncoblocks.centromere.core.test.repository.mongo.EntrezGeneRepository;
 import org.oncoblocks.centromere.core.test.repository.mongo.MongoRepositoryConfig;
 import org.oncoblocks.centromere.core.test.web.service.generic.GenericServiceConfig;
+import org.oncoblocks.centromere.core.web.controller.HalMediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -94,7 +95,7 @@ public class EntityQueryControllerTests {
 
 	@Test
 	public void findAll() throws Exception {
-		mockMvc.perform(get("/eq/genes"))
+		mockMvc.perform(get("/eq/genes").accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(5)))
@@ -109,7 +110,7 @@ public class EntityQueryControllerTests {
 
 	@Test
 	public void findAllWithoutLinks() throws Exception {
-		mockMvc.perform(get("/eq/genes?hal=false"))
+		mockMvc.perform(get("/eq/genes"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasSize(5)))
 				.andExpect(jsonPath("$[0]", hasKey("entrezGeneId")))
@@ -120,7 +121,8 @@ public class EntityQueryControllerTests {
 
 	@Test
 	public void findFiltered() throws Exception {
-		mockMvc.perform(get("/eq/genes?exclude=links,primaryGeneSymbol"))
+		mockMvc.perform(get("/eq/genes?exclude=links,primaryGeneSymbol").accept(
+				HalMediaType.APPLICATION_JSON_HAL_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(5)))
@@ -132,7 +134,8 @@ public class EntityQueryControllerTests {
 
 	@Test
 	public void findFieldFiltered() throws Exception {
-		mockMvc.perform(get("/eq/genes?fields=links,primaryGeneSymbol"))
+		mockMvc.perform(get("/eq/genes?fields=links,primaryGeneSymbol").accept(
+				HalMediaType.APPLICATION_JSON_HAL_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(5)))
@@ -143,7 +146,7 @@ public class EntityQueryControllerTests {
 
 	@Test
 	public void findMultipleByParams() throws Exception {
-		mockMvc.perform(get("/eq/genes?geneType=pseudo"))
+		mockMvc.perform(get("/eq/genes?geneType=pseudo").accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(2)))
@@ -158,7 +161,7 @@ public class EntityQueryControllerTests {
 
 	@Test
 	public void findPaged() throws Exception {
-		mockMvc.perform(get("/eq/genes?page=1&size=3"))
+		mockMvc.perform(get("/eq/genes?page=1&size=3").accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(2)))
@@ -176,7 +179,7 @@ public class EntityQueryControllerTests {
 
 	@Test
 	public void findPagedWithoutLinks() throws Exception {
-		mockMvc.perform(get("/eq/genes?page=1&size=3&hal=false"))
+		mockMvc.perform(get("/eq/genes?page=1&size=3"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(2)))
@@ -188,7 +191,8 @@ public class EntityQueryControllerTests {
 
 	@Test
 	public void findSorted() throws Exception {
-		mockMvc.perform(get("/eq/genes?sort=primaryGeneSymbol,desc"))
+		mockMvc.perform(get("/eq/genes?sort=primaryGeneSymbol,desc").accept(
+				HalMediaType.APPLICATION_JSON_HAL_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(5)))

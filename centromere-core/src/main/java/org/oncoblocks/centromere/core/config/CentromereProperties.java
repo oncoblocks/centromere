@@ -16,17 +16,26 @@
 
 package org.oncoblocks.centromere.core.config;
 
-import org.springframework.context.annotation.Import;
-
-import java.lang.annotation.*;
-
 /**
  * @author woemler
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
-@Inherited
-@Import({ WebServicesConfig.class, SpringBootConfig.class, CentromerePropertiesConfig.class, 
-		SwaggerConfig.class })
-public @interface AutoConfigureCentromereWeb {
+public class CentromereProperties {
+	
+	private String apiRootUrl;
+
+	public String getApiRootUrl() {
+		return apiRootUrl;
+	}
+	
+	public String getApiUrlRegex() {
+		return apiRootUrl + "/.*";
+	}
+
+	public String getApiUrlAntMatcher() {
+		return apiRootUrl + "/**";
+	}
+
+	public void setApiRootUrl(String apiRootUrl) {
+		this.apiRootUrl = apiRootUrl;
+	}
 }

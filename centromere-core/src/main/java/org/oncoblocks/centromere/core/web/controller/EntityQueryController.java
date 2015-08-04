@@ -27,6 +27,7 @@ import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,12 +37,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 /**
+ * Generic controller that uses model objects to define URL query parameters.  
+ * 
  * @author woemler
  */
 public class EntityQueryController<T extends Model<ID>, ID extends Serializable> 
@@ -53,14 +55,107 @@ public class EntityQueryController<T extends Model<ID>, ID extends Serializable>
 	}
 
 	/**
-	 * GET request for a collection of entities. Can be paged and sorted using {@link org.springframework.data.domain.Pageable},
+	 * GET request for a collection of entities. Can be sorted using {@link org.springframework.data.domain.Pageable},
 	 *   or just return a default-ordered list (typically by primary key ID). Results can be filtered 
 	 *   using query string parameters that map to {@code T} entity attributes.  Supports field filtering.
 	 * 
 	 * @param entity Instance of a model entity, composed of fragments from request parameters. 
 	 * @param fields set of field names to be included in response object.
 	 * @param exclude set of field names to be excluded from the response object.
-	 * @param showLinks flag to enable HAL links for entities 
+	 * @param pageable {@link org.springframework.data.domain.Pageable} request object, created using 
+	 *   'page', 'size', or 'sort' as query string parameters. 
+	 * @return
+	 */
+	@RequestMapping(value = "", method = RequestMethod.GET, 
+			produces = {MediaType.APPLICATION_JSON_VALUE}, 
+			params = { "!page", "!size" })
+	public ResponseEntity<ResponseEnvelope<List<T>>> find(
+			@ModelAttribute T entity,
+			@RequestParam(value = "fields", required = false) Set<String> fields,
+			@RequestParam(value = "exclude", required = false) Set<String> exclude,
+			Pageable pageable) {
+		List<T> entities;
+		if (pageable.getSort() != null){
+			entities = (List<T>) service.findSorted(entity, pageable.getSort());
+		} else {
+			entities = (List<T>) service.find(entity);
+		}
+		ResponseEnvelope<List<T>> envelope = new ResponseEnvelope<>(entities, fields, exclude);
+		return new ResponseEntity<>(envelope, HttpStatus.OK);
+	}
+
+	/**
+	 * GET request for a paged collection of entities. Can be sorted using {@link org.springframework.data.domain.Pageable},
+	 *   or just return a default-ordered list (typically by primary key ID). Results can be filtered 
+	 *   using query string parameters that map to {@code T} entity attributes.  Supports field filtering.
+	 *
+	 * @param entity Instance of a model entity, composed of fragments from request parameters. 
+	 * @param fields set of field names to be included in response object.
+	 * @param exclude set of field names to be excluded from the response object.
+	 * @param pageable {@link org.springframework.data.domain.Pageable} request object, created using 
+	 *   'page', 'size', or 'sort' as query string parameters. 
+	 * @return
+	 */
+	@RequestMapping(value = "", method = RequestMethod.GET, 
+			produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<ResponseEnvelope<Page<T>>> findPaged(
+			@ModelAttribute T entity,
+			@RequestParam(value = "fields", required = false) Set<String> fields,
+			@RequestParam(value = "exclude", required = false) Set<String> exclude,
+			@PageableDefault(size = 1000) Pageable pageable) {
+		Page<T> page = service.findPaged(entity, pageable);
+		ResponseEnvelope<Page<T>> envelope = new ResponseEnvelope<>(page, fields, exclude);
+		return new ResponseEntity<>(envelope, HttpStatus.OK);
+	}
+
+	/**
+	 * GET request for a collection of entities. Can be sorted using {@link org.springframework.data.domain.Pageable},
+	 *   or just return a default-ordered list (typically by primary key ID). Results can be filtered 
+	 *   using query string parameters that map to {@code T} entity attributes.  Supports field filtering.
+	 *   Response objects are wrapped and annotated with HAL-formatted links.
+	 *
+	 * @param entity Instance of a model entity, composed of fragments from request parameters. 
+	 * @param fields set of field names to be included in response object.
+	 * @param exclude set of field names to be excluded from the response object.
+	 * @param pageable {@link org.springframework.data.domain.Pageable} request object, created using 
+	 *   'page', 'size', or 'sort' as query string parameters. 
+	 * @param request {@link javax.servlet.http.HttpServletRequest}
+	 * @return
+	 */
+	@RequestMapping(value = "", method = RequestMethod.GET, 
+			produces = { HalMediaType.APPLICATION_JSON_HAL_VALUE },
+			params = { "!page", "!size" })
+	public ResponseEntity<ResponseEnvelope<Resources<FilterableResource<T>>>> findWithHal(
+			@ModelAttribute T entity,
+			@RequestParam(value = "fields", required = false) Set<String> fields,
+			@RequestParam(value = "exclude", required = false) Set<String> exclude,
+			Pageable pageable,
+			HttpServletRequest request) {
+		List<T> entities;
+		if (pageable.getSort() != null){
+			entities = (List<T>) service.findSorted(entity, pageable.getSort());
+		} else {
+			entities = (List<T>) service.find(entity);
+		}
+		List<FilterableResource<T>> resourceList = assembler.toResources(entities);
+		Resources<FilterableResource<T>> resources = new Resources<FilterableResource<T>>(resourceList);
+		Link selfLink = new Link(linkTo(this.getClass()).slash("").toString() +
+				(request.getQueryString() != null ? "?" + request.getQueryString() : ""), "self");
+		resources.add(selfLink);
+		ResponseEnvelope<Resources<FilterableResource<T>>> envelope 
+				= new ResponseEnvelope<>(resources, fields, exclude);
+		return new ResponseEntity<>(envelope, HttpStatus.OK);
+	}
+
+	/**
+	 * GET request for a paged collection of entities. Can be sorted using {@link org.springframework.data.domain.Pageable},
+	 *   or just return a default-ordered list (typically by primary key ID). Results can be filtered 
+	 *   using query string parameters that map to {@code T} entity attributes.  Supports field filtering.
+	 *   Response objects are wrapped and annotated with HAL-formatted links.
+	 *
+	 * @param entity Instance of a model entity, composed of fragments from request parameters. 
+	 * @param fields set of field names to be included in response object.
+	 * @param exclude set of field names to be excluded from the response object.
 	 * @param pageable {@link org.springframework.data.domain.Pageable} request object, created using 
 	 *   'page', 'size', or 'sort' as query string parameters. 
 	 * @param pagedResourcesAssembler {@link org.springframework.data.web.PagedResourcesAssembler} for 
@@ -68,57 +163,23 @@ public class EntityQueryController<T extends Model<ID>, ID extends Serializable>
 	 * @param request {@link javax.servlet.http.HttpServletRequest}
 	 * @return
 	 */
-	@RequestMapping(value = "", method = RequestMethod.GET)
-	public ResponseEntity<?> find(
+	@RequestMapping(value = "", method = RequestMethod.GET, 
+			produces = { HalMediaType.APPLICATION_JSON_HAL_VALUE })
+	public ResponseEntity<ResponseEnvelope<PagedResources<FilterableResource<T>>>> findPagedWithHal(
 			@ModelAttribute T entity,
 			@RequestParam(value = "fields", required = false) Set<String> fields,
 			@RequestParam(value = "exclude", required = false) Set<String> exclude,
-			@RequestParam(value = "hal", defaultValue = "true") boolean showLinks,
 			@PageableDefault(size = 1000) Pageable pageable,
-			PagedResourcesAssembler<T> pagedResourcesAssembler, 
+			PagedResourcesAssembler<T> pagedResourcesAssembler,
 			HttpServletRequest request) {
-		return doFind(entity, fields, exclude, showLinks, pageable, pagedResourcesAssembler, request);
-	}
-
-	/**
-	 * {@link EntityQueryController#find}
-	 */
-	protected ResponseEntity<?> doFind(T entity, Set<String> fields, Set<String> exclude, boolean showLinks,
-			Pageable pageable, PagedResourcesAssembler<T> resourcesAssembler, HttpServletRequest request) {
-		ResponseEnvelope envelope = null;
-		Map<String,String[]> params = request.getParameterMap();
+		Page<T> page = service.findPaged(entity, pageable);
 		Link selfLink = new Link(linkTo(this.getClass()).slash("").toString() +
 				(request.getQueryString() != null ? "?" + request.getQueryString() : ""), "self");
-		if (params.containsKey("page") || params.containsKey("size")){
-			Page<T> page = service.findPaged(entity, pageable);
-			if (showLinks){
-				PagedResources<FilterableResource<T>> pagedResources = resourcesAssembler.toResource(page, assembler, selfLink);
-				envelope = new ResponseEnvelope<>(pagedResources, fields, exclude);
-			} else {
-				envelope = new ResponseEnvelope<>(page, fields, exclude);
-			}
-			
-		} else if (params.containsKey("sort")){
-			List<T> entities = (List<T>) service.findSorted(entity, pageable.getSort());
-			if (showLinks){
-				List<FilterableResource<T>> resourceList = assembler.toResources(entities);
-				Resources<FilterableResource<T>> resources = new Resources<>(resourceList);
-				resources.add(selfLink);
-				envelope = new ResponseEnvelope<>(resources, fields, exclude);
-			} else {
-				envelope = new ResponseEnvelope<>(entity, fields, exclude);	
-			}
-		} else {
-			List<T> entities = (List<T>) service.find(entity);
-			if (showLinks){
-				List<FilterableResource<T>> resourceList = assembler.toResources(entities);
-				Resources<FilterableResource<T>> resources = new Resources<>(resourceList);
-				resources.add(selfLink);
-				envelope = new ResponseEnvelope<>(resources, fields, exclude);
-			} else {
-				envelope = new ResponseEnvelope<>(entities, fields, exclude);	
-			}
-		}
+		PagedResources<FilterableResource<T>> pagedResources 
+				= pagedResourcesAssembler.toResource(page, assembler, selfLink);
+		ResponseEnvelope<PagedResources<FilterableResource<T>>> envelope 
+				= new ResponseEnvelope<>(pagedResources, fields, exclude);
 		return new ResponseEntity<>(envelope, HttpStatus.OK);
 	}
+
 }

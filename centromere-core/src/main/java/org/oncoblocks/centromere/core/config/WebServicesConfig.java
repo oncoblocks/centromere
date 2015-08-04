@@ -57,10 +57,10 @@ public class WebServicesConfig extends WebMvcConfigurerAdapter {
 	@Override
 	public void configureContentNegotiation(ContentNegotiationConfigurer configurer){
 		configurer.defaultContentType(MediaType.APPLICATION_JSON);
-		configurer.favorPathExtension(true);
-		configurer.ignoreAcceptHeader(true);
-		configurer.mediaType("txt", MediaType.TEXT_PLAIN);
-		configurer.mediaType("csv", new MediaType("text", "csv"));
+		//configurer.favorPathExtension(true);
+		//configurer.ignoreAcceptHeader(true);
+		//configurer.mediaType("txt", MediaType.TEXT_PLAIN);
+		//configurer.mediaType("csv", new MediaType("text", "csv"));
 	}
 
 	@Bean
