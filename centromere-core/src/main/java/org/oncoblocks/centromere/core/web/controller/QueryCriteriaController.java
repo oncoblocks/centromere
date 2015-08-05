@@ -19,6 +19,7 @@ package org.oncoblocks.centromere.core.web.controller;
 import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.repository.QueryCriteria;
 import org.oncoblocks.centromere.core.web.service.ServiceOperations;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -27,13 +28,15 @@ import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
@@ -45,79 +48,114 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
  */
 public abstract class QueryCriteriaController<T extends Model<ID>, ID extends Serializable> 
 		extends AbstractCrudController<T, ID> {
+	
+	private ConversionService conversionService;
 
 	public QueryCriteriaController(ServiceOperations<T, ID> service,
-			ResourceAssemblerSupport<T, FilterableResource<T>> assembler) {
+			ResourceAssemblerSupport<T, FilterableResource<T>> assembler,
+			ConversionService conversionService) {
 		super(service, assembler);
+		this.conversionService = conversionService;
+	}
+	
+	@RequestMapping(value = "", method = RequestMethod.GET, params = { "!page", "!size" },
+			produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<ResponseEnvelope<List<T>>> find(
+			@RequestParam(value = "fields", required = false) Set<String> fields,
+			@RequestParam(value = "exclude", required = false) Set<String> exclude,
+			Pageable pageable,
+			HttpServletRequest request
+	){
+		List<QueryCriteria> criterias = convertRequestParameters(request.getParameterMap());
+		List<T> entities;
+		if (pageable.getSort() != null){
+			entities = (List<T>) service.findSorted(criterias, pageable.getSort());
+		} else {
+			entities = (List<T>) service.find(criterias);
+		}
+		ResponseEnvelope<List<T>> envelope = new ResponseEnvelope<>(entities, fields, exclude);
+		return new ResponseEntity<>(envelope, HttpStatus.OK);
 	}
 
-	/* 
-	TODO: Better interface/abstract method definition for `find` method, or better way to override RequestMapping for implemented method
-	 */
-//	@RequestMapping(value = "", method = RequestMethod.GET)
-//	public ResponseEntity find(
-//			@RequestParam(value = "fields", required = false) Set<String> fields,
-//			@RequestParam(value = "exclude", required = false) Set<String> exclude,
-//			@PageableDefault(size = 1000) Pageable pageable,
-//			PagedResourcesAssembler<T> pagedResourcesAssembler,
-//			HttpServletRequest request) {
-//		return doFind(new ArrayList<>(), fields, exclude, pageable, pagedResourcesAssembler, request);
-//	}
-
-	/**
-	 * GET request for a collection of entities. Can be paged and sorted using {@link org.springframework.data.domain.Pageable},
-	 *   or just return a default-ordered list (typically by primary key ID). Results can be filtered 
-	 *   using {@link org.oncoblocks.centromere.core.repository.QueryCriteria} that map to specific entity
-	 *   attributes.  Supports field filtering.
-	 *
-	 * @param queryCriterias Collection of {@link org.oncoblocks.centromere.core.repository.QueryCriteria}. 
-	 * @param fields set of field names to be included in response object.
-	 * @param exclude set of field names to be excluded from the response object.
-	 * @param pageable {@link org.springframework.data.domain.Pageable} request object, created using 
-	 *   'page', 'size', or 'sort' as query string parameters. 
-	 * @param resourcesAssembler {@link org.springframework.data.web.PagedResourcesAssembler} for 
-	 *   assembling paged entities into a wrapped response object with hypermedia links. 
-	 * @param request {@link javax.servlet.http.HttpServletRequest}
-	 * @return
-	 */
-	protected ResponseEntity<?> doFind(Iterable<QueryCriteria> queryCriterias, Set<String> fields, Set<String> exclude,
-			boolean showLinks, Pageable pageable, PagedResourcesAssembler<T> resourcesAssembler, HttpServletRequest request) {
-		ResponseEnvelope envelope = null;
-		Map<String,String[]> params = request.getParameterMap();
-
+	@RequestMapping(value = "", method = RequestMethod.GET, params = { "!page", "!size" },
+			produces = {HalMediaType.APPLICATION_JSON_HAL_VALUE})
+	public ResponseEntity<ResponseEnvelope<Resources<FilterableResource<T>>>> findWithHal(
+			@RequestParam(value = "fields", required = false) Set<String> fields,
+			@RequestParam(value = "exclude", required = false) Set<String> exclude,
+			Pageable pageable,
+			HttpServletRequest request
+	){
+		List<QueryCriteria> criterias = convertRequestParameters(request.getParameterMap());
+		List<T> entities;
+		if (pageable.getSort() != null){
+			entities = (List<T>) service.findSorted(criterias, pageable.getSort());
+		} else {
+			entities = (List<T>) service.find(criterias);
+		}
+		List<FilterableResource<T>> resourceList = assembler.toResources(entities);
+		Resources<FilterableResource<T>> resources = new Resources<>(resourceList);
 		Link selfLink = new Link(linkTo(this.getClass()).slash("").toString() +
 				(request.getQueryString() != null ? "?" + request.getQueryString() : ""), "self");
-		if (params.containsKey("page") || params.containsKey("size")){
-			Page<T> page = service.findPaged(queryCriterias, pageable);
-			if (showLinks){
-				PagedResources<FilterableResource<T>> pagedResources = resourcesAssembler.toResource(page, assembler, selfLink);
-				envelope = new ResponseEnvelope<>(pagedResources, fields, exclude);
-			} else {
-				envelope = new ResponseEnvelope<>(page, fields, exclude);
-			}
-		} else if (params.containsKey("sort")){
-			List<T> entities = (List<T>) service.findSorted(queryCriterias, pageable.getSort());
-			if (showLinks){
-				List<FilterableResource<T>> resourceList = assembler.toResources(entities);
-				Resources<FilterableResource<T>> resources = new Resources<>(resourceList);
-				resources.add(selfLink);
-				envelope = new ResponseEnvelope<>(resources, fields, exclude);
-			} else {
-				envelope = new ResponseEnvelope<>(entities, fields, exclude);
-			}
-		} else {
-			List<T> entities = (List<T>) service.find(queryCriterias);
-			if (showLinks){
-				List<FilterableResource<T>> resourceList = assembler.toResources(entities);
-				Resources<FilterableResource<T>> resources = new Resources<>(resourceList);
-				resources.add(selfLink);
-				envelope = new ResponseEnvelope<>(resources, fields, exclude);
-			} else {
-				envelope = new ResponseEnvelope<>(entities, fields, exclude);
-			}
-			
-		}
+		resources.add(selfLink);
+		ResponseEnvelope<Resources<FilterableResource<T>>> envelope
+				= new ResponseEnvelope<>(resources, fields, exclude);
+		return new ResponseEntity<>(envelope, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "", method = RequestMethod.GET,
+			produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<ResponseEnvelope<Page<T>>> findPaged(
+			@RequestParam(value = "fields", required = false) Set<String> fields,
+			@RequestParam(value = "exclude", required = false) Set<String> exclude,
+			Pageable pageable,
+			PagedResourcesAssembler<T> pagedResourcesAssembler,
+			HttpServletRequest request
+	){
+		List<QueryCriteria> criterias = convertRequestParameters(request.getParameterMap());
+		Page<T> page = service.findPaged(criterias, pageable);
+		ResponseEnvelope<Page<T>> envelope = new ResponseEnvelope<>(page, fields, exclude);
+		return new ResponseEntity<>(envelope, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "", method = RequestMethod.GET,
+			produces = {HalMediaType.APPLICATION_JSON_HAL_VALUE})
+	public ResponseEntity<ResponseEnvelope<PagedResources<FilterableResource<T>>>> findWithHal(
+			@RequestParam(value = "fields", required = false) Set<String> fields,
+			@RequestParam(value = "exclude", required = false) Set<String> exclude,
+			Pageable pageable,
+			PagedResourcesAssembler<T> pagedResourcesAssembler,
+			HttpServletRequest request
+	){
+		List<QueryCriteria> criterias = convertRequestParameters(request.getParameterMap());
+		Page<T> page = service.findPaged(criterias, pageable);
+		Link selfLink = new Link(linkTo(this.getClass()).slash("").toString() +
+				(request.getQueryString() != null ? "?" + request.getQueryString() : ""), "self");
+		PagedResources<FilterableResource<T>> pagedResources
+				= pagedResourcesAssembler.toResource(page, assembler, selfLink);
+		ResponseEnvelope<PagedResources<FilterableResource<T>>> envelope
+				= new ResponseEnvelope<>(pagedResources, fields, exclude);
 		return new ResponseEntity<>(envelope, HttpStatus.OK);
 	}
 	
+	private List<QueryCriteria> convertRequestParameters(Map<String,String[]> params){
+		List<QueryCriteria> criterias = new ArrayList<>();
+		Map<String,Class<?>> criteriaParams = registerQueryParameters(new HashMap<String,Class<?>>());
+		for (Map.Entry criteriaParam: criteriaParams.entrySet()){
+			String key = (String) criteriaParam.getKey();
+			Class<?> type = (Class<?>) criteriaParam.getValue();
+			if (params.containsKey(key)){
+				if (type.equals(String.class)){
+					criterias.add(new QueryCriteria(key, params.get(key)[0]));
+				} else if (conversionService.canConvert(String.class, type)){
+					criterias.add(new QueryCriteria(key, conversionService.convert(params.get(key)[0], type)));
+				}
+			}
+		}
+		return criterias;
+	}
+	
+	protected Map<String,Class<?>> registerQueryParameters(Map<String,Class<?>> queryCriteriaParameters){
+		return queryCriteriaParameters;
+	}
+
 }

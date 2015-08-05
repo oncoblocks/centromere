@@ -26,7 +26,9 @@ import org.oncoblocks.centromere.core.test.models.Subject;
 import org.oncoblocks.centromere.core.test.repository.jdbc.JdbcRepositoryConfig;
 import org.oncoblocks.centromere.core.test.repository.jdbc.SubjectRepository;
 import org.oncoblocks.centromere.core.test.web.service.remapping.RemappingServiceConfig;
+import org.oncoblocks.centromere.core.web.controller.HalMediaType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -35,8 +37,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.hamcrest.Matchers.*;
-import static org.hamcrest.Matchers.hasKey;
-import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -99,7 +99,7 @@ public class QueryCriteriaControllerTests {
 
 	@Test
 	public void findAll() throws Exception {
-		mockMvc.perform(get("/subjects"))
+		mockMvc.perform(get("/subjects").accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(5)))
@@ -114,7 +114,7 @@ public class QueryCriteriaControllerTests {
 
 	@Test
 	public void findAllWithoutLinks() throws Exception {
-		mockMvc.perform(get("/subjects?hal=false"))
+		mockMvc.perform(get("/subjects").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasSize(5)))
 				.andExpect(jsonPath("$[0]", hasKey("subjectId")))
@@ -125,7 +125,8 @@ public class QueryCriteriaControllerTests {
 
 	@Test
 	public void findFiltered() throws Exception {
-		mockMvc.perform(get("/subjects?exclude=links,name"))
+		mockMvc.perform(get("/subjects?exclude=links,name")
+				.accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(5)))
@@ -137,7 +138,8 @@ public class QueryCriteriaControllerTests {
 
 	@Test
 	public void findFieldFiltered() throws Exception {
-		mockMvc.perform(get("/subjects?fields=links,name"))
+		mockMvc.perform(get("/subjects?fields=links,name")
+				.accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(5)))
@@ -148,7 +150,7 @@ public class QueryCriteriaControllerTests {
 
 	@Test
 	public void findMultipleBySingleParam() throws Exception {
-		mockMvc.perform(get("/subjects?name=MCF7"))
+		mockMvc.perform(get("/subjects?name=MCF7").accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(1)))
@@ -163,7 +165,7 @@ public class QueryCriteriaControllerTests {
 	
 	@Test
 	public void findPaged() throws Exception {
-		mockMvc.perform(get("/subjects?page=1&size=3"))
+		mockMvc.perform(get("/subjects?page=1&size=3").accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(2)))
@@ -181,7 +183,7 @@ public class QueryCriteriaControllerTests {
 
 	@Test
 	public void findPagedWithoutLinks() throws Exception {
-		mockMvc.perform(get("/subjects?page=1&size=3&hal=false"))
+		mockMvc.perform(get("/subjects?page=1&size=3").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(2)))
@@ -192,7 +194,7 @@ public class QueryCriteriaControllerTests {
 
 	@Test
 	public void findSorted() throws Exception {
-		mockMvc.perform(get("/subjects?sort=subjectId,desc"))
+		mockMvc.perform(get("/subjects?sort=subjectId,desc").accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(5)))
