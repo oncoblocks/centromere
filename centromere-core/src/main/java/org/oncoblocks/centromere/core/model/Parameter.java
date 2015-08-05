@@ -16,18 +16,18 @@
 
 package org.oncoblocks.centromere.core.model;
 
-import java.util.Collection;
+import org.oncoblocks.centromere.core.repository.Evaluation;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
- * Interface for adding controller query methods to entity classes with key-value aliases.  
- * 
  * @author woemler
  */
-public interface SourcedAliases {
-	Collection<SourcedAlias> getAliases();
-	void setAliases(Collection<SourcedAlias> aliases);
-	void setAliasName(String aliasName);
-	void setAliasSource(String aliasSource);
-	void setAlias(SourcedAlias alias);
-	boolean hasAlias(String name);
+
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Parameter {
+	String value();
+	Class<?> type() default Object.class;
+	Evaluation evalutation() default Evaluation.EQUALS;
 }

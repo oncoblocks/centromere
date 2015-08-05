@@ -17,6 +17,9 @@
 package org.oncoblocks.centromere.core.web.controller;
 
 import org.oncoblocks.centromere.core.model.Model;
+import org.oncoblocks.centromere.core.model.Parameter;
+import org.oncoblocks.centromere.core.model.Queryable;
+import org.oncoblocks.centromere.core.repository.Evaluation;
 import org.oncoblocks.centromere.core.repository.QueryCriteria;
 import org.oncoblocks.centromere.core.web.service.ServiceOperations;
 import org.springframework.core.convert.ConversionService;
@@ -36,13 +39,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.*;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 /**
- * Abstract controller implementation, allowing for dynamic queries based on predefined
- *   query parameters, that get passed to the repository layer as {@link org.oncoblocks.centromere.core.repository.QueryCriteria}
+ * Abstract controller implementation, allowing for dynamic queries based on preset query parameters, 
+ *   which get passed to the repository layer as {@link org.oncoblocks.centromere.core.repository.QueryCriteria}
  * 
  * @author woemler
  */
@@ -50,12 +57,14 @@ public abstract class QueryCriteriaController<T extends Model<ID>, ID extends Se
 		extends AbstractCrudController<T, ID> {
 	
 	private ConversionService conversionService;
+	private Class<T> model;
 
 	public QueryCriteriaController(ServiceOperations<T, ID> service,
 			ResourceAssemblerSupport<T, FilterableResource<T>> assembler,
-			ConversionService conversionService) {
+			ConversionService conversionService, Class<T> model) {
 		super(service, assembler);
 		this.conversionService = conversionService;
+		this.model = model;
 	}
 	
 	@RequestMapping(value = "", method = RequestMethod.GET, params = { "!page", "!size" },
@@ -136,26 +145,64 @@ public abstract class QueryCriteriaController<T extends Model<ID>, ID extends Se
 				= new ResponseEnvelope<>(pagedResources, fields, exclude);
 		return new ResponseEntity<>(envelope, HttpStatus.OK);
 	}
-	
-	private List<QueryCriteria> convertRequestParameters(Map<String,String[]> params){
+//	
+//	private List<QueryCriteria> convertRequestParameters(Map<String,String[]> params){
+//		List<QueryCriteria> criterias = new ArrayList<>();
+//		List<QueryParameter> queryParameters = registerQueryParameters(new ArrayList<>());
+//		for (QueryParameter queryParameter: queryParameters){
+//			String key = queryParameter.getQueryStringParameter();
+//			Class<?> type = queryParameter.getType();
+//			if (params.containsKey(key)){
+//				if (type.equals(String.class)){
+//					criterias.add(queryParameter.toQueryCriteria((String) params.get(key)[0]));
+//				} else if (conversionService.canConvert(String.class, type)){
+//					criterias.add(queryParameter.toQueryCriteria(conversionService.convert(params.get(key)[0], type)));
+//				}
+//			}
+//		}
+//		return criterias;
+//	}
+//	
+//	protected List<QueryParameter> registerQueryParameters(List<QueryParameter> queryParameters){
+//		return queryParameters;
+//	}
+
+
+	private List<QueryCriteria> convertRequestParameters(Map<String, String[]> parameterMap){
 		List<QueryCriteria> criterias = new ArrayList<>();
-		Map<String,Class<?>> criteriaParams = registerQueryParameters(new HashMap<String,Class<?>>());
-		for (Map.Entry criteriaParam: criteriaParams.entrySet()){
-			String key = (String) criteriaParam.getKey();
-			Class<?> type = (Class<?>) criteriaParam.getValue();
-			if (params.containsKey(key)){
-				if (type.equals(String.class)){
-					criterias.add(new QueryCriteria(key, params.get(key)[0]));
-				} else if (conversionService.canConvert(String.class, type)){
-					criterias.add(new QueryCriteria(key, conversionService.convert(params.get(key)[0], type)));
+		for (Field field: model.getDeclaredFields()){
+			String paramName = field.getName();
+			Class<?> fieldType = field.getType();
+			if (field.isAnnotationPresent(Queryable.class)){
+				Queryable queryable = field.getAnnotation(Queryable.class);
+				if (queryable.value().length > 0){
+					for (Parameter param: queryable.value()){
+						paramName = param.value();
+						if (!param.type().equals(Object.class)) fieldType = param.type();
+						Evaluation evaluation = param.evalutation();
+						if (parameterMap.containsKey(paramName)) {
+							criterias.add(
+									new QueryCriteria(
+											paramName,
+											conversionService.convert(parameterMap.get(paramName)[0], fieldType),
+											evaluation
+									)
+							);
+						}
+					}
+				} else {
+					if (parameterMap.containsKey(paramName)){
+						criterias.add(
+								new QueryCriteria(
+										paramName,
+										conversionService.convert(parameterMap.get(paramName)[0], fieldType)
+								)
+						);
+					}
 				}
 			}
 		}
 		return criterias;
-	}
-	
-	protected Map<String,Class<?>> registerQueryParameters(Map<String,Class<?>> queryCriteriaParameters){
-		return queryCriteriaParameters;
 	}
 
 }

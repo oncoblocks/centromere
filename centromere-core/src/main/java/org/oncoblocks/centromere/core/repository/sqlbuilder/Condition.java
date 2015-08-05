@@ -16,7 +16,7 @@
 
 package org.oncoblocks.centromere.core.repository.sqlbuilder;
 
-import org.oncoblocks.centromere.core.repository.QueryCriteria.Evaluation;
+import org.oncoblocks.centromere.core.repository.Evaluation;
 
 /**
  * Maps a {@link org.oncoblocks.centromere.core.repository.QueryCriteria} to SQL operations.

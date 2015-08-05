@@ -18,9 +18,12 @@ package org.oncoblocks.centromere.core.config;
 
 import org.oncoblocks.centromere.core.web.util.CorsFilter;
 import org.oncoblocks.centromere.core.web.util.FilteringJackson2HttpMessageConverter;
+import org.oncoblocks.centromere.core.web.util.StringToAttributeConverter;
+import org.oncoblocks.centromere.core.web.util.StringToSourcedAliasConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.hateoas.config.EnableEntityLinks;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.MediaType;
@@ -68,4 +71,10 @@ public class WebServicesConfig extends WebMvcConfigurerAdapter {
 		return new CorsFilter();
 	}
 
+	@Override 
+	public void addFormatters(FormatterRegistry registry) {
+		registry.addConverter(new StringToAttributeConverter());
+		registry.addConverter(new StringToSourcedAliasConverter());
+		super.addFormatters(registry);
+	}
 }

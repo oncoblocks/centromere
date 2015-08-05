@@ -14,20 +14,25 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.model;
-
-import java.util.Collection;
+package org.oncoblocks.centromere.core.repository;
 
 /**
- * Interface for adding controller query methods to entity classes with key-value aliases.  
- * 
- * @author woemler
- */
-public interface SourcedAliases {
-	Collection<SourcedAlias> getAliases();
-	void setAliases(Collection<SourcedAlias> aliases);
-	void setAliasName(String aliasName);
-	void setAliasSource(String aliasSource);
-	void setAlias(SourcedAlias alias);
-	boolean hasAlias(String name);
+* @author woemler
+*/
+public enum Evaluation {
+	EQUALS,
+	IN,
+	NOT_EQUALS,
+	NOT_IN,
+	LIKE,
+	NOT_LIKE,
+	GREATER_THAN,
+	LESS_THAN,
+	GREATER_THAN_EQUALS,
+	LESS_THAN_EQUALS,
+	IS_NULL,
+	NOT_NULL,
+	IS_TRUE,
+	IS_FALSE
+	;
 }

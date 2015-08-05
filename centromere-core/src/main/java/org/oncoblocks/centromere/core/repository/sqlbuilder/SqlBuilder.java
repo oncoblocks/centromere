@@ -16,7 +16,7 @@
 
 package org.oncoblocks.centromere.core.repository.sqlbuilder;
 
-import org.oncoblocks.centromere.core.repository.QueryCriteria.Evaluation;
+import org.oncoblocks.centromere.core.repository.Evaluation;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 

@@ -20,6 +20,8 @@ import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.oncoblocks.centromere.core.model.Attribute;
+import org.oncoblocks.centromere.core.model.SourcedAlias;
 import org.oncoblocks.centromere.core.test.config.TestJdbcDataSourceConfig;
 import org.oncoblocks.centromere.core.test.config.TestWebConfig;
 import org.oncoblocks.centromere.core.test.models.Subject;
@@ -67,30 +69,30 @@ public class QueryCriteriaControllerTests {
 		subjectRepository.deleteAll();
 
 		Subject subject = new Subject(1L, "PersonA", "Homo sapiens", "M", null, null, null);
-		subject.setAlias("clinic:patient01");
-		subject.setAttribute("cancerType:colon");
+		subject.setAlias(new SourcedAlias("clinic", "patient01"));
+		subject.setAttribute(new Attribute("cancerType", "colon"));
 		subjectRepository.insert(subject);
 
 		subject = new Subject(2L, "PersonB", "Homo sapiens", "F", null, null, null);
-		subject.setAlias("clinic:patient02");
-		subject.setAttribute("cancerType:breast");
+		subject.setAlias(new SourcedAlias("clinic", "patient02"));
+		subject.setAttribute(new Attribute("cancerType","breast"));
 		subjectRepository.insert(subject);
 
 		subject = new Subject(3L, "PersonC", "Homo sapiens", "M", null, null, null);
-		subject.setAlias("clinic:patient03");
-		subject.setAttribute("cancerType:lung");
+		subject.setAlias(new SourcedAlias("clinic","patient03"));
+		subject.setAttribute(new Attribute("cancerType","lung"));
 		subjectRepository.insert(subject);
 
 		subject = new Subject(4L, "MCF7", "Homo sapiens", "F", null, null, null);
-		subject.setAlias("CCLE:MCF7_BREAST");
-		subject.setAttribute("cancerType:breast");
-		subject.setAttribute("isCellLine:Y");
+		subject.setAlias(new SourcedAlias("CCLE","MCF7_BREAST"));
+		subject.setAttribute(new Attribute("cancerType","breast"));
+		subject.setAttribute(new Attribute("isCellLine","Y"));
 		subjectRepository.insert(subject);
 
 		subject = new Subject(5L, "A375", "Homo sapiens", "U", null, null, null);
-		subject.setAlias("CCLE:A375_SKIN");
-		subject.setAttribute("cancerType:skin");
-		subject.setAttribute("isCellLine:Y");
+		subject.setAlias(new SourcedAlias("CCLE","A375_SKIN"));
+		subject.setAttribute(new Attribute("cancerType","skin"));
+		subject.setAttribute(new Attribute("isCellLine","Y"));
 		subjectRepository.insert(subject);
 
 		isConfigured = true;
@@ -162,6 +164,36 @@ public class QueryCriteriaControllerTests {
 				.andExpect(jsonPath("$.links[0].href", endsWith("/subjects?name=MCF7")))
 				.andExpect(jsonPath("$", not(hasKey("pageMetadata"))));
 	}
+
+//	@Test
+//	public void findMultipleByAlias() throws Exception {
+//		mockMvc.perform(get("/subjects?aliasName=MCF7_BREAST").accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
+//				.andExpect(status().isOk())
+//				.andExpect(jsonPath("$", hasKey("content")))
+//				.andExpect(jsonPath("$.content", hasSize(1)))
+//				.andExpect(jsonPath("$.content[0]", hasKey("subjectId")))
+//				.andExpect(jsonPath("$.content[0].subjectId", is(4)))
+//				.andExpect(jsonPath("$", hasKey("links")))
+//				.andExpect(jsonPath("$.links", hasSize(1)))
+//				.andExpect(jsonPath("$.links[0].rel", is("self")))
+//				.andExpect(jsonPath("$.links[0].href", endsWith("/subjects?aliasName=MCF7_BREAST")))
+//				.andExpect(jsonPath("$", not(hasKey("pageMetadata"))));
+//	}
+
+//	@Test
+//	public void findMultipleByAttribute() throws Exception {
+//		mockMvc.perform(get("/subjects?attributeName=isCellLine&attributeValue=Y").accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
+//				.andExpect(status().isOk())
+//				.andExpect(jsonPath("$", hasKey("content")))
+//				.andExpect(jsonPath("$.content", hasSize(2)))
+//				.andExpect(jsonPath("$.content[0]", hasKey("subjectId")))
+//				.andExpect(jsonPath("$.content[0].subjectId", is(4)))
+//				.andExpect(jsonPath("$", hasKey("links")))
+//				.andExpect(jsonPath("$.links", hasSize(1)))
+//				.andExpect(jsonPath("$.links[0].rel", is("self")))
+//				.andExpect(jsonPath("$.links[0].href", endsWith("/subjects?attributeName=isCellLine&attributeValue=Y")))
+//				.andExpect(jsonPath("$", not(hasKey("pageMetadata"))));
+//	}
 	
 	@Test
 	public void findPaged() throws Exception {

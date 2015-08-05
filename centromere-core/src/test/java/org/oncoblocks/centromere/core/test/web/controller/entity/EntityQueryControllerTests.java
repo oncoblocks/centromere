@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.oncoblocks.centromere.core.model.Attribute;
 import org.oncoblocks.centromere.core.test.config.TestMongoConfig;
 import org.oncoblocks.centromere.core.test.config.TestWebConfig;
 import org.oncoblocks.centromere.core.test.models.EntrezGene;
@@ -28,6 +29,7 @@ import org.oncoblocks.centromere.core.test.repository.mongo.MongoRepositoryConfi
 import org.oncoblocks.centromere.core.test.web.service.generic.GenericServiceConfig;
 import org.oncoblocks.centromere.core.web.controller.HalMediaType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -69,23 +71,23 @@ public class EntityQueryControllerTests {
 		geneRepository.deleteAll();
 		EntrezGene
 				geneA = new EntrezGene(1L, "GeneA", 9606, null, "1", null, "Test Gene A", "protein-coding", null, null, null);
-		geneA.setAttribute("isKinase:Y");
+		geneA.setAttribute(new Attribute("isKinase","Y"));
 		geneA.setAlias("ABC");
 		EntrezGene
 				geneB = new EntrezGene(2L, "GeneB", 9606, null, "3", null, "Test Gene B", "protein-coding", null, null, null);
-		geneB.setAttribute("isKinase:N");
+		geneB.setAttribute(new Attribute("isKinase","N"));
 		geneB.setAlias("DEF");
 		EntrezGene
 				geneC = new EntrezGene(3L, "GeneC", 9606, null, "11", null, "Test Gene C", "pseudo", null, null, null);
-		geneC.setAttribute("isKinase:N");
+		geneC.setAttribute(new Attribute("isKinase","N"));
 		geneC.setAlias("GHI");
 		EntrezGene
 				geneD = new EntrezGene(4L, "GeneD", 9606, null, "9", null, "Test Gene D", "protein-coding", null, null, null);
-		geneD.setAttribute("isKinase:Y");
+		geneD.setAttribute(new Attribute("isKinase","Y"));
 		geneD.setAlias("JKL");
 		EntrezGene
 				geneE = new EntrezGene(5L, "GeneE", 9606, null, "X", null, "Test Gene E", "pseudo", null, null, null);
-		geneE.setAttribute("isKinase:N");
+		geneE.setAttribute(new Attribute("isKinase","N"));
 		geneE.setAlias("MNO");
 		geneRepository.insert(Arrays.asList(new EntrezGene[] {geneA, geneB, geneC, geneD, geneE}));
 
@@ -157,6 +159,26 @@ public class EntityQueryControllerTests {
 				.andExpect(jsonPath("$.links[0].rel", is("self")))
 				.andExpect(jsonPath("$.links[0].href", endsWith("/genes?geneType=pseudo")))
 				.andExpect(jsonPath("$", not(hasKey("pageMetadata"))));
+	}
+
+	@Test
+	public void findByAlias() throws Exception {
+		mockMvc.perform(get("/eq/genes?alias=MNO").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$", hasSize(1)))
+				.andExpect(jsonPath("$[0]", hasKey("entrezGeneId")))
+				.andExpect(jsonPath("$[0].entrezGeneId", is(5)))
+				.andExpect(jsonPath("$[0]", not(hasKey("links"))));
+	}
+
+	@Test
+	public void findByKeyValueAttributes() throws Exception {
+		mockMvc.perform(get("/eq/genes?attribute=isKinase:Y").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$", hasSize(2)))
+				.andExpect(jsonPath("$[0]", hasKey("entrezGeneId")))
+				.andExpect(jsonPath("$[0].entrezGeneId", is(1)))
+				.andExpect(jsonPath("$[0]", not(hasKey("links"))));
 	}
 
 	@Test

@@ -28,6 +28,6 @@ public interface Attributes {
 	void setAttributes(Collection<Attribute> attributes);
 	void setAttributeName(String attributeName);
 	void setAttributeValue(String attributeValue);
-	void setAttribute(String attribute);
+	void setAttribute(Attribute attribute);
 	boolean hasAttribute(String name);
 }

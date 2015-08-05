@@ -65,22 +65,11 @@ public class QueryCriteria {
 		this.evaluation = evaluation;
 	}
 
-	public static enum Evaluation {
-		EQUALS,
-		IN,
-		NOT_EQUALS,
-		NOT_IN,
-		LIKE,
-		NOT_LIKE,
-		GREATER_THAN,
-		LESS_THAN,
-		GREATER_THAN_EQUALS,
-		LESS_THAN_EQUALS,
-		IS_NULL,
-		NOT_NULL,
-		IS_TRUE,
-		IS_FALSE
-		;
+	@Override public String toString() {
+		return "QueryCriteria{" +
+				"key='" + key + '\'' +
+				", value=" + value +
+				", evaluation=" + evaluation +
+				'}';
 	}
-	
 }

@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.model;
+package org.oncoblocks.centromere.core.web.util;
 
-import java.util.Collection;
+import org.oncoblocks.centromere.core.model.SourcedAlias;
+import org.springframework.core.convert.converter.Converter;
 
 /**
- * Interface for adding controller query methods to entity classes with key-value aliases.  
+ * Simple converter for {@link org.oncoblocks.centromere.core.model.SourcedAlias}
  * 
  * @author woemler
  */
-public interface SourcedAliases {
-	Collection<SourcedAlias> getAliases();
-	void setAliases(Collection<SourcedAlias> aliases);
-	void setAliasName(String aliasName);
-	void setAliasSource(String aliasSource);
-	void setAlias(SourcedAlias alias);
-	boolean hasAlias(String name);
+public class StringToSourcedAliasConverter implements Converter<String, SourcedAlias> {
+	@Override public SourcedAlias convert(String s) {
+		String[] bits = s.split(":");
+		SourcedAlias alias = new SourcedAlias();
+		alias.setSource(bits[0]);
+		if (bits.length > 1){
+			alias.setName(bits[1]);
+		}
+		return alias;
+	}
 }

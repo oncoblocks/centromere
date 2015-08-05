@@ -26,8 +26,6 @@ import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.Map;
-
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 /**
@@ -40,43 +38,8 @@ public class SubjectQueryCriteriaController extends QueryCriteriaController<Subj
 	
 	@Autowired
 	public SubjectQueryCriteriaController(SubjectService service, ConversionService conversionService) {
-		super(service, new SubjectAssembler(), conversionService);
+		super(service, new SubjectAssembler(), conversionService, Subject.class);
 	}
-
-	@Override 
-	protected Map<String, Class<?>> registerQueryParameters(
-			Map<String, Class<?>> params) {
-		params.put("subjectId", Long.class);
-		params.put("name", String.class);
-		params.put("aliasName", String.class);
-		params.put("attributeName", String.class);
-		params.put("attributeValue", String.class);
-		return params;
-	}
-
-	//
-//	@RequestMapping(value = "", method = RequestMethod.GET)
-//	public ResponseEntity find(
-//			@RequestParam(value = "fields", required = false) Set<String> fields,
-//			@RequestParam(value = "exclude", required = false) Set<String> exclude,
-//			@RequestParam(value = "hal", defaultValue = "true") boolean showLinks,
-//			@PageableDefault(size = 1000) Pageable pageable,
-//			PagedResourcesAssembler<Subject> pagedResourcesAssembler, 
-//			HttpServletRequest request,
-//			@RequestParam(required = false) Long subjectId,
-//			@RequestParam(required = false) String name,
-//			@RequestParam(required = false) String aliasName,
-//			@RequestParam(required = false) String attributeName,
-//			@RequestParam(required = false) String attributeValue
-//	) {
-//		List<QueryCriteria> criterias = new ArrayList<>();
-//		if (subjectId != null) criterias.add(new QueryCriteria("subjectId", subjectId));
-//		if (name != null) criterias.add(new QueryCriteria("name", name));
-//		if (aliasName != null) criterias.add(new QueryCriteria("aliasName", aliasName));
-//		if (attributeName != null) criterias.add(new QueryCriteria("attributeName", attributeName));
-//		if (attributeValue != null) criterias.add(new QueryCriteria("attributeValue", attributeValue));
-//		return doFind(criterias, fields, exclude, showLinks, pageable, pagedResourcesAssembler, request);
-//	}
 
 	public static class SubjectAssembler extends ResourceAssemblerSupport<Subject, FilterableResource<Subject>> {
 

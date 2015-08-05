@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.oncoblocks.centromere.core.model.Attribute;
 import org.oncoblocks.centromere.core.repository.QueryCriteria;
 import org.oncoblocks.centromere.core.test.config.TestMongoConfig;
 import org.oncoblocks.centromere.core.test.models.EntrezGene;
@@ -60,23 +61,23 @@ public class GenericServiceTests {
 		geneRepository.deleteAll();
 		EntrezGene
 				geneA = new EntrezGene(1L, "GeneA", 9606, null, "1", null, "Test Gene A", "protein-coding", null, null, null);
-		geneA.setAttribute("isKinase:Y");
+		geneA.setAttribute(new Attribute("isKinase","Y"));
 		geneA.setAlias("ABC");
 		EntrezGene
 				geneB = new EntrezGene(2L, "GeneB", 9606, null, "3", null, "Test Gene B", "protein-coding", null, null, null);
-		geneB.setAttribute("isKinase:N");
+		geneB.setAttribute(new Attribute("isKinase","N"));
 		geneB.setAlias("DEF");
 		EntrezGene
 				geneC = new EntrezGene(3L, "GeneC", 9606, null, "11", null, "Test Gene C", "pseudo", null, null, null);
-		geneC.setAttribute("isKinase:N");
+		geneC.setAttribute(new Attribute("isKinase","N"));
 		geneC.setAlias("GHI");
 		EntrezGene
 				geneD = new EntrezGene(4L, "GeneD", 9606, null, "9", null, "Test Gene D", "protein-coding", null, null, null);
-		geneD.setAttribute("isKinase:Y");
+		geneD.setAttribute(new Attribute("isKinase","Y"));
 		geneD.setAlias("JKL");
 		EntrezGene
 				geneE = new EntrezGene(5L, "GeneE", 9606, null, "X", null, "Test Gene E", "pseudo", null, null, null);
-		geneE.setAttribute("isKinase:N");
+		geneE.setAttribute(new Attribute("isKinase","N"));
 		geneE.setAlias("MNO");
 		geneRepository.insert(Arrays.asList(new EntrezGene[] {geneA, geneB, geneC, geneD, geneE}));
 
@@ -338,7 +339,7 @@ public class GenericServiceTests {
 	public void rawJsonTestByNestedAttributes() throws Exception {
 
 		EntrezGene gene = new EntrezGene();
-		gene.setAttribute("isKinase:Y");
+		gene.setAttribute(new Attribute("isKinase","Y"));
 
 		List<EntrezGene> genes = geneService.find(gene);
 		Assert.notNull(genes);

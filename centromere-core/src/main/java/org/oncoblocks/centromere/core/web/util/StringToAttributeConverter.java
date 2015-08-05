@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.model;
+package org.oncoblocks.centromere.core.web.util;
 
-import java.util.Collection;
+import org.oncoblocks.centromere.core.model.Attribute;
+import org.springframework.core.convert.converter.Converter;
 
 /**
- * Interface for adding controller query methods to entity classes with key-value aliases.  
+ * Simple converter for {@link org.oncoblocks.centromere.core.model.Attribute}
  * 
  * @author woemler
  */
-public interface SourcedAliases {
-	Collection<SourcedAlias> getAliases();
-	void setAliases(Collection<SourcedAlias> aliases);
-	void setAliasName(String aliasName);
-	void setAliasSource(String aliasSource);
-	void setAlias(SourcedAlias alias);
-	boolean hasAlias(String name);
+public class StringToAttributeConverter implements Converter<String, Attribute> {
+	@Override public Attribute convert(String s) {
+		String[] bits = s.split(":");
+		Attribute attribute = new Attribute();
+		attribute.setName(bits[0]);
+		if (bits.length > 1){
+			attribute.setValue(bits[1]);
+		}
+		return attribute;
+	}
 }

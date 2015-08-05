@@ -31,11 +31,20 @@ import java.util.List;
 @Filterable
 public class Subject implements Model<Long>, SourcedAliases, Attributes {
 	
-	private Long subjectId;
-	private String name;
+	@Queryable private Long subjectId;
+	@Queryable private String name;
 	private String species;
 	private String gender;
+	
+	@Queryable({
+			@Parameter(value = "aliasName", type = String.class)
+	})
 	private List<SourcedAlias> aliases;
+
+	@Queryable({
+			@Parameter(value = "attributeName", type = String.class),
+			@Parameter(value = "attributeValue", type = String.class)
+	})
 	private List<Attribute> attributes;
 	private String notes;
 
@@ -63,10 +72,9 @@ public class Subject implements Model<Long>, SourcedAliases, Attributes {
 		attributes.add(new Attribute(null, attributeValue));
 	}
 
-	public void setAttribute(String attribute) {
+	public void setAttribute(Attribute attribute) {
 		if (attributes == null) attributes = new ArrayList<>();
-		String[] bits = attribute.split(":");
-		if (bits.length == 2) attributes.add(new Attribute(bits[0], bits[1]));
+		attributes.add(attribute);
 	}
 
 	public boolean hasAttribute(String name) {
@@ -90,10 +98,9 @@ public class Subject implements Model<Long>, SourcedAliases, Attributes {
 		aliases.add(new SourcedAlias(aliasSource, null));
 	}
 
-	public void setAlias(String alias) {
+	public void setAlias(SourcedAlias alias) {
 		if (aliases == null) aliases = new ArrayList<>();
-		String[] bits = alias.split(":");
-		if (bits.length == 2) aliases.add(new SourcedAlias(bits[0], bits[1]));
+		aliases.add(alias);
 	}
 
 	public boolean hasAlias(String name) {
