@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.model;
+package org.oncoblocks.centromere.core.web.controller;
 
-import java.lang.annotation.*;
+import org.oncoblocks.centromere.core.repository.Evaluation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Used for annotating {@link Model} fields to denote that it
- *   is a foreign key, referencing a different class, {@code type}.  Used in building hypermedia links
- *   to related entities, where {@code rel} is the relationship identifier, and {@code qsParameter} is
- *   the query string parameter that references the parent class's field in many-to-one relationships..
- * 
  * @author woemler
  */
+
 @Retention(RetentionPolicy.RUNTIME)
-@Inherited
 @Target(ElementType.FIELD)
-public @interface ForeignKey {
-	Class<? extends Model> type();
-	String relString() default "";
-	String qsParameter() default "";
+public @interface QueryParameter {
+	String name() default "";
+	Evaluation evalutation() default Evaluation.EQUALS;
 }

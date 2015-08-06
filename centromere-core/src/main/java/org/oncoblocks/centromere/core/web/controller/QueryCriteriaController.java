@@ -23,6 +23,7 @@ import org.oncoblocks.centromere.core.repository.Evaluation;
 import org.oncoblocks.centromere.core.repository.QueryCriteria;
 import org.oncoblocks.centromere.core.web.service.ServiceOperations;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -56,14 +57,11 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 public abstract class QueryCriteriaController<T extends Model<ID>, ID extends Serializable> 
 		extends AbstractCrudController<T, ID> {
 	
-	private ConversionService conversionService;
 	private Class<T> model;
 
 	public QueryCriteriaController(ServiceOperations<T, ID> service,
-			ResourceAssemblerSupport<T, FilterableResource<T>> assembler,
-			ConversionService conversionService, Class<T> model) {
+			ResourceAssemblerSupport<T, FilterableResource<T>> assembler, Class<T> model) {
 		super(service, assembler);
-		this.conversionService = conversionService;
 		this.model = model;
 	}
 	
@@ -166,9 +164,9 @@ public abstract class QueryCriteriaController<T extends Model<ID>, ID extends Se
 //	protected List<QueryParameter> registerQueryParameters(List<QueryParameter> queryParameters){
 //		return queryParameters;
 //	}
-
-
+	
 	private List<QueryCriteria> convertRequestParameters(Map<String, String[]> parameterMap){
+		ConversionService conversionService = new DefaultConversionService();
 		List<QueryCriteria> criterias = new ArrayList<>();
 		for (Field field: model.getDeclaredFields()){
 			String paramName = field.getName();
