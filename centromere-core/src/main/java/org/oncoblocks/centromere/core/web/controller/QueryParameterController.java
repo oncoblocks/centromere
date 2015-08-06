@@ -17,7 +17,6 @@
 package org.oncoblocks.centromere.core.web.controller;
 
 import org.oncoblocks.centromere.core.model.Model;
-import org.oncoblocks.centromere.core.repository.Evaluation;
 import org.oncoblocks.centromere.core.repository.QueryCriteria;
 import org.oncoblocks.centromere.core.web.service.ServiceOperations;
 import org.springframework.data.domain.Page;
@@ -36,8 +35,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -74,7 +71,7 @@ public abstract class QueryParameterController<T extends Model<ID>, ID extends S
 			@ModelAttribute Q params,
 			Pageable pageable
 	){
-		List<QueryCriteria> criterias = convertRequestParameters(params);
+		List<QueryCriteria> criterias = QueryParameters.toQueryCriteria(params);
 		List<T> entities;
 		if (pageable.getSort() != null){
 			entities = (List<T>) service.findSorted(criterias, pageable.getSort());
@@ -105,7 +102,7 @@ public abstract class QueryParameterController<T extends Model<ID>, ID extends S
 			Pageable pageable,
 			HttpServletRequest request
 	){
-		List<QueryCriteria> criterias = convertRequestParameters(params);
+		List<QueryCriteria> criterias = QueryParameters.toQueryCriteria(params);
 		List<T> entities;
 		if (pageable.getSort() != null){
 			entities = (List<T>) service.findSorted(criterias, pageable.getSort());
@@ -138,7 +135,7 @@ public abstract class QueryParameterController<T extends Model<ID>, ID extends S
 			@ModelAttribute Q params,
 			Pageable pageable
 	){
-		List<QueryCriteria> criterias = convertRequestParameters(params);
+		List<QueryCriteria> criterias = QueryParameters.toQueryCriteria(params);
 		Page<T> page = service.findPaged(criterias, pageable);
 		ResponseEnvelope<Page<T>> envelope 
 				= new ResponseEnvelope<>(page, params.getIncludedFields(), params.getExcludedFields());
@@ -167,7 +164,7 @@ public abstract class QueryParameterController<T extends Model<ID>, ID extends S
 			PagedResourcesAssembler<T> pagedResourcesAssembler,
 			HttpServletRequest request
 	){
-		List<QueryCriteria> criterias = convertRequestParameters(params);
+		List<QueryCriteria> criterias = QueryParameters.toQueryCriteria(params);
 		Page<T> page = service.findPaged(criterias, pageable);
 		Link selfLink = new Link(linkTo(this.getClass()).slash("").toString() +
 				(request.getQueryString() != null ? "?" + request.getQueryString() : ""), "self");
@@ -177,35 +174,5 @@ public abstract class QueryParameterController<T extends Model<ID>, ID extends S
 				= new ResponseEnvelope<>(pagedResources, params.getIncludedFields(), params.getExcludedFields());
 		return new ResponseEntity<>(envelope, HttpStatus.OK);
 	}
-
-	/**
-	 * Converts a {@link org.oncoblocks.centromere.core.web.controller.QueryParameters} object into
-	 *   a list of {@link org.oncoblocks.centromere.core.repository.QueryCriteria}, to be passed to 
-	 *   the repository layer as query parameters.
-	 * 
-	 * @param queryParameters mapped query object from the servlet request.
-	 * @return
-	 */
-	private List<QueryCriteria> convertRequestParameters(Q queryParameters){
-		List<QueryCriteria> criterias = new ArrayList<>();
-		for (Field field: queryParameters.getClass().getDeclaredFields()){
-			try {
-				field.setAccessible(true);
-				if (field.get(queryParameters) != null){
-					String name = field.getName();
-					Evaluation evaluation = Evaluation.EQUALS;
-					if (field.isAnnotationPresent(QueryParameter.class)){
-						QueryParameter queryParameter = field.getAnnotation(QueryParameter.class);
-						if (!queryParameter.name().equals("")) name = queryParameter.name();
-						evaluation = queryParameter.evalutation();
-					}
-					criterias.add(new QueryCriteria(name, field.get(queryParameters), evaluation));
-				}
-			} catch (IllegalAccessException e){
-				e.printStackTrace();
-			}
-		}
-		return criterias;
-	}
-
+	
 }

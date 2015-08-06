@@ -145,9 +145,9 @@ public class Subject<ID extends Serializable> implements Model<ID>, SourcedAlias
 		attributes.add(new Attribute(null, attributeValue));
 	}
 
-	public void setAttribute(String attribute) {
+	public void setAttribute(Attribute attribute) {
 		if (attributes == null) attributes = new ArrayList<>();
-		attributes.add(new Attribute(attribute.split(":")[0], attribute.split(":")[1]));
+		attributes.add(attribute);
 	}
 
 	public boolean hasAttribute(String name) {
@@ -167,9 +167,9 @@ public class Subject<ID extends Serializable> implements Model<ID>, SourcedAlias
 		aliases.add(new SourcedAlias(aliasSource, null));
 	}
 
-	public void setAlias(String alias) {
+	public void setAlias(SourcedAlias alias) {
 		if (aliases == null) aliases = new ArrayList<>();
-		aliases.add(new SourcedAlias(alias.split(":")[0], alias.split(":")[1]));
+		aliases.add(alias);
 	}
 
 	public boolean hasAlias(String name) {

@@ -167,10 +167,9 @@ public class EntrezGene<ID extends Serializable> implements Attributes, SimpleAl
 		attributes.add(new Attribute(null, attributeValue));
 	}
 
-	public void setAttribute(String attribute) {
+	public void setAttribute(Attribute attribute) {
 		if (attributes == null) attributes = new ArrayList<>();
-		String[] bits = attribute.split(":");
-		if (bits.length == 2) attributes.add(new Attribute(bits[0], bits[1]));
+		attributes.add(attribute);
 	}
 
 	public boolean hasAttribute(String name) {
