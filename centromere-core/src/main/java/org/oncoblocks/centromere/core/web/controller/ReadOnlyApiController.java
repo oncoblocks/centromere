@@ -39,7 +39,7 @@ public class ReadOnlyApiController<
 		Q extends QueryParameters> extends BaseApiController<T, ID, Q>  {
 
 	public ReadOnlyApiController(RepositoryOperations<T, ID> repository,
-			ResourceAssemblerSupport<T, FilterableResource<T>> assembler) {
+			ResourceAssemblerSupport<T, FilterableResource> assembler) {
 		super(repository, assembler);
 	}
 

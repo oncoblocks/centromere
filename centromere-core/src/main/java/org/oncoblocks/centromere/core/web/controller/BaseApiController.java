@@ -53,11 +53,11 @@ public abstract class BaseApiController<
 		Q extends QueryParameters> {
 
 	protected RepositoryOperations<T, ID> repository;
-	protected ResourceAssemblerSupport<T, FilterableResource<T>> assembler;
+	protected ResourceAssemblerSupport<T, FilterableResource> assembler;
 
 	public BaseApiController(
 			RepositoryOperations<T, ID> repository,
-			ResourceAssemblerSupport<T, FilterableResource<T>> assembler) {
+			ResourceAssemblerSupport<T, FilterableResource> assembler) {
 		this.repository = repository;
 		this.assembler = assembler;
 	}
@@ -73,14 +73,14 @@ public abstract class BaseApiController<
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET,
 			produces = { HalMediaType.APPLICATION_JSON_HAL_VALUE })
-	public ResponseEntity<ResponseEnvelope<FilterableResource<T>>> findByIdWithHal(
+	public ResponseEntity<ResponseEnvelope<FilterableResource>> findByIdWithHal(
 			@PathVariable ID id,
 			@RequestParam(required = false) Set<String> fields,
 			@RequestParam(required = false) Set<String> exclude) {
 		T entity = repository.findById(id);
 		if (entity == null) throw new ResourceNotFoundException();
-		FilterableResource<T> resource = assembler.toResource(entity);
-		ResponseEnvelope<FilterableResource<T>> envelope = new ResponseEnvelope<>(resource, fields, exclude);
+		FilterableResource resource = assembler.toResource(entity);
+		ResponseEnvelope<FilterableResource> envelope = new ResponseEnvelope<>(resource, fields, exclude);
 		return new ResponseEntity<>(envelope, HttpStatus.OK);
 	}
 
@@ -147,7 +147,7 @@ public abstract class BaseApiController<
 	 */
 	@RequestMapping(value = "", method = RequestMethod.GET, params = { "!page", "!size" },
 			produces = {HalMediaType.APPLICATION_JSON_HAL_VALUE})
-	public ResponseEntity<ResponseEnvelope<Resources<FilterableResource<T>>>> findWithHal(
+	public ResponseEntity<ResponseEnvelope<Resources<FilterableResource>>> findWithHal(
 			@ModelAttribute Q params,
 			Pageable pageable,
 			HttpServletRequest request
@@ -160,12 +160,12 @@ public abstract class BaseApiController<
 		} else {
 			entities = (List<T>) repository.find(criterias);
 		}
-		List<FilterableResource<T>> resourceList = assembler.toResources(entities);
-		Resources<FilterableResource<T>> resources = new Resources<>(resourceList);
+		List<FilterableResource> resourceList = assembler.toResources(entities);
+		Resources<FilterableResource> resources = new Resources<>(resourceList);
 		Link selfLink = new Link(linkTo(this.getClass()).slash("").toString() +
 				(request.getQueryString() != null ? "?" + request.getQueryString() : ""), "self");
 		resources.add(selfLink);
-		ResponseEnvelope<Resources<FilterableResource<T>>> envelope
+		ResponseEnvelope<Resources<FilterableResource>> envelope
 				= new ResponseEnvelope<>(resources, params.getIncludedFields(), params.getExcludedFields());
 		return new ResponseEntity<>(envelope, HttpStatus.OK);
 	}
@@ -210,7 +210,7 @@ public abstract class BaseApiController<
 	 */
 	@RequestMapping(value = "", method = RequestMethod.GET,
 			produces = {HalMediaType.APPLICATION_JSON_HAL_VALUE})
-	public ResponseEntity<ResponseEnvelope<PagedResources<FilterableResource<T>>>> findWithHal(
+	public ResponseEntity<ResponseEnvelope<PagedResources<FilterableResource>>> findWithHal(
 			@ModelAttribute Q params,
 			Pageable pageable,
 			PagedResourcesAssembler<T> pagedResourcesAssembler,
@@ -221,9 +221,9 @@ public abstract class BaseApiController<
 		Page<T> page = repository.findPaged(criterias, pageable);
 		Link selfLink = new Link(linkTo(this.getClass()).slash("").toString() +
 				(request.getQueryString() != null ? "?" + request.getQueryString() : ""), "self");
-		PagedResources<FilterableResource<T>> pagedResources
+		PagedResources<FilterableResource> pagedResources
 				= pagedResourcesAssembler.toResource(page, assembler, selfLink);
-		ResponseEnvelope<PagedResources<FilterableResource<T>>> envelope
+		ResponseEnvelope<PagedResources<FilterableResource>> envelope
 				= new ResponseEnvelope<>(pagedResources, params.getIncludedFields(), params.getExcludedFields());
 		return new ResponseEntity<>(envelope, HttpStatus.OK);
 	}

@@ -17,7 +17,6 @@
 package org.oncoblocks.centromere.core.test.web.controller.crud;
 
 import org.oncoblocks.centromere.core.test.models.EntrezGene;
-import org.oncoblocks.centromere.core.test.web.controller.crud.GeneController;
 import org.oncoblocks.centromere.core.web.controller.FilterableResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityLinks;
@@ -29,12 +28,12 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-public class GeneAssembler extends ResourceAssemblerSupport<EntrezGene, FilterableResource<EntrezGene>> {
+public class GeneAssembler extends ResourceAssemblerSupport<EntrezGene, FilterableResource> {
 	
 	@Autowired private EntityLinks entityLinks;
 	
 	public GeneAssembler() {
-		super(GeneController.class, (Class<FilterableResource<EntrezGene>>)(Class<?>) FilterableResource.class);
+		super(GeneController.class, FilterableResource.class);
 	}
 
 	@Override public FilterableResource<EntrezGene> toResource(EntrezGene gene) {

@@ -45,7 +45,7 @@ public class CrudApiController<
 		extends BaseApiController<T, ID, Q> {
 	
 	public CrudApiController(RepositoryOperations<T, ID> service,
-			ResourceAssemblerSupport<T, FilterableResource<T>> assembler) {
+			ResourceAssemblerSupport<T, FilterableResource> assembler) {
 		super(service, assembler);
 	}
 

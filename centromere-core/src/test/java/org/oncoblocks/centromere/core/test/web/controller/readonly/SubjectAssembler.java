@@ -29,12 +29,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SubjectAssembler extends
-		ResourceAssemblerSupport<Subject, FilterableResource<Subject>> {
+		ResourceAssemblerSupport<Subject, FilterableResource> {
 	
 	@Autowired EntityLinks entityLinks;
 
 	public SubjectAssembler() {
-		super(SubjectController.class, (Class<FilterableResource<Subject>>)(Class<?>) FilterableResource.class );
+		super(SubjectController.class, FilterableResource.class );
 	}
 
 	@Override
