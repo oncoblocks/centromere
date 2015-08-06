@@ -28,6 +28,7 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -73,14 +74,15 @@ public abstract class BaseApiController<
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET,
 			produces = { HalMediaType.APPLICATION_JSON_HAL_VALUE })
-	public ResponseEntity<ResponseEnvelope<FilterableResource>> findByIdWithHal(
+	public HttpEntity findByIdWithHal(
 			@PathVariable ID id,
 			@RequestParam(required = false) Set<String> fields,
-			@RequestParam(required = false) Set<String> exclude) {
+			@RequestParam(required = false) Set<String> exclude
+	) {
 		T entity = repository.findById(id);
 		if (entity == null) throw new ResourceNotFoundException();
 		FilterableResource resource = assembler.toResource(entity);
-		ResponseEnvelope<FilterableResource> envelope = new ResponseEnvelope<>(resource, fields, exclude);
+		ResponseEnvelope envelope = new ResponseEnvelope(resource, fields, exclude);
 		return new ResponseEntity<>(envelope, HttpStatus.OK);
 	}
 
@@ -95,12 +97,13 @@ public abstract class BaseApiController<
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET,
 			produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<ResponseEnvelope<T>> findById(@PathVariable ID id,
+	public HttpEntity findById(@PathVariable ID id,
 			@RequestParam(required = false) Set<String> fields,
-			@RequestParam(required = false) Set<String> exclude) {
+			@RequestParam(required = false) Set<String> exclude
+	) {
 		T entity = repository.findById(id);
 		if (entity == null) throw new ResourceNotFoundException();
-		ResponseEnvelope<T> envelope = new ResponseEnvelope<>(entity, fields, exclude);
+		ResponseEnvelope envelope = new ResponseEnvelope(entity, fields, exclude);
 		return new ResponseEntity<>(envelope, HttpStatus.OK);
 	}
 
@@ -116,10 +119,7 @@ public abstract class BaseApiController<
 	 */
 	@RequestMapping(value = "", method = RequestMethod.GET, params = { "!page", "!size" },
 			produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<ResponseEnvelope<List<T>>> find(
-			@ModelAttribute Q params,
-			Pageable pageable
-	){
+	public HttpEntity find(@ModelAttribute Q params, Pageable pageable){
 		pageable = QueryParameters.remapPageable(pageable, params);
 		List<QueryCriteria> criterias = QueryParameters.toQueryCriteria(params);
 		List<T> entities;
@@ -128,8 +128,8 @@ public abstract class BaseApiController<
 		} else {
 			entities = (List<T>) repository.find(criterias);
 		}
-		ResponseEnvelope<List<T>> envelope
-				= new ResponseEnvelope<>(entities, params.getIncludedFields(), params.getExcludedFields());
+		ResponseEnvelope envelope
+				= new ResponseEnvelope(entities, params.getIncludedFields(), params.getExcludedFields());
 		return new ResponseEntity<>(envelope, HttpStatus.OK);
 	}
 
@@ -147,11 +147,7 @@ public abstract class BaseApiController<
 	 */
 	@RequestMapping(value = "", method = RequestMethod.GET, params = { "!page", "!size" },
 			produces = {HalMediaType.APPLICATION_JSON_HAL_VALUE})
-	public ResponseEntity<ResponseEnvelope<Resources<FilterableResource>>> findWithHal(
-			@ModelAttribute Q params,
-			Pageable pageable,
-			HttpServletRequest request
-	){
+	public HttpEntity findWithHal(@ModelAttribute Q params, Pageable pageable, HttpServletRequest request){
 		pageable = QueryParameters.remapPageable(pageable, params);
 		List<QueryCriteria> criterias = QueryParameters.toQueryCriteria(params);
 		List<T> entities;
@@ -165,8 +161,8 @@ public abstract class BaseApiController<
 		Link selfLink = new Link(linkTo(this.getClass()).slash("").toString() +
 				(request.getQueryString() != null ? "?" + request.getQueryString() : ""), "self");
 		resources.add(selfLink);
-		ResponseEnvelope<Resources<FilterableResource>> envelope
-				= new ResponseEnvelope<>(resources, params.getIncludedFields(), params.getExcludedFields());
+		ResponseEnvelope envelope
+				= new ResponseEnvelope(resources, params.getIncludedFields(), params.getExcludedFields());
 		return new ResponseEntity<>(envelope, HttpStatus.OK);
 	}
 
@@ -182,15 +178,12 @@ public abstract class BaseApiController<
 	 */
 	@RequestMapping(value = "", method = RequestMethod.GET,
 			produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<ResponseEnvelope<Page<T>>> findPaged(
-			@ModelAttribute Q params,
-			Pageable pageable
-	){
+	public HttpEntity findPaged(@ModelAttribute Q params, Pageable pageable){
 		pageable = QueryParameters.remapPageable(pageable, params);
 		List<QueryCriteria> criterias = QueryParameters.toQueryCriteria(params);
 		Page<T> page = repository.findPaged(criterias, pageable);
-		ResponseEnvelope<Page<T>> envelope
-				= new ResponseEnvelope<>(page, params.getIncludedFields(), params.getExcludedFields());
+		ResponseEnvelope envelope
+				= new ResponseEnvelope(page, params.getIncludedFields(), params.getExcludedFields());
 		return new ResponseEntity<>(envelope, HttpStatus.OK);
 	}
 
@@ -210,7 +203,7 @@ public abstract class BaseApiController<
 	 */
 	@RequestMapping(value = "", method = RequestMethod.GET,
 			produces = {HalMediaType.APPLICATION_JSON_HAL_VALUE})
-	public ResponseEntity<ResponseEnvelope<PagedResources<FilterableResource>>> findWithHal(
+	public HttpEntity findWithHal(
 			@ModelAttribute Q params,
 			Pageable pageable,
 			PagedResourcesAssembler<T> pagedResourcesAssembler,
@@ -223,8 +216,8 @@ public abstract class BaseApiController<
 				(request.getQueryString() != null ? "?" + request.getQueryString() : ""), "self");
 		PagedResources<FilterableResource> pagedResources
 				= pagedResourcesAssembler.toResource(page, assembler, selfLink);
-		ResponseEnvelope<PagedResources<FilterableResource>> envelope
-				= new ResponseEnvelope<>(pagedResources, params.getIncludedFields(), params.getExcludedFields());
+		ResponseEnvelope envelope
+				= new ResponseEnvelope(pagedResources, params.getIncludedFields(), params.getExcludedFields());
 		return new ResponseEntity<>(envelope, HttpStatus.OK);
 	}
 
@@ -235,7 +228,7 @@ public abstract class BaseApiController<
 	 * @return
 	 */
 	@RequestMapping(value = { "", "/**" }, method = RequestMethod.HEAD)
-	public ResponseEntity<?> head(){
+	public HttpEntity head(){
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
@@ -247,7 +240,7 @@ public abstract class BaseApiController<
 	 */
 	@RequestMapping(value = { "", "/**" }, method = RequestMethod.OPTIONS,
 			produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<?> options() {
+	public HttpEntity options() {
 		return null; //TODO
 	}
 	

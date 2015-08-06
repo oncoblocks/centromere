@@ -18,22 +18,16 @@ package org.oncoblocks.centromere.core.config;
 
 import com.fasterxml.classmate.TypeResolver;
 import com.google.common.base.Predicate;
-import org.oncoblocks.centromere.core.web.controller.FilterableResource;
-import org.oncoblocks.centromere.core.web.controller.ResponseEnvelope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.ResponseEntity;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import java.lang.reflect.WildcardType;
-
 import static springfox.documentation.builders.PathSelectors.regex;
-import static springfox.documentation.schema.AlternateTypeRules.newRule;
 
 /**
  * @author woemler
@@ -54,11 +48,6 @@ public class SwaggerConfig {
 				.paths(apiPaths())
 				.build()
 				.apiInfo(apiInfo())
-				.genericModelSubstitutes(ResponseEntity.class, ResponseEnvelope.class, FilterableResource.class)
-				.alternateTypeRules(
-						newRule(typeResolver.resolve(ResponseEntity.class,
-										typeResolver.resolve(FilterableResource.class, WildcardType.class)),
-								typeResolver.resolve(WildcardType.class)))
 				.enableUrlTemplating(true);
 	}
 

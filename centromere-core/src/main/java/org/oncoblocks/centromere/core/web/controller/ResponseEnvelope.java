@@ -27,23 +27,23 @@ import java.util.Set;
  * 
  * @author woemler 
  */
-public class ResponseEnvelope<T> {
+public class ResponseEnvelope {
 
 	private Set<String> fieldSet;
 	private Set<String> exclude;
-	private T entity;
+	private Object entity;
 
-	public ResponseEnvelope(T entity) {
+	public ResponseEnvelope(Object entity) {
 		this.entity = entity;
 	}
 
-	public ResponseEnvelope(T entity, Set<String> fieldSet, Set<String> exclude) {
+	public ResponseEnvelope(Object entity, Set<String> fieldSet, Set<String> exclude) {
 		this.fieldSet = fieldSet;
 		this.exclude = exclude;
 		this.entity = entity;
 	}
 
-	public T getEntity() {
+	public Object getEntity() {
 		return entity;
 	}
 

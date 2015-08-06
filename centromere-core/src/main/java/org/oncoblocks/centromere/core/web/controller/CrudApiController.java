@@ -22,6 +22,7 @@ import org.oncoblocks.centromere.core.web.exceptions.RequestFailureException;
 import org.oncoblocks.centromere.core.web.exceptions.ResourceNotFoundException;
 import org.oncoblocks.centromere.core.web.query.QueryParameters;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -59,7 +60,7 @@ public class CrudApiController<
 	 */
 	@RequestMapping(value = "", method = RequestMethod.POST, 
 			produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<T> create(@RequestBody T entity) {
+	public HttpEntity create(@RequestBody T entity) {
 		T created = repository.insert(entity);
 		if (created == null) throw new RequestFailureException(40003, "There was a problem creating the record.", "", "");
 		return new ResponseEntity<>(created, HttpStatus.CREATED);
@@ -75,10 +76,10 @@ public class CrudApiController<
 	 */
 	@RequestMapping(value = "", method = RequestMethod.POST, 
 			produces = { HalMediaType.APPLICATION_JSON_HAL_VALUE })
-	public ResponseEntity<FilterableResource<T>> createWithHal(@RequestBody T entity) {
+	public HttpEntity createWithHal(@RequestBody T entity) {
 		T created = repository.insert(entity);
 		if (created == null) throw new RequestFailureException(40003, "There was a problem creating the record.", "", "");
-		FilterableResource<T> resource = assembler.toResource(created);
+		FilterableResource resource = assembler.toResource(created);
 		return new ResponseEntity<>(resource, HttpStatus.CREATED);
 	}
 
@@ -93,7 +94,7 @@ public class CrudApiController<
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, 
 			produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<T> update(@RequestBody T entity, @PathVariable ID id) {
+	public HttpEntity update(@RequestBody T entity, @PathVariable ID id) {
 		if (!repository.exists(id)) throw new ResourceNotFoundException();
 		T updated = repository.update(entity);
 		if (updated == null) throw new RequestFailureException(40004, "There was a problem updating the record.", "", "");
@@ -111,11 +112,11 @@ public class CrudApiController<
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, 
 			produces = { HalMediaType.APPLICATION_JSON_HAL_VALUE })
-	public ResponseEntity<FilterableResource<T>> updateWithHal(@RequestBody T entity, @PathVariable ID id) {
+	public HttpEntity updateWithHal(@RequestBody T entity, @PathVariable ID id) {
 		if (!repository.exists(id)) throw new ResourceNotFoundException();
 		T updated = repository.update(entity);
 		if (updated == null) throw new RequestFailureException(40004, "There was a problem updating the record.", "", "");
-		FilterableResource<T> resource = assembler.toResource(updated);
+		FilterableResource resource = assembler.toResource(updated);
 		return new ResponseEntity<>(resource, HttpStatus.CREATED);
 	}
 
@@ -127,7 +128,7 @@ public class CrudApiController<
 	 * @return {@link org.springframework.http.HttpStatus} indicating success or failure.
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<?> delete(@PathVariable ID id) {
+	public HttpEntity delete(@PathVariable ID id) {
 		repository.delete(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
