@@ -16,7 +16,9 @@
 
 package org.oncoblocks.centromere.model.common;
 
-import org.oncoblocks.centromere.core.model.*;
+import org.oncoblocks.centromere.core.model.Filterable;
+import org.oncoblocks.centromere.core.model.Model;
+import org.oncoblocks.centromere.core.web.query.Attribute;
 
 import java.io.Serializable;
 import java.util.*;
@@ -26,7 +28,7 @@ import java.util.*;
  */
 
 @Filterable
-public class EntrezGene<ID extends Serializable> implements Attributes, SimpleAliases, Model<ID> {
+public class EntrezGene<ID extends Serializable> implements Model<ID> {
 
 	private ID id;
 	private Long entrezGeneId;
@@ -61,6 +63,7 @@ public class EntrezGene<ID extends Serializable> implements Attributes, SimpleAl
 		this.aliases = aliases;
 	}
 
+	@Override 
 	public ID getId() {
 		return id;
 	}
@@ -137,8 +140,8 @@ public class EntrezGene<ID extends Serializable> implements Attributes, SimpleAl
 		return attributes;
 	}
 
-	public void setAttributes(Collection<Attribute> attributes) {
-		this.attributes = (List) attributes;
+	public void setAttributes(List<Attribute> attributes) {
+		this.attributes = attributes;
 	}
 
 	public Map<String, Object> getDbXrefs() {
@@ -156,36 +159,4 @@ public class EntrezGene<ID extends Serializable> implements Attributes, SimpleAl
 	public void setAliases(Set<String> aliases) {
 		this.aliases = aliases;
 	}
-
-	public void setAttributeName(String attributeName) {
-		if (attributes == null) attributes = new ArrayList<>();
-		attributes.add(new Attribute(attributeName, null));
-	}
-
-	public void setAttributeValue(String attributeValue) {
-		if (attributes == null) attributes = new ArrayList<>();
-		attributes.add(new Attribute(null, attributeValue));
-	}
-
-	public void setAttribute(Attribute attribute) {
-		if (attributes == null) attributes = new ArrayList<>();
-		attributes.add(attribute);
-	}
-
-	public boolean hasAttribute(String name) {
-		for (Attribute attribute: attributes){
-			if (attribute.getName().equals(name)) return true;
-		}
-		return false;
-	}
-
-	public void setAlias(String alias) {
-		if (aliases == null) aliases = new HashSet<>();
-		aliases.add(alias);
-	}
-
-	public boolean hasAlias(String alias) {
-		return aliases.contains(alias);
-	}
-	
 }

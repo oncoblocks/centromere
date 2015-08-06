@@ -16,11 +16,12 @@
 
 package org.oncoblocks.centromere.model.common;
 
-import org.oncoblocks.centromere.core.model.*;
+import org.oncoblocks.centromere.core.model.Filterable;
+import org.oncoblocks.centromere.core.model.Model;
+import org.oncoblocks.centromere.core.web.query.Attribute;
+import org.oncoblocks.centromere.core.web.query.SourcedAlias;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ import java.util.List;
  */
 
 @Filterable
-public class Subject<ID extends Serializable> implements Model<ID>, SourcedAliases, Attributes {
+public class Subject<ID extends Serializable> implements Model<ID> {
 
 	private ID id;
 	private String name;
@@ -53,24 +54,7 @@ public class Subject<ID extends Serializable> implements Model<ID>, SourcedAlias
 		this.attributes = attributes;
 	}
 
-	public String getAttributeByName(String name){
-		for (Attribute attribute: attributes){
-			if (attribute.getName().equals(name)){
-				return attribute.getValue();
-			}
-		}
-		return null;
-	}
-
-	public String getAliasBySource(String source){
-		for (SourcedAlias alias: aliases){
-			if (alias.getSource().equals(source)){
-				return alias.getName();
-			}
-		}
-		return null;
-	}
-
+	@Override 
 	public ID getId() {
 		return id;
 	}
@@ -123,60 +107,15 @@ public class Subject<ID extends Serializable> implements Model<ID>, SourcedAlias
 		return aliases;
 	}
 
-	public void setAliases(Collection<SourcedAlias> aliases) {
-		this.aliases = (List) aliases;
+	public void setAliases(List<SourcedAlias> aliases) {
+		this.aliases = aliases;
 	}
 
 	public List<Attribute> getAttributes() {
 		return attributes;
 	}
 
-	public void setAttributes(Collection<Attribute> attributes) {
-		this.attributes = (List) attributes;
+	public void setAttributes(List<Attribute> attributes) {
+		this.attributes = attributes;
 	}
-
-	public void setAttributeName(String attributeName) {
-		if (attributes == null) attributes = new ArrayList<>();
-		attributes.add(new Attribute(attributeName, null));
-	}
-
-	public void setAttributeValue(String attributeValue) {
-		if (attributes == null) attributes = new ArrayList<>();
-		attributes.add(new Attribute(null, attributeValue));
-	}
-
-	public void setAttribute(Attribute attribute) {
-		if (attributes == null) attributes = new ArrayList<>();
-		attributes.add(attribute);
-	}
-
-	public boolean hasAttribute(String name) {
-		for (Attribute attribute: attributes){
-			if (attribute.getName().equals(name)) return true;
-		}
-		return false;
-	}
-
-	public void setAliasName(String aliasName) {
-		if (aliases == null) aliases = new ArrayList<>();
-		aliases.add(new SourcedAlias(null, aliasName));
-	}
-
-	public void setAliasSource(String aliasSource) {
-		if (aliases == null) aliases = new ArrayList<>();
-		aliases.add(new SourcedAlias(aliasSource, null));
-	}
-
-	public void setAlias(SourcedAlias alias) {
-		if (aliases == null) aliases = new ArrayList<>();
-		aliases.add(alias);
-	}
-
-	public boolean hasAlias(String name) {
-		for (SourcedAlias alias: aliases){
-			if (alias.getName().equals(name)) return true;
-		}
-		return false;
-	}
-	
 }
