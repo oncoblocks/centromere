@@ -241,34 +241,6 @@ public class GenericJdbcRepository<T extends Model<ID>, ID extends Serializable>
 	}
 
 	/**
-	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#find}
-	 */
-	public List<T> find(T entityQuery) {
-		return null; //TODO
-	}
-
-	/**
-	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#findSorted}
-	 */
-	public List<T> findSorted(T entityQuery, Sort sort) {
-		return null; //TODO
-	}
-
-	/**
-	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#findPaged}
-	 */
-	public Page<T> findPaged(T entityQuery, Pageable pageable) {
-		return null; //TODO
-	}
-
-	/**
-	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#count}
-	 */
-	public long count(T entityQuery) {
-		return 0; //TODO
-	}
-
-	/**
 	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#insert}
 	 */
 	public <S extends T> S insert(S entity) {

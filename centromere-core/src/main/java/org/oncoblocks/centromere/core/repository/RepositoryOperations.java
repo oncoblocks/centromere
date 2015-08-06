@@ -120,44 +120,6 @@ public interface RepositoryOperations<T, ID extends Serializable> {
 	 */
 	long count(Iterable<QueryCriteria> queryCriterias);
 
-	/* Find by entity query */
-
-	/**
-	 * Searches for all records that match the submitted entity model object attributes.
-	 * 
-	 * @param entityQuery partial model object
-	 * @return all matching {@code T} records.
-	 */
-	Iterable<T> find(T entityQuery);
-
-	/**
-	 * Searches for all records that match the submitted entity model object attributes, and 
-	 *   returns them in the requested order.
-	 * 
-	 * @param entityQuery partial model object
-	 * @param sort {@link org.springframework.data.domain.Sort}
-	 * @return all matching {@code T} records
-	 */
-	Iterable<T> findSorted(T entityQuery, Sort sort);
-
-	/**
-	 * Searches for all records that match the submitted entity model object attributes, and 
-	 *   returns a paged collection.
-	 * 
-	 * @param entityQuery partial model object
-	 * @param pageable {@link org.springframework.data.domain.Pageable}
-	 * @return {@link org.springframework.data.domain.Page} containing the desired set of records.
-	 */
-	Page<T> findPaged(T entityQuery, Pageable pageable);
-
-	/**
-	 * Returns the count of records that match the submitted entity model object attributes.
-	 * 
-	 * @param entityQuery parial model object
-	 * @return count of matching records
-	 */
-	long count(T entityQuery);
-
 	/* Create records */
 
 	/**

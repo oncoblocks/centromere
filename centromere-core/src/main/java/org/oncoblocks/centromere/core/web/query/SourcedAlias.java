@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.model;
+package org.oncoblocks.centromere.core.web.query;
 
 /**
  * Simple representation of alias names for embedding in other entities.

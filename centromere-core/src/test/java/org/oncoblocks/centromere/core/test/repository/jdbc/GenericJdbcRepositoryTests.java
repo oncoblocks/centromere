@@ -20,8 +20,6 @@ import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.oncoblocks.centromere.core.model.Attribute;
-import org.oncoblocks.centromere.core.model.SourcedAlias;
 import org.oncoblocks.centromere.core.repository.Evaluation;
 import org.oncoblocks.centromere.core.repository.QueryCriteria;
 import org.oncoblocks.centromere.core.test.config.TestJdbcDataSourceConfig;
@@ -52,40 +50,12 @@ public class GenericJdbcRepositoryTests {
 	
 	@Before
 	public void setup(){
-		
 		if (isConfigured) return;
-		
 		subjectRepository.deleteAll();
-		
-		Subject subject = new Subject(1L, "PersonA", "Homo sapiens", "M", null, null, null);
-		subject.setAlias(new SourcedAlias("clinic", "patient01"));
-		subject.setAttribute(new Attribute("cancerType", "colon"));
-		subjectRepository.insert(subject);
-
-		subject = new Subject(2L, "PersonB", "Homo sapiens", "F", null, null, null);
-		subject.setAlias(new SourcedAlias("clinic", "patient02"));
-		subject.setAttribute(new Attribute("cancerType","breast"));
-		subjectRepository.insert(subject);
-
-		subject = new Subject(3L, "PersonC", "Homo sapiens", "M", null, null, null);
-		subject.setAlias(new SourcedAlias("clinic","patient03"));
-		subject.setAttribute(new Attribute("cancerType","lung"));
-		subjectRepository.insert(subject);
-
-		subject = new Subject(4L, "MCF7", "Homo sapiens", "F", null, null, null);
-		subject.setAlias(new SourcedAlias("CCLE","MCF7_BREAST"));
-		subject.setAttribute(new Attribute("cancerType","breast"));
-		subject.setAttribute(new Attribute("isCellLine","Y"));
-		subjectRepository.insert(subject);
-
-		subject = new Subject(5L, "A375", "Homo sapiens", "U", null, null, null);
-		subject.setAlias(new SourcedAlias("CCLE","A375_SKIN"));
-		subject.setAttribute(new Attribute("cancerType","skin"));
-		subject.setAttribute(new Attribute("isCellLine","Y"));
-		subjectRepository.insert(subject);
-		
+		for (Subject subject: Subject.createDummyData()){
+			subjectRepository.insert(subject);
+		}
 		isConfigured = true;
-		
 	}
 
 	@Test

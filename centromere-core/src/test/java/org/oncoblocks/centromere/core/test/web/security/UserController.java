@@ -38,7 +38,6 @@ import java.util.Date;
 public class UserController {
 
 	@Autowired TokenOperations tokenUtils;
-	@Autowired UserService userService;
 
 	@RequestMapping(value = "", method = RequestMethod.POST)
 	public @ResponseBody ApiUserToken createToken(@AuthenticationPrincipal User user){

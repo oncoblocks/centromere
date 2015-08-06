@@ -18,7 +18,9 @@ package org.oncoblocks.centromere.core.web.controller;
 
 import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.repository.QueryCriteria;
-import org.oncoblocks.centromere.core.web.service.ServiceOperations;
+import org.oncoblocks.centromere.core.repository.RepositoryOperations;
+import org.oncoblocks.centromere.core.web.exceptions.ResourceNotFoundException;
+import org.oncoblocks.centromere.core.web.query.QueryParameters;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -29,30 +31,77 @@ import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 /**
- * Abstract controller implementation, allowing for dynamic queries based on preset query parameters, 
- *   defined using {@link org.oncoblocks.centromere.core.web.controller.QueryParameters} implementations
- *   that specify allowable parameters. Mapped query parameters get passed to the repository layer 
- *   as {@link org.oncoblocks.centromere.core.repository.QueryCriteria}.
+ * Base implementation of web API controller operations for GET, HEAD, and OPTIONS requests.  
+ *   Supports dynamic queries of repository resources using {@link org.oncoblocks.centromere.core.web.query.QueryParameters},
+ *   field filtering, pagination, and HAL support.
  * 
  * @author woemler
  */
-public abstract class QueryParameterController<T extends Model<ID>, ID extends Serializable, Q extends QueryParameters> 
-		extends AbstractCrudController<T, ID> {
-	
-	public QueryParameterController(ServiceOperations<T, ID> service,
+public abstract class BaseApiController<
+		T extends Model<ID>,
+		ID extends Serializable,
+		Q extends QueryParameters> {
+
+	protected RepositoryOperations<T, ID> repository;
+	protected ResourceAssemblerSupport<T, FilterableResource<T>> assembler;
+
+	public BaseApiController(
+			RepositoryOperations<T, ID> repository,
 			ResourceAssemblerSupport<T, FilterableResource<T>> assembler) {
-		super(service, assembler);
+		this.repository = repository;
+		this.assembler = assembler;
+	}
+
+	/**
+	 * {@code GET /{id}}
+	 * Fetches a single record by its primary ID and returns it, or a {@code Not Found} exception if not.
+	 *
+	 * @param id primary ID for the target record.
+	 * @param fields set of field names to be included in response object.
+	 * @param exclude set of field names to be excluded from the response object.
+	 * @return {@code T} instance
+	 */
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET,
+			produces = { HalMediaType.APPLICATION_JSON_HAL_VALUE })
+	public ResponseEntity<ResponseEnvelope<FilterableResource<T>>> findByIdWithHal(
+			@PathVariable ID id,
+			@RequestParam(required = false) Set<String> fields,
+			@RequestParam(required = false) Set<String> exclude) {
+		T entity = repository.findById(id);
+		if (entity == null) throw new ResourceNotFoundException();
+		FilterableResource<T> resource = assembler.toResource(entity);
+		ResponseEnvelope<FilterableResource<T>> envelope = new ResponseEnvelope<>(resource, fields, exclude);
+		return new ResponseEntity<>(envelope, HttpStatus.OK);
+	}
+
+	/**
+	 * {@code GET /{id}}
+	 * Fetches a single record by its primary ID and returns it, or a {@code Not Found} exception if not.
+	 *
+	 * @param id primary ID for the target record.
+	 * @param fields set of field names to be included in response object.
+	 * @param exclude set of field names to be excluded from the response object.
+	 * @return {@code T} instance
+	 */
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET,
+			produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<ResponseEnvelope<T>> findById(@PathVariable ID id,
+			@RequestParam(required = false) Set<String> fields,
+			@RequestParam(required = false) Set<String> exclude) {
+		T entity = repository.findById(id);
+		if (entity == null) throw new ResourceNotFoundException();
+		ResponseEnvelope<T> envelope = new ResponseEnvelope<>(entity, fields, exclude);
+		return new ResponseEntity<>(envelope, HttpStatus.OK);
 	}
 
 	/**
@@ -71,14 +120,15 @@ public abstract class QueryParameterController<T extends Model<ID>, ID extends S
 			@ModelAttribute Q params,
 			Pageable pageable
 	){
+		pageable = QueryParameters.remapPageable(pageable, params);
 		List<QueryCriteria> criterias = QueryParameters.toQueryCriteria(params);
 		List<T> entities;
 		if (pageable.getSort() != null){
-			entities = (List<T>) service.findSorted(criterias, pageable.getSort());
+			entities = (List<T>) repository.findSorted(criterias, pageable.getSort());
 		} else {
-			entities = (List<T>) service.find(criterias);
+			entities = (List<T>) repository.find(criterias);
 		}
-		ResponseEnvelope<List<T>> envelope 
+		ResponseEnvelope<List<T>> envelope
 				= new ResponseEnvelope<>(entities, params.getIncludedFields(), params.getExcludedFields());
 		return new ResponseEntity<>(envelope, HttpStatus.OK);
 	}
@@ -102,12 +152,13 @@ public abstract class QueryParameterController<T extends Model<ID>, ID extends S
 			Pageable pageable,
 			HttpServletRequest request
 	){
+		pageable = QueryParameters.remapPageable(pageable, params);
 		List<QueryCriteria> criterias = QueryParameters.toQueryCriteria(params);
 		List<T> entities;
 		if (pageable.getSort() != null){
-			entities = (List<T>) service.findSorted(criterias, pageable.getSort());
+			entities = (List<T>) repository.findSorted(criterias, pageable.getSort());
 		} else {
-			entities = (List<T>) service.find(criterias);
+			entities = (List<T>) repository.find(criterias);
 		}
 		List<FilterableResource<T>> resourceList = assembler.toResources(entities);
 		Resources<FilterableResource<T>> resources = new Resources<>(resourceList);
@@ -135,9 +186,10 @@ public abstract class QueryParameterController<T extends Model<ID>, ID extends S
 			@ModelAttribute Q params,
 			Pageable pageable
 	){
+		pageable = QueryParameters.remapPageable(pageable, params);
 		List<QueryCriteria> criterias = QueryParameters.toQueryCriteria(params);
-		Page<T> page = service.findPaged(criterias, pageable);
-		ResponseEnvelope<Page<T>> envelope 
+		Page<T> page = repository.findPaged(criterias, pageable);
+		ResponseEnvelope<Page<T>> envelope
 				= new ResponseEnvelope<>(page, params.getIncludedFields(), params.getExcludedFields());
 		return new ResponseEntity<>(envelope, HttpStatus.OK);
 	}
@@ -164,8 +216,9 @@ public abstract class QueryParameterController<T extends Model<ID>, ID extends S
 			PagedResourcesAssembler<T> pagedResourcesAssembler,
 			HttpServletRequest request
 	){
+		pageable = QueryParameters.remapPageable(pageable, params);
 		List<QueryCriteria> criterias = QueryParameters.toQueryCriteria(params);
-		Page<T> page = service.findPaged(criterias, pageable);
+		Page<T> page = repository.findPaged(criterias, pageable);
 		Link selfLink = new Link(linkTo(this.getClass()).slash("").toString() +
 				(request.getQueryString() != null ? "?" + request.getQueryString() : ""), "self");
 		PagedResources<FilterableResource<T>> pagedResources
@@ -174,5 +227,29 @@ public abstract class QueryParameterController<T extends Model<ID>, ID extends S
 				= new ResponseEnvelope<>(pagedResources, params.getIncludedFields(), params.getExcludedFields());
 		return new ResponseEntity<>(envelope, HttpStatus.OK);
 	}
+
+	/**
+	 * {@code HEAD /**}
+	 * Performs a test on the resource endpoints availability.
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = { "", "/**" }, method = RequestMethod.HEAD)
+	public ResponseEntity<?> head(){
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	/**
+	 * {@code OPTIONS /}
+	 * Returns an information about the endpoint and available parameters.
+	 *
+	 * @return
+	 */
+	@RequestMapping(value = { "", "/**" }, method = RequestMethod.OPTIONS,
+			produces = { MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<?> options() {
+		return null; //TODO
+	}
+	
 	
 }

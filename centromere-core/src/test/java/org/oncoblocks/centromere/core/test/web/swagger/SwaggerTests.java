@@ -24,8 +24,7 @@ import org.oncoblocks.centromere.core.test.config.TestMongoConfig;
 import org.oncoblocks.centromere.core.test.config.TestSwaggerConfig;
 import org.oncoblocks.centromere.core.test.config.TestWebConfig;
 import org.oncoblocks.centromere.core.test.repository.mongo.MongoRepositoryConfig;
-import org.oncoblocks.centromere.core.test.web.controller.entity.EntityControllerConfig;
-import org.oncoblocks.centromere.core.test.web.service.generic.GenericServiceConfig;
+import org.oncoblocks.centromere.core.test.web.controller.crud.CrudControllerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
@@ -46,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {
 		TestMongoConfig.class, TestWebConfig.class, MongoRepositoryConfig.class,
-		GenericServiceConfig.class, EntityControllerConfig.class, TestSwaggerConfig.class})
+		CrudControllerConfig.class, TestSwaggerConfig.class})
 @WebAppConfiguration
 public class SwaggerTests {
 

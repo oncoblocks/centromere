@@ -27,7 +27,7 @@ import org.oncoblocks.centromere.core.test.config.TestWebConfig;
 import org.oncoblocks.centromere.core.test.repository.mongo.EntrezGeneRepository;
 import org.oncoblocks.centromere.core.test.repository.mongo.MongoRepositoryConfig;
 import org.oncoblocks.centromere.core.test.repository.mongo.UserRepository;
-import org.oncoblocks.centromere.core.test.web.service.generic.GenericServiceConfig;
+import org.oncoblocks.centromere.core.test.web.controller.crud.CrudControllerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.FilterChainProxy;
@@ -55,7 +55,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {TestMongoConfig.class, TestWebConfig.class, GenericServiceConfig.class,
+@ContextConfiguration(classes = {TestMongoConfig.class, TestWebConfig.class, CrudControllerConfig.class,
 		TestSecurityConfig.class, SecurityContextConfig.class, MongoRepositoryConfig.class})
 @WebAppConfiguration
 @FixMethodOrder

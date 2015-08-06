@@ -17,92 +17,37 @@
 package org.oncoblocks.centromere.core.web.controller;
 
 import org.oncoblocks.centromere.core.model.Model;
+import org.oncoblocks.centromere.core.repository.RepositoryOperations;
 import org.oncoblocks.centromere.core.web.exceptions.RequestFailureException;
 import org.oncoblocks.centromere.core.web.exceptions.ResourceNotFoundException;
-import org.oncoblocks.centromere.core.web.service.ServiceOperations;
+import org.oncoblocks.centromere.core.web.query.QueryParameters;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.io.Serializable;
-import java.util.Set;
 
 /**
- * Implementation of standard web service controller operations, with separation 
- *   between request mapping and operation execution, to allow easier overriding
- *   of method functionality without creating mapping conflicts. Implementations 
- *   of the {@link ControllerOperations#find} method will vary depending on means
- *   of performing queries.
+ * Extension of {@link org.oncoblocks.centromere.core.web.controller.BaseApiController} that allows for 
+ *   PUT, POST, and DELETE operations.
  * 
  * @author woemler
  */
-public abstract class AbstractCrudController<T extends Model<ID>, ID extends Serializable> {
+public class CrudApiController<
+		T extends Model<ID>,
+		ID extends Serializable,
+		Q extends QueryParameters> 
+		extends BaseApiController<T, ID, Q> {
 	
-	protected ServiceOperations<T, ID> service;
-	protected ResourceAssemblerSupport<T, FilterableResource<T>> assembler;
-
-	public AbstractCrudController(ServiceOperations<T, ID> service, 
+	public CrudApiController(RepositoryOperations<T, ID> service,
 			ResourceAssemblerSupport<T, FilterableResource<T>> assembler) {
-		this.service = service;
-		this.assembler = assembler;
+		super(service, assembler);
 	}
-	
-	/**
-	 * {@code HEAD /**}
-	 * Performs a test on the resource endpoints availability.
-	 * 
-	 * @return 
-	 */
-	@RequestMapping(value = { "", "/**" }, method = RequestMethod.HEAD)
-	public ResponseEntity<?> head(){
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
-
-	/**
-	 * {@code GET /{id}}
-	 * Fetches a single record by its primary ID and returns it, or a {@code Not Found} exception if not.
-	 *
-	 * @param id primary ID for the target record.
-	 * @param fields set of field names to be included in response object.
-	 * @param exclude set of field names to be excluded from the response object.
-	 * @return {@code T} instance
-	 */
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET,
-			produces = { HalMediaType.APPLICATION_JSON_HAL_VALUE })
-	public ResponseEntity<ResponseEnvelope<FilterableResource<T>>> findByIdWithHal(
-			@PathVariable ID id,
-			@RequestParam(required = false) Set<String> fields,
-			@RequestParam(required = false) Set<String> exclude) {
-		T entity = service.findById(id);
-		if (entity == null) throw new ResourceNotFoundException();
-		FilterableResource<T> resource = assembler.toResource(entity);
-		ResponseEnvelope<FilterableResource<T>> envelope = new ResponseEnvelope<>(resource, fields, exclude);
-		return new ResponseEntity<>(envelope, HttpStatus.OK);
-	}
-
-	/**
-	 * {@code GET /{id}}
-	 * Fetches a single record by its primary ID and returns it, or a {@code Not Found} exception if not.
-	 *
-	 * @param id primary ID for the target record.
-	 * @param fields set of field names to be included in response object.
-	 * @param exclude set of field names to be excluded from the response object.
-	 * @return {@code T} instance
-	 */
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET, 
-			produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<ResponseEnvelope<T>> findById(@PathVariable ID id, 
-			@RequestParam(required = false) Set<String> fields, 
-			@RequestParam(required = false) Set<String> exclude) {
-		T entity = service.findById(id);
-		if (entity == null) throw new ResourceNotFoundException();
-		ResponseEnvelope<T> envelope = new ResponseEnvelope<>(entity, fields, exclude);
-		return new ResponseEntity<>(envelope, HttpStatus.OK);
-	}
-
-	
 
 	/**
 	 * {@code POST /}
@@ -115,7 +60,7 @@ public abstract class AbstractCrudController<T extends Model<ID>, ID extends Ser
 	@RequestMapping(value = "", method = RequestMethod.POST, 
 			produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<T> create(@RequestBody T entity) {
-		T created = service.insert(entity);
+		T created = repository.insert(entity);
 		if (created == null) throw new RequestFailureException(40003, "There was a problem creating the record.", "", "");
 		return new ResponseEntity<>(created, HttpStatus.CREATED);
 	}
@@ -131,7 +76,7 @@ public abstract class AbstractCrudController<T extends Model<ID>, ID extends Ser
 	@RequestMapping(value = "", method = RequestMethod.POST, 
 			produces = { HalMediaType.APPLICATION_JSON_HAL_VALUE })
 	public ResponseEntity<FilterableResource<T>> createWithHal(@RequestBody T entity) {
-		T created = service.insert(entity);
+		T created = repository.insert(entity);
 		if (created == null) throw new RequestFailureException(40003, "There was a problem creating the record.", "", "");
 		FilterableResource<T> resource = assembler.toResource(created);
 		return new ResponseEntity<>(resource, HttpStatus.CREATED);
@@ -149,8 +94,8 @@ public abstract class AbstractCrudController<T extends Model<ID>, ID extends Ser
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, 
 			produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<T> update(@RequestBody T entity, @PathVariable ID id) {
-		if (!service.exists(id)) throw new ResourceNotFoundException();
-		T updated = service.update(entity);
+		if (!repository.exists(id)) throw new ResourceNotFoundException();
+		T updated = repository.update(entity);
 		if (updated == null) throw new RequestFailureException(40004, "There was a problem updating the record.", "", "");
 		return new ResponseEntity<>(updated, HttpStatus.CREATED);
 	}
@@ -167,8 +112,8 @@ public abstract class AbstractCrudController<T extends Model<ID>, ID extends Ser
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, 
 			produces = { HalMediaType.APPLICATION_JSON_HAL_VALUE })
 	public ResponseEntity<FilterableResource<T>> updateWithHal(@RequestBody T entity, @PathVariable ID id) {
-		if (!service.exists(id)) throw new ResourceNotFoundException();
-		T updated = service.update(entity);
+		if (!repository.exists(id)) throw new ResourceNotFoundException();
+		T updated = repository.update(entity);
 		if (updated == null) throw new RequestFailureException(40004, "There was a problem updating the record.", "", "");
 		FilterableResource<T> resource = assembler.toResource(updated);
 		return new ResponseEntity<>(resource, HttpStatus.CREATED);
@@ -183,21 +128,8 @@ public abstract class AbstractCrudController<T extends Model<ID>, ID extends Ser
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<?> delete(@PathVariable ID id) {
-		service.delete(id);
+		repository.delete(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	/**
-	 * {@code OPTIONS /}
-	 * Returns an information about the endpoint and available parameters.
-	 *
-	 * @return
-	 */
-	@RequestMapping(value = { "", "/**" }, method = RequestMethod.OPTIONS, 
-			produces = { MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<?> options() {
-		return null; //TODO
-	}
-
-	
 }

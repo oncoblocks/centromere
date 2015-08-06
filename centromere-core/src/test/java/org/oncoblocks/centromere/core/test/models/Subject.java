@@ -16,12 +16,14 @@
 
 package org.oncoblocks.centromere.core.test.models;
 
-import org.oncoblocks.centromere.core.model.*;
+import org.oncoblocks.centromere.core.model.Filterable;
+import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.repository.sqlbuilder.ComplexTableDescription;
+import org.oncoblocks.centromere.core.web.query.Attribute;
+import org.oncoblocks.centromere.core.web.query.SourcedAlias;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -29,22 +31,13 @@ import java.util.List;
  */
 
 @Filterable
-public class Subject implements Model<Long>, SourcedAliases, Attributes {
+public class Subject implements Model<Long> {
 	
-	@Queryable private Long subjectId;
-	@Queryable private String name;
+	private Long subjectId;
+	private String name;
 	private String species;
 	private String gender;
-	
-	@Queryable({
-			@Parameter(value = "aliasName", type = String.class)
-	})
 	private List<SourcedAlias> aliases;
-
-	@Queryable({
-			@Parameter(value = "attributeName", type = String.class),
-			@Parameter(value = "attributeValue", type = String.class)
-	})
 	private List<Attribute> attributes;
 	private String notes;
 
@@ -62,54 +55,10 @@ public class Subject implements Model<Long>, SourcedAliases, Attributes {
 		this.notes = notes;
 	}
 
-	public void setAttributeName(String attributeName) {
-		if (attributes == null) attributes = new ArrayList<>();
-		attributes.add(new Attribute(attributeName, null));
-	}
-
-	public void setAttributeValue(String attributeValue) {
-		if (attributes == null) attributes = new ArrayList<>();
-		attributes.add(new Attribute(null, attributeValue));
-	}
-
-	public void setAttribute(Attribute attribute) {
-		if (attributes == null) attributes = new ArrayList<>();
-		attributes.add(attribute);
-	}
-
-	public boolean hasAttribute(String name) {
-		for (Attribute attribute: attributes){
-			if (attribute.getName().equals(name)) return true;
-		}
-		return false;
-	}
-
-	public Long getId() {
+	public Long getId(){
 		return subjectId;
 	}
-
-	public void setAliasName(String aliasName) {
-		if (aliases == null) aliases = new ArrayList<>();
-		aliases.add(new SourcedAlias(null, aliasName));
-	}
-
-	public void setAliasSource(String aliasSource) {
-		if (aliases == null) aliases = new ArrayList<>();
-		aliases.add(new SourcedAlias(aliasSource, null));
-	}
-
-	public void setAlias(SourcedAlias alias) {
-		if (aliases == null) aliases = new ArrayList<>();
-		aliases.add(alias);
-	}
-
-	public boolean hasAlias(String name) {
-		for (SourcedAlias alias: aliases){
-			if (alias.getName().equals(name)) return true;
-		}
-		return false;
-	}
-
+	
 	public Long getSubjectId() {
 		return subjectId;
 	}
@@ -146,16 +95,16 @@ public class Subject implements Model<Long>, SourcedAliases, Attributes {
 		return aliases;
 	}
 
-	public void setAliases(Collection<SourcedAlias> aliases) {
-		this.aliases = (List<SourcedAlias>) aliases;
+	public void setAliases(List<SourcedAlias> aliases) {
+		this.aliases = aliases;
 	}
 
 	public List<Attribute> getAttributes() {
 		return attributes;
 	}
 
-	public void setAttributes(Collection<Attribute> attributes) {
-		this.attributes = (List<Attribute>) attributes;
+	public void setAttributes(List<Attribute> attributes) {
+		this.attributes = attributes;
 	}
 
 	public String getNotes() {
@@ -165,7 +114,7 @@ public class Subject implements Model<Long>, SourcedAliases, Attributes {
 	public void setNotes(String notes) {
 		this.notes = notes;
 	}
-	
+
 	public static ComplexTableDescription getSubjectTableDescription(){
 		return new ComplexTableDescription(
 				"subjects",
@@ -176,6 +125,61 @@ public class Subject implements Model<Long>, SourcedAliases, Attributes {
 						+ " LEFT JOIN subject_attributes on subjects.subject_id = subject_attributes.subject_id ",
 				"subjects.subject_id"
 		);
+	}
+	
+	public static List<Subject> createDummyData(){
+
+		List<Subject> subjects = new ArrayList<>();
+		List<SourcedAlias> aliases = new ArrayList<>();
+		List<Attribute> attributes = new ArrayList<>();
+		
+		Subject subject = new Subject(1L, "PersonA", "Homo sapiens", "M", null, null, null);
+		aliases.add(new SourcedAlias("clinic", "patient01"));
+		attributes.add(new Attribute("cancerType", "colon"));
+		subject.setAliases(aliases);
+		subject.setAttributes(attributes);
+		subjects.add(subject);
+		aliases = new ArrayList<>();
+		attributes = new ArrayList<>();
+
+		subject = new Subject(2L, "PersonB", "Homo sapiens", "F", null, null, null);
+		aliases.add(new SourcedAlias("clinic", "patient02"));
+		attributes.add(new Attribute("cancerType","breast"));
+		subject.setAliases(aliases);
+		subject.setAttributes(attributes);
+		subjects.add(subject);
+		aliases = new ArrayList<>();
+		attributes = new ArrayList<>();
+
+		subject = new Subject(3L, "PersonC", "Homo sapiens", "M", null, null, null);
+		aliases.add(new SourcedAlias("clinic","patient03"));
+		attributes.add(new Attribute("cancerType","lung"));
+		subject.setAliases(aliases);
+		subject.setAttributes(attributes);
+		subjects.add(subject);
+		aliases = new ArrayList<>();
+		attributes = new ArrayList<>();
+
+		subject = new Subject(4L, "MCF7", "Homo sapiens", "F", null, null, null);
+		aliases.add(new SourcedAlias("CCLE","MCF7_BREAST"));
+		attributes.add(new Attribute("cancerType","breast"));
+		attributes.add(new Attribute("isCellLine","Y"));
+		subject.setAliases(aliases);
+		subject.setAttributes(attributes);
+		subjects.add(subject);
+		aliases = new ArrayList<>();
+		attributes = new ArrayList<>();
+
+		subject = new Subject(5L, "A375", "Homo sapiens", "U", null, null, null);
+		aliases.add(new SourcedAlias("CCLE","A375_SKIN"));
+		attributes.add(new Attribute("cancerType","skin"));
+		attributes.add(new Attribute("isCellLine","Y"));
+		subject.setAliases(aliases);
+		subject.setAttributes(attributes);
+		subjects.add(subject);
+		
+		return subjects;
+		
 	}
 	
 }

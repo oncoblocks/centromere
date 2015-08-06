@@ -14,26 +14,32 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.test.web.controller;
+package org.oncoblocks.centromere.core.test.web.controller.crud;
 
 import org.oncoblocks.centromere.core.test.models.EntrezGene;
-import org.oncoblocks.centromere.core.test.web.controller.crud.GeneCrudController;
+import org.oncoblocks.centromere.core.test.web.controller.crud.GeneController;
 import org.oncoblocks.centromere.core.web.controller.FilterableResource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityLinks;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
-
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import org.springframework.stereotype.Component;
 
 /**
  * @author woemler
  */
+
+@Component
 public class GeneAssembler extends ResourceAssemblerSupport<EntrezGene, FilterableResource<EntrezGene>> {
+	
+	@Autowired private EntityLinks entityLinks;
+	
 	public GeneAssembler() {
-		super(GeneCrudController.class, (Class<FilterableResource<EntrezGene>>)(Class<?>) FilterableResource.class);
+		super(GeneController.class, (Class<FilterableResource<EntrezGene>>)(Class<?>) FilterableResource.class);
 	}
 
 	@Override public FilterableResource<EntrezGene> toResource(EntrezGene gene) {
 		FilterableResource<EntrezGene> resource = new FilterableResource<EntrezGene>(gene);
-		resource.add(linkTo(GeneCrudController.class).slash(gene.getId()).withSelfRel());
+		resource.add(entityLinks.linkToSingleResource(EntrezGene.class, gene.getId()).withSelfRel());
 		return resource;
 	}
 }

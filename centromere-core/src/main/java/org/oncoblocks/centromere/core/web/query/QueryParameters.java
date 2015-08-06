@@ -14,17 +14,21 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.web.controller;
+package org.oncoblocks.centromere.core.web.query;
 
 import org.oncoblocks.centromere.core.repository.Evaluation;
 import org.oncoblocks.centromere.core.repository.QueryCriteria;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
+ * Base class for capturing web service query string parameters.  Allows for simple and strict query
+ *   parameter definitions, and simpler API documentation via Swagger inspection.
+ * 
  * @author woemler
  */
 public class QueryParameters {
@@ -49,7 +53,7 @@ public class QueryParameters {
 	}
 
 	/**
-	 * Converts a {@link org.oncoblocks.centromere.core.web.controller.QueryParameters} object into
+	 * Converts a {@link QueryParameters} object into
 	 *   a list of {@link org.oncoblocks.centromere.core.repository.QueryCriteria}, to be passed to 
 	 *   the repository layer as query parameters.
 	 *
@@ -66,7 +70,7 @@ public class QueryParameters {
 					Evaluation evaluation = Evaluation.EQUALS;
 					if (field.isAnnotationPresent(QueryParameter.class)){
 						QueryParameter queryParameter = field.getAnnotation(QueryParameter.class);
-						if (!queryParameter.name().equals("")) name = queryParameter.name();
+						if (!queryParameter.value().equals("")) name = queryParameter.value();
 						evaluation = queryParameter.evalutation();
 					}
 					criterias.add(new QueryCriteria(name, field.get(queryParameters), evaluation));
@@ -76,6 +80,35 @@ public class QueryParameters {
 			}
 		}
 		return criterias;
+	}
+
+	/**
+	 * Remaps sort field names in {@link org.springframework.data.domain.Pageable} objects.
+	 * 
+	 * @param pageable
+	 * @return
+	 */
+	public static Pageable remapPageable(Pageable pageable, QueryParameters queryParameters){
+		if (pageable.getSort() != null) {
+			Map<String, String> mappings = new HashMap<>();
+			for (Field field : queryParameters.getClass().getDeclaredFields()) {
+				if (field.isAnnotationPresent(QueryParameter.class)) {
+					QueryParameter queryParameter = field.getAnnotation(QueryParameter.class);
+					if (!queryParameter.value().equals(""))
+						mappings.put(field.getName(), queryParameter.value());
+				}
+			}
+			List<Sort.Order> orders = new ArrayList<>();
+			for (Sort.Order order : pageable.getSort()) {
+				if (mappings.containsKey(order.getProperty())) {
+					order = new Sort.Order(order.getDirection(), mappings.get(order.getProperty()));
+				}
+				orders.add(order);
+			}
+			pageable =
+					new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), new Sort(orders));
+		}
+		return pageable;
 	}
 	
 }

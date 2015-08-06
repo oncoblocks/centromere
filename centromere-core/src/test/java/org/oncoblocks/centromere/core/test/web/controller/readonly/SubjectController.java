@@ -14,25 +14,26 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.test.web.controller.crud;
+package org.oncoblocks.centromere.core.test.web.controller.readonly;
 
-import org.oncoblocks.centromere.core.test.models.EntrezGene;
-import org.oncoblocks.centromere.core.test.web.controller.GeneAssembler;
-import org.oncoblocks.centromere.core.test.web.service.generic.GeneService;
-import org.oncoblocks.centromere.core.web.controller.AbstractCrudController;
+import org.oncoblocks.centromere.core.test.models.Subject;
+import org.oncoblocks.centromere.core.test.repository.jdbc.SubjectRepository;
+import org.oncoblocks.centromere.core.web.controller.ReadOnlyApiController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * @author woemler
  */
-@Controller
-@RequestMapping(value = "/crud/genes")
-public class GeneCrudController extends AbstractCrudController<EntrezGene, Long> {
-	@Autowired
-	public GeneCrudController(GeneService service) {
-		super(service, new GeneAssembler());
-	}
 
+@Controller
+@RequestMapping("/subjects")
+@ExposesResourceFor(Subject.class)
+public class SubjectController extends ReadOnlyApiController<Subject,Long, SubjectParameters> {
+	@Autowired
+	public SubjectController(SubjectRepository repository, SubjectAssembler assembler) {
+		super(repository, assembler);
+	}
 }

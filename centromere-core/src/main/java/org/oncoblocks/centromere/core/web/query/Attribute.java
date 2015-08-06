@@ -14,15 +14,40 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.test.web.service.generic;
-
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+package org.oncoblocks.centromere.core.web.query;
 
 /**
+ * Simple class for representing key-value attributes in other entity classes.
+ * 
  * @author woemler
  */
-@Configuration
-@ComponentScan(basePackages = { "org.oncoblocks.centromere.core.test.web.service.generic" })
-public class GenericServiceConfig {
+
+public class Attribute {
+	
+	private String name;
+	private String value;
+
+	public Attribute() { }
+
+	public Attribute(String name, String value) {
+		this.name = name;
+		this.value = value;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+
 }

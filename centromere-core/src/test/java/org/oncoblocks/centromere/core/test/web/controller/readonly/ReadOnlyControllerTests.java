@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.test.web.controller.criteria;
+package org.oncoblocks.centromere.core.test.web.controller.readonly;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.oncoblocks.centromere.core.model.Attribute;
-import org.oncoblocks.centromere.core.model.SourcedAlias;
 import org.oncoblocks.centromere.core.test.config.TestJdbcDataSourceConfig;
 import org.oncoblocks.centromere.core.test.config.TestWebConfig;
 import org.oncoblocks.centromere.core.test.models.Subject;
 import org.oncoblocks.centromere.core.test.repository.jdbc.JdbcRepositoryConfig;
 import org.oncoblocks.centromere.core.test.repository.jdbc.SubjectRepository;
-import org.oncoblocks.centromere.core.test.web.service.remapping.RemappingServiceConfig;
 import org.oncoblocks.centromere.core.web.controller.HalMediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -39,7 +36,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -49,10 +46,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {TestJdbcDataSourceConfig.class, JdbcRepositoryConfig.class,
-		RemappingServiceConfig.class, CriteriaControllerConfig.class, TestWebConfig.class})
+		TestReadOnlyControllerConfig.class, TestWebConfig.class})
 @WebAppConfiguration
 @FixMethodOrder
-public class QueryCriteriaControllerTests {
+public class ReadOnlyControllerTests {
 
 	@Autowired private SubjectRepository subjectRepository;
 	private MockMvc mockMvc;
@@ -60,43 +57,61 @@ public class QueryCriteriaControllerTests {
 	private static boolean isConfigured = false;
 
 	@Before
-	public void setup() {
-
+	public void setup(){
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-
 		if (isConfigured) return;
-
 		subjectRepository.deleteAll();
-
-		Subject subject = new Subject(1L, "PersonA", "Homo sapiens", "M", null, null, null);
-		subject.setAlias(new SourcedAlias("clinic", "patient01"));
-		subject.setAttribute(new Attribute("cancerType", "colon"));
-		subjectRepository.insert(subject);
-
-		subject = new Subject(2L, "PersonB", "Homo sapiens", "F", null, null, null);
-		subject.setAlias(new SourcedAlias("clinic", "patient02"));
-		subject.setAttribute(new Attribute("cancerType","breast"));
-		subjectRepository.insert(subject);
-
-		subject = new Subject(3L, "PersonC", "Homo sapiens", "M", null, null, null);
-		subject.setAlias(new SourcedAlias("clinic","patient03"));
-		subject.setAttribute(new Attribute("cancerType","lung"));
-		subjectRepository.insert(subject);
-
-		subject = new Subject(4L, "MCF7", "Homo sapiens", "F", null, null, null);
-		subject.setAlias(new SourcedAlias("CCLE","MCF7_BREAST"));
-		subject.setAttribute(new Attribute("cancerType","breast"));
-		subject.setAttribute(new Attribute("isCellLine","Y"));
-		subjectRepository.insert(subject);
-
-		subject = new Subject(5L, "A375", "Homo sapiens", "U", null, null, null);
-		subject.setAlias(new SourcedAlias("CCLE","A375_SKIN"));
-		subject.setAttribute(new Attribute("cancerType","skin"));
-		subject.setAttribute(new Attribute("isCellLine","Y"));
-		subjectRepository.insert(subject);
-
+		for (Subject subject: Subject.createDummyData()){
+			subjectRepository.insert(subject);
+		}
 		isConfigured = true;
+	}
 
+	
+	@Test
+	public void findById() throws Exception {
+		mockMvc.perform(get("/subjects/1").accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$", hasKey("subjectId")))
+				.andExpect(jsonPath("$.subjectId", is(1)))
+				.andExpect(jsonPath("$.name", is("PersonA")))
+				.andExpect(jsonPath("$", hasKey("links")))
+				.andExpect(jsonPath("$.links", hasSize(1)))
+				.andExpect(jsonPath("$.links[0].rel", is("self")))
+				.andExpect(jsonPath("$.links[0].href", endsWith("/subjects/1")));
+	}
+
+	@Test
+	public void findByIdWithoutLinks() throws Exception {
+		mockMvc.perform(get("/subjects/1").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$", hasKey("subjectId")))
+				.andExpect(jsonPath("$.subjectId", is(1)))
+				.andExpect(jsonPath("$.name", is("PersonA")))
+				.andExpect(jsonPath("$", not(hasKey("links"))));
+	}
+
+	@Test
+	public void findByIdFiltered() throws Exception {
+		mockMvc.perform(get("/subjects/1?exclude=links,gender").accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$", hasKey("subjectId")))
+				.andExpect(jsonPath("$.subjectId", is(1)))
+				.andExpect(jsonPath("$.name", is("PersonA")))
+				.andExpect(jsonPath("$", not(hasKey("links"))))
+				.andExpect(jsonPath("$", not(hasKey("gender"))));
+	}
+
+	@Test
+	public void findByIdWithoutLinksFiltered() throws Exception {
+		mockMvc.perform(get("/subjects/1?fields=subjectId,name").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$", hasKey("subjectId")))
+				.andExpect(jsonPath("$.subjectId", is(1)))
+				.andExpect(jsonPath("$.name", is("PersonA")))
+				.andExpect(jsonPath("$", not(hasKey("links"))))
+				.andExpect(jsonPath("$", not(hasKey("gender"))))
+				.andExpect(jsonPath("$", not(hasKey("species"))));;
 	}
 
 	@Test
@@ -165,36 +180,36 @@ public class QueryCriteriaControllerTests {
 				.andExpect(jsonPath("$", not(hasKey("pageMetadata"))));
 	}
 
-//	@Test
-//	public void findMultipleByAlias() throws Exception {
-//		mockMvc.perform(get("/subjects?aliasName=MCF7_BREAST").accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
-//				.andExpect(status().isOk())
-//				.andExpect(jsonPath("$", hasKey("content")))
-//				.andExpect(jsonPath("$.content", hasSize(1)))
-//				.andExpect(jsonPath("$.content[0]", hasKey("subjectId")))
-//				.andExpect(jsonPath("$.content[0].subjectId", is(4)))
-//				.andExpect(jsonPath("$", hasKey("links")))
-//				.andExpect(jsonPath("$.links", hasSize(1)))
-//				.andExpect(jsonPath("$.links[0].rel", is("self")))
-//				.andExpect(jsonPath("$.links[0].href", endsWith("/subjects?aliasName=MCF7_BREAST")))
-//				.andExpect(jsonPath("$", not(hasKey("pageMetadata"))));
-//	}
+	//	@Test
+	//	public void findMultipleByAlias() throws Exception {
+	//		mockMvc.perform(get("/subjects?aliasName=MCF7_BREAST").accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
+	//				.andExpect(status().isOk())
+	//				.andExpect(jsonPath("$", hasKey("content")))
+	//				.andExpect(jsonPath("$.content", hasSize(1)))
+	//				.andExpect(jsonPath("$.content[0]", hasKey("subjectId")))
+	//				.andExpect(jsonPath("$.content[0].subjectId", is(4)))
+	//				.andExpect(jsonPath("$", hasKey("links")))
+	//				.andExpect(jsonPath("$.links", hasSize(1)))
+	//				.andExpect(jsonPath("$.links[0].rel", is("self")))
+	//				.andExpect(jsonPath("$.links[0].href", endsWith("/subjects?aliasName=MCF7_BREAST")))
+	//				.andExpect(jsonPath("$", not(hasKey("pageMetadata"))));
+	//	}
 
-//	@Test
-//	public void findMultipleByAttribute() throws Exception {
-//		mockMvc.perform(get("/subjects?attributeName=isCellLine&attributeValue=Y").accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
-//				.andExpect(status().isOk())
-//				.andExpect(jsonPath("$", hasKey("content")))
-//				.andExpect(jsonPath("$.content", hasSize(2)))
-//				.andExpect(jsonPath("$.content[0]", hasKey("subjectId")))
-//				.andExpect(jsonPath("$.content[0].subjectId", is(4)))
-//				.andExpect(jsonPath("$", hasKey("links")))
-//				.andExpect(jsonPath("$.links", hasSize(1)))
-//				.andExpect(jsonPath("$.links[0].rel", is("self")))
-//				.andExpect(jsonPath("$.links[0].href", endsWith("/subjects?attributeName=isCellLine&attributeValue=Y")))
-//				.andExpect(jsonPath("$", not(hasKey("pageMetadata"))));
-//	}
-	
+	//	@Test
+	//	public void findMultipleByAttribute() throws Exception {
+	//		mockMvc.perform(get("/subjects?attributeName=isCellLine&attributeValue=Y").accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
+	//				.andExpect(status().isOk())
+	//				.andExpect(jsonPath("$", hasKey("content")))
+	//				.andExpect(jsonPath("$.content", hasSize(2)))
+	//				.andExpect(jsonPath("$.content[0]", hasKey("subjectId")))
+	//				.andExpect(jsonPath("$.content[0].subjectId", is(4)))
+	//				.andExpect(jsonPath("$", hasKey("links")))
+	//				.andExpect(jsonPath("$.links", hasSize(1)))
+	//				.andExpect(jsonPath("$.links[0].rel", is("self")))
+	//				.andExpect(jsonPath("$.links[0].href", endsWith("/subjects?attributeName=isCellLine&attributeValue=Y")))
+	//				.andExpect(jsonPath("$", not(hasKey("pageMetadata"))));
+	//	}
+
 	@Test
 	public void findPaged() throws Exception {
 		mockMvc.perform(get("/subjects?page=1&size=3").accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
@@ -232,6 +247,32 @@ public class QueryCriteriaControllerTests {
 				.andExpect(jsonPath("$.content", hasSize(5)))
 				.andExpect(jsonPath("$.content[0]", hasKey("subjectId")))
 				.andExpect(jsonPath("$.content[0].subjectId", is(5)));
+	}
+	
+	@Test
+	public void postTest() throws Exception {
+		mockMvc.perform(post("/subjects"))
+				.andExpect(status().isMethodNotAllowed());
+	}
+
+	@Test
+	public void putTest() throws Exception {
+		mockMvc.perform(put("/subjects/1"))
+				.andExpect(status().isMethodNotAllowed());
+	}
+
+	@Test
+	public void deleteTest() throws Exception {
+		mockMvc.perform(delete("/subjects/1"))
+				.andExpect(status().isMethodNotAllowed());
+	}
+	
+	@Test
+	public void headTest() throws Exception {
+		mockMvc.perform(head("/subjects"))
+				.andExpect(status().isOk());
+		mockMvc.perform(head("/subjects/1"))
+				.andExpect(status().isOk());
 	}
 	
 }

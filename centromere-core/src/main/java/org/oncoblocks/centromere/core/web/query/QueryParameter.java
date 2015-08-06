@@ -14,15 +14,22 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.test.web.controller.criteria;
+package org.oncoblocks.centromere.core.web.query;
 
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+import org.oncoblocks.centromere.core.repository.Evaluation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author woemler
  */
-@Configuration
-@ComponentScan(basePackages = { "org.oncoblocks.centromere.core.test.web.controller.criteria" })
-public class CriteriaControllerConfig {
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface QueryParameter {
+	String value() default "";
+	Evaluation evalutation() default Evaluation.EQUALS;
 }

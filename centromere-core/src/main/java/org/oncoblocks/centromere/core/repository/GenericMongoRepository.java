@@ -17,25 +17,19 @@
 package org.oncoblocks.centromere.core.repository;
 
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import org.oncoblocks.centromere.core.model.Model;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.convert.MongoConverter;
-import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.Assert;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Generic MongoDB implementation of {@link org.oncoblocks.centromere.core.repository.RepositoryOperations}.
@@ -136,35 +130,6 @@ public class GenericMongoRepository<T extends Model<ID>, ID extends Serializable
 	}
 
 	/**
-	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#find}
-	 */
-	public List<T> find(T entityQuery) {
-		DBObject dbObject = entityToJsonQuery(entityQuery);
-		Query query = new BasicQuery(dbObject);
-		return mongoOperations.find(query, model);
-	}
-
-	/**
-	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#findSorted}
-	 */
-	public List<T> findSorted(T entityQuery, Sort sort) {
-		DBObject dbObject = entityToJsonQuery(entityQuery);
-		Query query = new BasicQuery(dbObject);
-		return mongoOperations.find(query.with(sort), model);
-	}
-
-	/**
-	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#findPaged}
-	 */
-	public Page<T> findPaged(T entityQuery, Pageable pageable) {
-		DBObject dbObject = entityToJsonQuery(entityQuery);
-		Query query = new BasicQuery(dbObject);
-		List<T> entities = mongoOperations.find(query.with(pageable), model);
-		long count = count(entityQuery);
-		return new PageImpl<T>(entities, pageable, count);
-	}
-
-	/**
 	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#insert}
 	 */
 	public <S extends T> S insert(S s) {
@@ -223,15 +188,6 @@ public class GenericMongoRepository<T extends Model<ID>, ID extends Serializable
 		if (criteria != null){
 			query.addCriteria(criteria);
 		}
-		return mongoOperations.count(query, model);
-	}
-
-	/**
-	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#count}
-	 */
-	public long count(T entityQuery) {
-		DBObject dbObject = entityToJsonQuery(entityQuery);
-		Query query = new BasicQuery(dbObject);
 		return mongoOperations.count(query, model);
 	}
 
@@ -308,59 +264,4 @@ public class GenericMongoRepository<T extends Model<ID>, ID extends Serializable
 		return criteria;
 	}
 
-	/**
-	 * Converts a partial entity object into a dot-notation-formatted {@link com.mongodb.DBObject},
-	 *   to be used in building a {@link org.springframework.data.mongodb.core.query.BasicQuery}.
-	 * 
-	 * @param entity partial entity object
-	 * @return {@link com.mongodb.BasicDBObject} 
-	 */
-	protected DBObject entityToJsonQuery(T entity){
-		MongoConverter converter = mongoOperations.getConverter();
-		DBObject dbObject = new BasicDBObject();
-		converter.write(entity, dbObject);
-		dbObject.removeField("_class");
-		if (dbObject.get("_id") == null) dbObject.removeField("_id");
-		JsonDoterizer doterizer = new JsonDoterizer(dbObject.toMap());
-		return new BasicDBObject(doterizer.getNewMap());
-	}
-
-	/**
-	 * Convenience class for converting {@code Map} objects into dot-notation maps for MongoDB queries.
-	 */
-	public static class JsonDoterizer {
-
-		private Map<String,Object> newMap;
-
-		public JsonDoterizer(Map<String,Object> oldMap) {
-			this.newMap = new HashMap<>();
-			for (Map.Entry entry: oldMap.entrySet()){
-				Map<String,Object> newEntry = recurse(entry.getValue(), (String) entry.getKey());
-				if (newEntry != null) newMap.putAll(newEntry);
-			}
-		}
-
-		private Map<String,Object> recurse(Object obj, String prefix){
-			Map<String,Object> entry = new HashMap<>();
-			if (obj instanceof Iterable){
-				for (Object o: (Iterable) obj){
-					entry.putAll(recurse(o, prefix));
-				}
-				return entry;
-			} else if (obj instanceof Map){
-				for (Map.Entry o: ((Map<String,Object>) obj).entrySet()){
-					entry.putAll(recurse(o.getValue(), prefix + "." + o.getKey()));
-				}
-				return entry;
-			} else {
-				entry.put(prefix, obj);
-				return entry;
-			}
-
-		}
-
-		public Map<String,Object> getNewMap(){ return this.newMap; }
-
-	}
-	
 }

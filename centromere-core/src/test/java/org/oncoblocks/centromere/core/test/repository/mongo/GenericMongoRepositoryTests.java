@@ -20,7 +20,6 @@ import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.oncoblocks.centromere.core.model.Attribute;
 import org.oncoblocks.centromere.core.repository.QueryCriteria;
 import org.oncoblocks.centromere.core.test.config.TestMongoConfig;
 import org.oncoblocks.centromere.core.test.models.EntrezGene;
@@ -33,7 +32,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -51,34 +49,12 @@ public class GenericMongoRepositoryTests {
 	
 	@Before
 	public void setup(){
-		
 		if (isConfigured) return;
-		
 		geneRepository.deleteAll();
-		EntrezGene
-				geneA = new EntrezGene(1L, "GeneA", 9606, null, "1", null, "Test Gene A", "protein-coding", null, null, null);
-		geneA.setAttribute(new Attribute("isKinase","Y"));
-		geneA.setAlias("ABC");
-		EntrezGene
-				geneB = new EntrezGene(2L, "GeneB", 9606, null, "3", null, "Test Gene B", "protein-coding", null, null, null);
-		geneB.setAttribute(new Attribute("isKinase","N"));
-		geneB.setAlias("DEF");
-		EntrezGene
-				geneC = new EntrezGene(3L, "GeneC", 9606, null, "11", null, "Test Gene C", "pseudo", null, null, null);
-		geneC.setAttribute(new Attribute("isKinase","N"));
-		geneC.setAlias("GHI");
-		EntrezGene
-				geneD = new EntrezGene(4L, "GeneD", 9606, null, "9", null, "Test Gene D", "protein-coding", null, null, null);
-		geneD.setAttribute(new Attribute("isKinase","Y"));
-		geneD.setAlias("JKL");
-		EntrezGene
-				geneE = new EntrezGene(5L, "GeneE", 9606, null, "X", null, "Test Gene E", "pseudo", null, null, null);
-		geneE.setAttribute(new Attribute("isKinase","N"));
-		geneE.setAlias("MNO");
-		geneRepository.insert(Arrays.asList(new EntrezGene[]{ geneA, geneB, geneC, geneD, geneE }));
-		
+		for (EntrezGene gene: EntrezGene.createDummyData()){
+			geneRepository.insert(gene);
+		}
 		isConfigured = true;
-		
 	}
 
 	@Test
@@ -289,76 +265,6 @@ public class GenericMongoRepositoryTests {
 
 	}
 
-	@Test
-	public void rawJsonTestById() throws Exception {
-
-		EntrezGene gene = new EntrezGene();
-		gene.setEntrezGeneId(1L);
-		List<EntrezGene> genes = geneRepository.find(gene);
-		Assert.notNull(genes);
-		Assert.notEmpty(genes);
-		Assert.isTrue(genes.get(0).getEntrezGeneId().equals(1L));
-
-
-	}
-
-	@Test
-	public void rawJsonTestByGeneType() throws Exception {
-
-		EntrezGene gene = new EntrezGene();
-		gene.setGeneType("protein-coding");
-		List<EntrezGene> genes = geneRepository.find(gene);
-		Assert.notNull(genes);
-		Assert.notEmpty(genes);
-		Assert.isTrue(genes.size() == 3);
-		Assert.isTrue(genes.get(2).getEntrezGeneId().equals(4L));
-
-
-	}
-
-	@Test
-	public void rawJsonTestByConflictingAttributes() throws Exception {
-
-		EntrezGene gene = new EntrezGene();
-		gene.setGeneType("protein-coding");
-		gene.setEntrezGeneId(11L);
-
-		List<EntrezGene> genes = geneRepository.find(gene);
-		Assert.notNull(genes);
-		Assert.isTrue(genes.size() == 0);
-
-
-	}
-
-	@Test
-	public void rawJsonTestByNestedAttributes() throws Exception {
-
-		EntrezGene gene = new EntrezGene();
-		gene.setAttribute(new Attribute("isKinase","Y"));
-
-		List<EntrezGene> genes = geneRepository.find(gene);
-		Assert.notNull(genes);
-		Assert.notEmpty(genes);
-		Assert.isTrue(genes.size() == 2);
-		Assert.isTrue(genes.get(0).getEntrezGeneId().equals(1L));
-
-	}
-
-	@Test
-	public void rawJsonTestByPartialNestedAttributes() throws Exception {
-
-		EntrezGene gene = new EntrezGene();
-		gene.setAttributeName("isKinase");
-
-		List<EntrezGene> genes = geneRepository.find(gene);
-
-		Assert.notNull(genes);
-		Assert.notEmpty(genes);
-		Assert.isTrue(genes.size() == 5);
-		Assert.isTrue(genes.get(0).getEntrezGeneId().equals(1L));
-
-	}
-	
 	@Test
 	public void findByPrimaryIdTest() throws Exception {
 		

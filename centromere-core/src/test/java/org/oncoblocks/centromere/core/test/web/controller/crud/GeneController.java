@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.test.web.controller.entity;
+package org.oncoblocks.centromere.core.test.web.controller.crud;
 
 import org.oncoblocks.centromere.core.test.models.EntrezGene;
-import org.oncoblocks.centromere.core.test.web.controller.GeneAssembler;
-import org.oncoblocks.centromere.core.test.web.service.generic.GeneService;
-import org.oncoblocks.centromere.core.web.controller.EntityQueryController;
+import org.oncoblocks.centromere.core.test.repository.mongo.EntrezGeneRepository;
+import org.oncoblocks.centromere.core.web.controller.CrudApiController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.stereotype.Controller;
@@ -28,12 +27,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 /**
  * @author woemler
  */
-@ExposesResourceFor(EntrezGene.class)
 @Controller
-@RequestMapping(value = "/eq/genes")
-public class GeneEntityQueryController extends EntityQueryController<EntrezGene, Long> {
+@RequestMapping(value = "/genes")
+@ExposesResourceFor(EntrezGene.class)
+public class GeneController extends CrudApiController<EntrezGene, Long, EntrezGeneParameters> {
 	@Autowired
-	public GeneEntityQueryController(GeneService service) {
-		super(service, new GeneAssembler());
+	public GeneController(EntrezGeneRepository repository, GeneAssembler assembler) {
+		super(repository, assembler);
 	}
+
 }

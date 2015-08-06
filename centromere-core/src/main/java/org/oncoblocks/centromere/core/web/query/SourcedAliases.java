@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.test.web.service.generic;
-
-import org.oncoblocks.centromere.core.test.models.EntrezGene;
-import org.oncoblocks.centromere.core.test.repository.mongo.EntrezGeneRepository;
-import org.oncoblocks.centromere.core.web.service.GenericService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+package org.oncoblocks.centromere.core.web.query;
 
 /**
+ * Interface for adding controller query methods to entity classes with key-value aliases.  
+ * 
  * @author woemler
  */
-
-@Service
-public class GeneService extends GenericService<EntrezGene, Long> {
-	@Autowired
-	public GeneService(EntrezGeneRepository repository) {
-		super(repository);
-	}
+public interface SourcedAliases {
+	void setAliasName(String aliasName);
+	void setAliasSource(String aliasSource);
+	void setAlias(SourcedAlias alias);
 }

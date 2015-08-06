@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.model;
+package org.oncoblocks.centromere.core.test.web.controller.readonly;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.oncoblocks.centromere.core.web.exceptions.RestExceptionHandler;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 
 /**
  * @author woemler
  */
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.TYPE})
-public @interface Queryable {
-	Parameter[] value() default {};
+@Configuration
+@ComponentScan(basePackages = { "org.oncoblocks.centromere.core.test.web.controller.readonly" })
+public class TestReadOnlyControllerConfig {
+	@ControllerAdvice
+	public static class ControllerExceptionHandler extends RestExceptionHandler {}
 }
