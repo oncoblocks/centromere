@@ -23,17 +23,16 @@ public class ApplicationConfig {
 
 ### Data Model
 
-Centromere is designed for use with the work-in-progress Oncoblocks data model, but is not limited to this specification.  The first step in implementing a data warehouse with Centromere is to design a data model and create representational `Model` classes for each resource:
+Centromere is designed for use with the work-in-progress Oncoblocks data model, but is not limited to this specification.  The first step in implementing a data warehouse with Centromere is to design a data model and create representational `Model` classes for each resource.  This class will serve to represent the resource in the web services and transfer data in and out of the repository layer:
 
 ```java
 /* Simple MongoDB representation of an Entrez Gene record  */
 @Filterable
-@Document(collection = "genes")
 public class Gene implements Model<String> {
 
-	@Id private String id;
-	@Indexed private Long entrezGeneId;
-	@Indexed private String primaryGeneSymbol;
+	private String id;
+	private Long entrezGeneId;
+	private String primaryGeneSymbol;
 	private Integer taxId;
 	private String locusTag;
 	private String chromosome;
@@ -64,38 +63,35 @@ public class GeneRepository extends GenericMongoRepository<Gene, String> {
 }
 ```
 
-The default repository class implementations include most of the same method signatures as Spring Data repository classes, with some additions to support dynamic queries.  Custom repository methods can also be implemented in these classes, to support specific use-cases.
-
-### Service
-
-The service layer passes query requests and responses between the web services and repository layers.  The buffer that this layer provides allows for repository implementations to change without affecting the API implementation.  Implementations of `ServiceOperations` support this by allowing the remapping of web service request parameters to database implementation-specific parameters.  The default implementation simply passes requests, without modification, from one layer to the next:
-
-```java
-@Service
-public class GeneService extends GenericService<Gene, String> {
-	@Autowired
-	public GeneService(GeneRepository repository) {
-		super(repository);
-	}
-}
-```
+The default repository class implementations include most of the same method signatures as Spring Data repository classes, supporting standard CRUD operations, plus some additional methods for dynamic queries.  Custom methods can also be added to extend the base repository functionality.
 
 ### Web Services
 
-The web services (controller) layer handles HTTP requests and routes them to the appropriate entity service.  Web service controllers support standard CRUD operations via `GET`, `POST`, `PUT`, `DELETE`, and `OPTIONS` requests by default, and can be made read-only by overriding the default methods, or secured using Spring Security and the provided token-authenitcation tools. Implementations of `ControllerOperations` vary primarily based upon the method of handling dynamic `GET` queries.  
+The web services (controller) layer handles HTTP requests and routes them to the appropriate repository implementation.  Web service controllers support standard CRUD operations via `GET`, `POST`, `PUT`, and `DELETE`. `HEAD` and `OPTIONS` methods are also supported for the purpose of exposing additional resource end-point information.
 
 ```java
 @Controller
 @RequestMapping(value = "/genes")
-public class GeneController extends EntityQueryController<Gene, String> {
+public class GeneController extends EntityQueryController<Gene, String, GeneParameters> {
 
 	@Autowired
 	public GeneController(GeneService service) {
 		super(service, new GeneAssembler());
 	}
 
+	public static class GeneParameters extends QueryParameters {
+
+		private Long entrezGeneId;
+		@QueryParameter("symbol") private String primaryGeneSymbol;
+		@QueryParameter("aliases") private String alias;
+
+		/* Getters and setters */
+
+	}
+
 	public static class GeneAssembler extends ResourceAssemblerSupport<Gene, FilterableResource> {
-    	public GeneAssembler() {
+
+		public GeneAssembler() {
     		super(GeneController.class, FilterableResource.class);
     	}
 
@@ -104,10 +100,13 @@ public class GeneController extends EntityQueryController<Gene, String> {
     		resource.add(linkTo(GeneController.class).slash(gene.getId()).withSelfRel());
     		return resource;
     	}
+
     }
 
 }
 ```
+
+Subclassing the `QueryParameters` class allows you to define specifically what model attributes are exposed for querying.  Additional customization is done using the `QueryParameter` annotation, which allows you to remap query string attributes to repository-specific fields, and perform additional query operations beyond simple equality tests. Custom implementations of Spring HATEOAS's `ResourceAssemblerSupport` will annotate response objects with HAL-formatted links.
 
 ## RESTful API
 
@@ -121,6 +120,10 @@ Method | URI | Description
 `PUT` | `/genes/{id}` | Updates an existing Gene
 `DELETE` | `/genes/{id}` | Deletes an existing Gene
 `OPTIONS` | `/genes` | Fetches info about the available Gene operations
+
+#### Media Types
+
+By default, Centromere uses the `application/json` media type for all requests.  Additional media types can be supported with the appropriate configuration.
 
 #### Searching
 
@@ -149,7 +152,7 @@ GET /genes?exclude=description,links
 
 #### Hypermedia
 
-All entity response objects include embedded HAL-formatted links to related entities, allowing for easy resource discovery:
+For hypermedia support, use the `application/hal+json` media type to include embedded HAL-formatted links to related entities, allowing for easy resource discovery:
 
 ```
 Request:

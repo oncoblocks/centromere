@@ -8,12 +8,12 @@
     <parent>
         <artifactId>centromere-parent</artifactId>
         <groupId>org.oncoblocks.centromere</groupId>
-        <version>0.1.0</version>
+        <version>0.2.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     
     <artifactId>centromere-model</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
     <name>Oncoblocks: Centromere Model</name>
     <packaging>jar</packaging>
     

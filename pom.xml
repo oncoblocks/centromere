@@ -8,7 +8,7 @@
 
     <groupId>org.oncoblocks.centromere</groupId>
     <artifactId>centromere-parent</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
     <name>Oncoblocks: Centromere Parent</name>
     <packaging>pom</packaging>
 
