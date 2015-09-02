@@ -36,4 +36,14 @@ public class RepositoryRecordWriter<T, ID extends Serializable> implements Entit
 	public void writeRecord(T entity) {
 		repository.insert(entity);	
 	}
+
+	@Override 
+	public void open() {
+		// Do nothing
+	}
+
+	@Override 
+	public void close() {
+		// Do nothing
+	}
 }
