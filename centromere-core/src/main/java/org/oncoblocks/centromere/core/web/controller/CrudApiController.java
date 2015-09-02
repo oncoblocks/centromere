@@ -61,7 +61,7 @@ public class CrudApiController<
 	@RequestMapping(value = "", method = RequestMethod.POST, 
 			produces = { MediaType.APPLICATION_JSON_VALUE })
 	public HttpEntity create(@RequestBody T entity) {
-		T created = repository.insert(entity);
+		T created = getRepository().insert(entity);
 		if (created == null) throw new RequestFailureException(40003, "There was a problem creating the record.", "", "");
 		return new ResponseEntity<>(created, HttpStatus.CREATED);
 	}
@@ -77,9 +77,9 @@ public class CrudApiController<
 	@RequestMapping(value = "", method = RequestMethod.POST, 
 			produces = { HalMediaType.APPLICATION_JSON_HAL_VALUE })
 	public HttpEntity createWithHal(@RequestBody T entity) {
-		T created = repository.insert(entity);
+		T created = getRepository().insert(entity);
 		if (created == null) throw new RequestFailureException(40003, "There was a problem creating the record.", "", "");
-		FilterableResource resource = assembler.toResource(created);
+		FilterableResource resource = getAssembler().toResource(created);
 		return new ResponseEntity<>(resource, HttpStatus.CREATED);
 	}
 
@@ -95,8 +95,8 @@ public class CrudApiController<
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, 
 			produces = { MediaType.APPLICATION_JSON_VALUE })
 	public HttpEntity update(@RequestBody T entity, @PathVariable ID id) {
-		if (!repository.exists(id)) throw new ResourceNotFoundException();
-		T updated = repository.update(entity);
+		if (!getRepository().exists(id)) throw new ResourceNotFoundException();
+		T updated = getRepository().update(entity);
 		if (updated == null) throw new RequestFailureException(40004, "There was a problem updating the record.", "", "");
 		return new ResponseEntity<>(updated, HttpStatus.CREATED);
 	}
@@ -113,10 +113,10 @@ public class CrudApiController<
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, 
 			produces = { HalMediaType.APPLICATION_JSON_HAL_VALUE })
 	public HttpEntity updateWithHal(@RequestBody T entity, @PathVariable ID id) {
-		if (!repository.exists(id)) throw new ResourceNotFoundException();
-		T updated = repository.update(entity);
+		if (!getRepository().exists(id)) throw new ResourceNotFoundException();
+		T updated = getRepository().update(entity);
 		if (updated == null) throw new RequestFailureException(40004, "There was a problem updating the record.", "", "");
-		FilterableResource resource = assembler.toResource(updated);
+		FilterableResource resource = getAssembler().toResource(updated);
 		return new ResponseEntity<>(resource, HttpStatus.CREATED);
 	}
 
@@ -129,7 +129,7 @@ public class CrudApiController<
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public HttpEntity delete(@PathVariable ID id) {
-		repository.delete(id);
+		getRepository().delete(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 

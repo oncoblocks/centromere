@@ -53,8 +53,8 @@ public abstract class BaseApiController<
 		ID extends Serializable,
 		Q extends QueryParameters> {
 
-	protected RepositoryOperations<T, ID> repository;
-	protected ResourceAssemblerSupport<T, FilterableResource> assembler;
+	private RepositoryOperations<T, ID> repository;
+	private ResourceAssemblerSupport<T, FilterableResource> assembler;
 
 	public BaseApiController(
 			RepositoryOperations<T, ID> repository,
@@ -238,11 +238,27 @@ public abstract class BaseApiController<
 	 *
 	 * @return
 	 */
-	@RequestMapping(value = { "", "/**" }, method = RequestMethod.OPTIONS,
-			produces = { MediaType.APPLICATION_JSON_VALUE })
-	public HttpEntity options() {
-		return null; //TODO
+//	@RequestMapping(method = RequestMethod.OPTIONS)
+//	public HttpEntity options() throws Exception {
+//		OptionsResponse response = doOptions();
+//		return new ResponseEntity<>(response, HttpStatus.OK);
+//	}
+//	
+//	protected OptionsResponse doOptions() throws Exception {
+//		OptionsResponse optionsResponse = new OptionsResponse();
+//		List<OptionsEndpointDescriptor> descriptors = new ArrayList<>();
+//		descriptors.addAll(OptionsDefaults.getDefaultGetDescriptors(model, queryParametersClass));
+//		optionsResponse.setEndpoints(descriptors);
+//		return optionsResponse;
+//	}
+
+
+
+	public RepositoryOperations<T, ID> getRepository() {
+		return repository;
 	}
-	
-	
+
+	public ResourceAssemblerSupport<T, FilterableResource> getAssembler() {
+		return assembler;
+	}
 }

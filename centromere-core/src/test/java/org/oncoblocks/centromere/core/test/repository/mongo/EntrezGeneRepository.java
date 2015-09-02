@@ -41,26 +41,26 @@ public class EntrezGeneRepository extends GenericMongoRepository<EntrezGene, Lon
 
 	public <S extends Serializable> EntrezGene findByPrimaryGeneId(S primaryGeneId) {
 		Query query = new Query(Criteria.where("entrezGeneId").is(primaryGeneId));
-		return mongoOperations.findOne(query, model);
+		return getMongoOperations().findOne(query, getModel());
 	}
 
 	public List<EntrezGene> findByPrimaryGeneSymbol(String primaryGeneSymbol) {
 		Query query = new Query(Criteria.where("primaryGeneSymbol").is(primaryGeneSymbol));
-		return mongoOperations.find(query, model);
+		return getMongoOperations().find(query, getModel());
 	}
 
 	public List<EntrezGene> findByAlias(String alias) {
 		Query query = new Query(Criteria.where("aliases").is(alias));
-		return mongoOperations.find(query, model);
+		return getMongoOperations().find(query, getModel());
 	}
 
 	public EntrezGene guessGene(String keyword) {
 		Query query = new Query(Criteria.where("primaryGeneSymbol").is(keyword));
 		Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, "entrezGeneId"));
-		List<EntrezGene> genes = mongoOperations.find(query.with(sort), model);
+		List<EntrezGene> genes = getMongoOperations().find(query.with(sort), getModel());
 		if (genes != null && genes.size() > 0) return genes.get(0);
 		query = new Query(Criteria.where("aliases").is(keyword));
-		genes = mongoOperations.find(query.with(sort), model);
+		genes = getMongoOperations().find(query.with(sort), getModel());
 		if (genes != null && genes.size() > 0) return genes.get(0);
 		return null;
 	}

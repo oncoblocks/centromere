@@ -39,8 +39,8 @@ import java.util.List;
 public class GenericMongoRepository<T extends Model<ID>, ID extends Serializable> 
 		implements RepositoryOperations<T, ID>  {
 	
-	protected final MongoOperations mongoOperations;
-	protected final Class<T> model;
+	private final MongoOperations mongoOperations;
+	private final Class<T> model;
 
 	/**
 	 * Creates a new {@link GenericMongoRepository} instance.
@@ -264,4 +264,11 @@ public class GenericMongoRepository<T extends Model<ID>, ID extends Serializable
 		return criteria;
 	}
 
+	public MongoOperations getMongoOperations() {
+		return mongoOperations;
+	}
+
+	public Class<T> getModel() {
+		return model;
+	}
 }

@@ -318,7 +318,11 @@ public class CrudControllerTests {
 
 //	@Test
 //	public void optionsTest() throws Exception {
-//
+//		MvcResult result = mockMvc.perform(request(HttpMethod.OPTIONS, "/genes").accept(MediaType.APPLICATION_JSON))
+//				.andExpect(status().isOk())
+//				.andExpect(jsonPath("$", hasKey("description")))
+//				.andReturn();
+//		System.out.println("Response: " + result.getResponse().getContentAsString());
 //	}
 	
 }

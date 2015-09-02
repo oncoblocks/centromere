@@ -52,10 +52,10 @@ import static org.oncoblocks.centromere.core.repository.sqlbuilder.SqlBuilder.*;
  */
 public class GenericJdbcRepository<T extends Model<ID>, ID extends Serializable>  implements RepositoryOperations<T, ID> {
 
-	protected JdbcTemplate jdbcTemplate;
-	protected ComplexTableDescription tableDescription;
-	protected RowMapper<T> rowMapper;
-	protected RowUnmapper<T> rowUnmapper;
+	private JdbcTemplate jdbcTemplate;
+	private ComplexTableDescription tableDescription;
+	private RowMapper<T> rowMapper;
+	private RowUnmapper<T> rowUnmapper;
 
 	/**
 	 * Creates a new repository instance using a {@link javax.sql.DataSource} to generate a new 
@@ -186,7 +186,7 @@ public class GenericJdbcRepository<T extends Model<ID>, ID extends Serializable>
 		for (QueryCriteria criteria: queryCriterias){
 			if (criteria != null) conditionList.add(getConditionFromQueryCriteria(criteria));
 		}
-		sqlBuilder.where(and(conditionList.toArray(new Condition[]{})));
+		sqlBuilder.where(and(conditionList.toArray(new Condition[] {})));
 		return jdbcTemplate.query(sqlBuilder.toSql(), sqlBuilder.getQueryParameterValues().toArray(),
 				rowMapper);
 	}
@@ -218,7 +218,8 @@ public class GenericJdbcRepository<T extends Model<ID>, ID extends Serializable>
 		sqlBuilder.where(and(conditionList.toArray(new Condition[] {})));
 		if (pageable.getSort() != null) sqlBuilder.orderBy(pageable.getSort());
 		sqlBuilder.limit(pageable);
-		List<T> objects = jdbcTemplate.query(sqlBuilder.toSql(), sqlBuilder.getQueryParameterValues().toArray(), rowMapper);
+		List<T> objects = jdbcTemplate.query(sqlBuilder.toSql(),
+				sqlBuilder.getQueryParameterValues().toArray(), rowMapper);
 		Long rowCount = count(queryCriterias);
 		return new PageImpl<>(objects, pageable, rowCount);
 	}
@@ -382,5 +383,21 @@ public class GenericJdbcRepository<T extends Model<ID>, ID extends Serializable>
 			default:
 				return equal(criteria.getKey(), criteria.getValue());
 		}
+	}
+
+	public JdbcTemplate getJdbcTemplate() {
+		return jdbcTemplate;
+	}
+
+	public ComplexTableDescription getTableDescription() {
+		return tableDescription;
+	}
+
+	public RowMapper<T> getRowMapper() {
+		return rowMapper;
+	}
+
+	public RowUnmapper<T> getRowUnmapper() {
+		return rowUnmapper;
 	}
 }
