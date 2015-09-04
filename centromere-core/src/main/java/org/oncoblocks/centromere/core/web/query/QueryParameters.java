@@ -33,8 +33,47 @@ import java.util.*;
  */
 public class QueryParameters {
 	
+	private Integer page;
+	private Integer size;
+	private Set<String> sort;
 	private Set<String> fields;
 	private Set<String> exclude;
+
+	public Integer getPageNumber() {
+		return page;
+	}
+
+	public void setPage(Integer page) {
+		this.page = page;
+	}
+
+	public Integer getPageSize() {
+		return size;
+	}
+
+	public Sort getSort() {
+		Sort pageSort = null;
+		List<Sort.Order> orders = new ArrayList<>();
+		if (sort != null && !sort.isEmpty()){
+			for (String s: sort){
+				String[] bits = s.split("\\+");
+				orders.add(new Sort.Order(
+					bits.length > 1 ? Sort.Direction.fromString(bits[1]) : Sort.Direction.ASC,
+					bits[0]
+				));
+			}
+			pageSort = new Sort(orders);
+		}
+		return pageSort;
+	}
+
+	public void setSort(Set<String> sort) {
+		this.sort = sort;
+	}
+
+	public void setSize(Integer size) {
+		this.size = size;
+	}
 
 	public Set<String> getIncludedFields() {
 		return fields;
@@ -50,6 +89,26 @@ public class QueryParameters {
 
 	public void setExclude(Set<String> exclude) {
 		this.exclude = exclude;
+	}
+	
+	public Pageable getPageRequest(){
+		PageRequest pageRequest = null;
+		if (page != null || size != null){
+			pageRequest = new PageRequest(
+					page != null ? page : 0,
+					size != null ? size : 1000,
+					this.getSort()
+			);
+		}
+		return pageRequest;
+	}
+	
+	public boolean isPaged(){
+		return page != null || size != null;
+	}
+	
+	public boolean isSorted(){
+		return sort != null && !sort.isEmpty();
 	}
 
 	/**
@@ -85,10 +144,11 @@ public class QueryParameters {
 	/**
 	 * Remaps sort field names in {@link org.springframework.data.domain.Pageable} objects.
 	 * 
-	 * @param pageable
+	 * @param queryParameters
 	 * @return
 	 */
-	public static Pageable remapPageable(Pageable pageable, QueryParameters queryParameters){
+	public static Pageable remapPageable(QueryParameters queryParameters){
+		Pageable pageable = queryParameters.getPageRequest();
 		if (pageable.getSort() != null) {
 			Map<String, String> mappings = new HashMap<>();
 			for (Field field : queryParameters.getClass().getDeclaredFields()) {
@@ -109,6 +169,32 @@ public class QueryParameters {
 					new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), new Sort(orders));
 		}
 		return pageable;
+	}
+
+	/**
+	 * Remaps the field names in {@link Sort} objects
+	 * 
+	 * @param queryParameters
+	 * @return
+	 */
+	public static Sort remapSort(QueryParameters queryParameters){
+		Sort sort = queryParameters.getSort();
+		Map<String, String> mappings = new HashMap<>();
+		for (Field field : queryParameters.getClass().getDeclaredFields()) {
+			if (field.isAnnotationPresent(QueryParameter.class)) {
+				QueryParameter queryParameter = field.getAnnotation(QueryParameter.class);
+				if (!queryParameter.value().equals(""))
+					mappings.put(field.getName(), queryParameter.value());
+			}
+		}
+		List<Sort.Order> orders = new ArrayList<>();
+		for (Sort.Order order : sort) {
+			if (mappings.containsKey(order.getProperty())) {
+				order = new Sort.Order(order.getDirection(), mappings.get(order.getProperty()));
+			}
+			orders.add(order);
+		}
+		return new Sort(orders);
 	}
 	
 }

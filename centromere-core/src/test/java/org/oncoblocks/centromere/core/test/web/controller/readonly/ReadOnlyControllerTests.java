@@ -241,7 +241,7 @@ public class ReadOnlyControllerTests {
 
 	@Test
 	public void findSorted() throws Exception {
-		mockMvc.perform(get("/subjects?sort=subjectId,desc").accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
+		mockMvc.perform(get("/subjects?sort=subjectId+desc").accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(5)))

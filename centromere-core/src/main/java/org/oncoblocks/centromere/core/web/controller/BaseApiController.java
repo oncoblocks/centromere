@@ -23,6 +23,7 @@ import org.oncoblocks.centromere.core.web.exceptions.ResourceNotFoundException;
 import org.oncoblocks.centromere.core.web.query.QueryParameters;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedResources;
@@ -73,151 +74,74 @@ public abstract class BaseApiController<
 	 * @return {@code T} instance
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET,
-			produces = { HalMediaType.APPLICATION_JSON_HAL_VALUE })
+			produces = { HalMediaType.APPLICATION_JSON_HAL_VALUE, MediaType.APPLICATION_JSON_VALUE })
 	public HttpEntity findByIdWithHal(
 			@PathVariable ID id,
 			@RequestParam(required = false) Set<String> fields,
-			@RequestParam(required = false) Set<String> exclude
-	) {
-		T entity = repository.findById(id);
-		if (entity == null) throw new ResourceNotFoundException();
-		FilterableResource resource = assembler.toResource(entity);
-		ResponseEnvelope envelope = new ResponseEnvelope(resource, fields, exclude);
-		return new ResponseEntity<>(envelope, HttpStatus.OK);
-	}
-
-	/**
-	 * {@code GET /{id}}
-	 * Fetches a single record by its primary ID and returns it, or a {@code Not Found} exception if not.
-	 *
-	 * @param id primary ID for the target record.
-	 * @param fields set of field names to be included in response object.
-	 * @param exclude set of field names to be excluded from the response object.
-	 * @return {@code T} instance
-	 */
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET,
-			produces = {MediaType.APPLICATION_JSON_VALUE})
-	public HttpEntity findById(@PathVariable ID id,
-			@RequestParam(required = false) Set<String> fields,
-			@RequestParam(required = false) Set<String> exclude
-	) {
-		T entity = repository.findById(id);
-		if (entity == null) throw new ResourceNotFoundException();
-		ResponseEnvelope envelope = new ResponseEnvelope(entity, fields, exclude);
-		return new ResponseEntity<>(envelope, HttpStatus.OK);
-	}
-
-	/**
-	 * GET request for a collection of entities. Can be sorted using {@link org.springframework.data.domain.Pageable},
-	 *   or just return a default-ordered list (typically by primary key ID). Results can be filtered 
-	 *   using query string parameters that map to {@code T} entity attributes.  Supports field filtering.
-	 *
-	 * @param params object that defines acceptable query parameters. 
-	 * @param pageable {@link org.springframework.data.domain.Pageable} request object, created using 
-	 *   'page', 'size', or 'sort' as query string parameters. 
-	 * @return
-	 */
-	@RequestMapping(value = "", method = RequestMethod.GET, params = { "!page", "!size" },
-			produces = {MediaType.APPLICATION_JSON_VALUE})
-	public HttpEntity find(@ModelAttribute Q params, Pageable pageable){
-		pageable = QueryParameters.remapPageable(pageable, params);
-		List<QueryCriteria> criterias = QueryParameters.toQueryCriteria(params);
-		List<T> entities;
-		if (pageable.getSort() != null){
-			entities = (List<T>) repository.findSorted(criterias, pageable.getSort());
-		} else {
-			entities = (List<T>) repository.find(criterias);
-		}
-		ResponseEnvelope envelope
-				= new ResponseEnvelope(entities, params.getIncludedFields(), params.getExcludedFields());
-		return new ResponseEntity<>(envelope, HttpStatus.OK);
-	}
-
-	/**
-	 * GET request for a collection of entities. Can be sorted using {@link org.springframework.data.domain.Pageable},
-	 *   or just return a default-ordered list (typically by primary key ID). Results can be filtered 
-	 *   using query string parameters that map to {@code T} entity attributes.  Supports field filtering.
-	 *   Response objects are wrapped and annotated with HAL-formatted links.
-	 *
-	 * @param params object that defines acceptable query parameters. 
-	 * @param pageable {@link org.springframework.data.domain.Pageable} request object, created using 
-	 *   'page', 'size', or 'sort' as query string parameters. 
-	 * @param request {@link javax.servlet.http.HttpServletRequest}
-	 * @return
-	 */
-	@RequestMapping(value = "", method = RequestMethod.GET, params = { "!page", "!size" },
-			produces = {HalMediaType.APPLICATION_JSON_HAL_VALUE})
-	public HttpEntity findWithHal(@ModelAttribute Q params, Pageable pageable, HttpServletRequest request){
-		pageable = QueryParameters.remapPageable(pageable, params);
-		List<QueryCriteria> criterias = QueryParameters.toQueryCriteria(params);
-		List<T> entities;
-		if (pageable.getSort() != null){
-			entities = (List<T>) repository.findSorted(criterias, pageable.getSort());
-		} else {
-			entities = (List<T>) repository.find(criterias);
-		}
-		List<FilterableResource> resourceList = assembler.toResources(entities);
-		Resources<FilterableResource> resources = new Resources<>(resourceList);
-		Link selfLink = new Link(linkTo(this.getClass()).slash("").toString() +
-				(request.getQueryString() != null ? "?" + request.getQueryString() : ""), "self");
-		resources.add(selfLink);
-		ResponseEnvelope envelope
-				= new ResponseEnvelope(resources, params.getIncludedFields(), params.getExcludedFields());
-		return new ResponseEntity<>(envelope, HttpStatus.OK);
-	}
-
-	/**
-	 * GET request for a paged collection of entities. Can be sorted using {@link org.springframework.data.domain.Pageable},
-	 *   or just return a default-ordered list (typically by primary key ID). Results can be filtered 
-	 *   using query string parameters that map to {@code T} entity attributes.  Supports field filtering.
-	 *
-	 * @param params object that defines acceptable query parameters.  
-	 * @param pageable {@link org.springframework.data.domain.Pageable} request object, created using 
-	 *   'page', 'size', or 'sort' as query string parameters. 
-	 * @return
-	 */
-	@RequestMapping(value = "", method = RequestMethod.GET,
-			produces = {MediaType.APPLICATION_JSON_VALUE})
-	public HttpEntity findPaged(@ModelAttribute Q params, Pageable pageable){
-		pageable = QueryParameters.remapPageable(pageable, params);
-		List<QueryCriteria> criterias = QueryParameters.toQueryCriteria(params);
-		Page<T> page = repository.findPaged(criterias, pageable);
-		ResponseEnvelope envelope
-				= new ResponseEnvelope(page, params.getIncludedFields(), params.getExcludedFields());
-		return new ResponseEntity<>(envelope, HttpStatus.OK);
-	}
-
-	/**
-	 * GET request for a paged collection of entities. Can be sorted using {@link org.springframework.data.domain.Pageable},
-	 *   or just return a default-ordered list (typically by primary key ID). Results can be filtered 
-	 *   using query string parameters that map to {@code T} entity attributes.  Supports field filtering.
-	 *   Response objects are wrapped and annotated with HAL-formatted links.
-	 *
-	 * @param params object that defines acceptable query parameters. 
-	 * @param pageable {@link org.springframework.data.domain.Pageable} request object, created using 
-	 *   'page', 'size', or 'sort' as query string parameters. 
-	 * @param pagedResourcesAssembler {@link org.springframework.data.web.PagedResourcesAssembler} for 
-	 *   assembling paged entities into a wrapped response object with hypermedia links. 
-	 * @param request {@link javax.servlet.http.HttpServletRequest}
-	 * @return
-	 */
-	@RequestMapping(value = "", method = RequestMethod.GET,
-			produces = {HalMediaType.APPLICATION_JSON_HAL_VALUE})
-	public HttpEntity findWithHal(
-			@ModelAttribute Q params,
-			Pageable pageable,
-			PagedResourcesAssembler<T> pagedResourcesAssembler,
+			@RequestParam(required = false) Set<String> exclude,
 			HttpServletRequest request
-	){
-		pageable = QueryParameters.remapPageable(pageable, params);
+	) {
+		T entity = repository.findById(id);
+		if (entity == null) throw new ResourceNotFoundException();
+		ResponseEnvelope envelope = null;
+		if (HalMediaType.isHalMediaType(request.getHeader("Accept"))){
+			FilterableResource resource = assembler.toResource(entity);
+			envelope = new ResponseEnvelope(resource, fields, exclude);
+		} else {
+			envelope = new ResponseEnvelope(entity, fields, exclude);
+		}
+		return new ResponseEntity<>(envelope, HttpStatus.OK);
+	}
+
+	/**
+	 * Queries the repository using inputted query string paramters, defined within a custom 
+	 *   {@link QueryParameters}.  Supports pagination, sorting, field filtering, and field exclusion.
+	 * 
+	 * @param params
+	 * @param pagedResourcesAssembler
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "", method = RequestMethod.GET,
+			produces = { MediaType.APPLICATION_JSON_VALUE, HalMediaType.APPLICATION_JSON_HAL_VALUE })
+	public HttpEntity find(
+			@ModelAttribute Q params, 
+			PagedResourcesAssembler<T> pagedResourcesAssembler, 
+			HttpServletRequest request)
+	{
+		ResponseEnvelope envelope = null;
 		List<QueryCriteria> criterias = QueryParameters.toQueryCriteria(params);
-		Page<T> page = repository.findPaged(criterias, pageable);
+		String mediaType = request.getHeader("Accept");
 		Link selfLink = new Link(linkTo(this.getClass()).slash("").toString() +
 				(request.getQueryString() != null ? "?" + request.getQueryString() : ""), "self");
-		PagedResources<FilterableResource> pagedResources
-				= pagedResourcesAssembler.toResource(page, assembler, selfLink);
-		ResponseEnvelope envelope
-				= new ResponseEnvelope(pagedResources, params.getIncludedFields(), params.getExcludedFields());
+		if (params.isPaged()){
+			Pageable pageable = QueryParameters.remapPageable(params);
+			Page<T> page = repository.find(criterias, pageable);
+			if (HalMediaType.isHalMediaType(mediaType)){
+				
+				PagedResources<FilterableResource> pagedResources
+						= pagedResourcesAssembler.toResource(page, assembler, selfLink);
+				envelope = new ResponseEnvelope(pagedResources, params.getIncludedFields(), params.getExcludedFields());
+			} else {
+				envelope = new ResponseEnvelope(page, params.getIncludedFields(), params.getExcludedFields());
+			}
+		} else {
+			Sort sort = params.getSort();
+			List<T> entities = null;
+			if (sort != null){
+				entities = (List<T>) repository.find(criterias, QueryParameters.remapSort(params));
+			} else {
+				entities = (List<T>) repository.find(criterias);
+			}
+			if (HalMediaType.isHalMediaType(mediaType)){
+				List<FilterableResource> resourceList = assembler.toResources(entities);
+				Resources<FilterableResource> resources = new Resources<>(resourceList);
+				resources.add(selfLink);
+				envelope = new ResponseEnvelope(resources, params.getIncludedFields(), params.getExcludedFields());
+			} else {
+				envelope = new ResponseEnvelope(entities, params.getIncludedFields(), params.getExcludedFields());
+			}
+		}
 		return new ResponseEntity<>(envelope, HttpStatus.OK);
 	}
 

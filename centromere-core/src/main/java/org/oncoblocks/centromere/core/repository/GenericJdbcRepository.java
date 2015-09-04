@@ -145,17 +145,17 @@ public class GenericJdbcRepository<T extends Model<ID>, ID extends Serializable>
 	}
 
 	/**
-	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#findAllSorted}
+	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#find}
 	 */
-	public List<T> findAllSorted(Sort sort) {
+	public List<T> find(Sort sort) {
 		SqlBuilder sqlBuilder = getSqlBuilder().orderBy(sort);
 		return jdbcTemplate.query(sqlBuilder.toSql(), rowMapper);
 	}
 
 	/**
-	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#findAllPaged}
+	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#find}
 	 */
-	public Page<T> findAllPaged(Pageable pageable) {
+	public Page<T> find(Pageable pageable) {
 		SqlBuilder sqlBuilder = getSqlBuilder();
 		if (pageable.getSort() != null){
 			sqlBuilder.orderBy(pageable.getSort());
@@ -192,9 +192,9 @@ public class GenericJdbcRepository<T extends Model<ID>, ID extends Serializable>
 	}
 
 	/**
-	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#findSorted}
+	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#find}
 	 */
-	public List<T> findSorted(Iterable<QueryCriteria> queryCriterias, Sort sort) {
+	public List<T> find(Iterable<QueryCriteria> queryCriterias, Sort sort) {
 		SqlBuilder sqlBuilder = getSqlBuilder();
 		List<Condition> conditionList = new ArrayList<>();
 		for (QueryCriteria criteria: queryCriterias){
@@ -207,9 +207,9 @@ public class GenericJdbcRepository<T extends Model<ID>, ID extends Serializable>
 	}
 
 	/**
-	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#findPaged}
+	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#find}
 	 */
-	public Page<T> findPaged(Iterable<QueryCriteria> queryCriterias, Pageable pageable) {
+	public Page<T> find(Iterable<QueryCriteria> queryCriterias, Pageable pageable) {
 		SqlBuilder sqlBuilder = getSqlBuilder();
 		List<Condition> conditionList = new ArrayList<>();
 		for (QueryCriteria criteria: queryCriterias){

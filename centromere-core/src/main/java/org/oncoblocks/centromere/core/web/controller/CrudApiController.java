@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 
 /**
@@ -59,28 +60,16 @@ public class CrudApiController<
 	 * @return updated representation of the submitted entity
 	 */
 	@RequestMapping(value = "", method = RequestMethod.POST, 
-			produces = { MediaType.APPLICATION_JSON_VALUE })
-	public HttpEntity create(@RequestBody T entity) {
+			produces = { MediaType.APPLICATION_JSON_VALUE, HalMediaType.APPLICATION_JSON_HAL_VALUE })
+	public HttpEntity create(@RequestBody T entity, HttpServletRequest request) {
 		T created = getRepository().insert(entity);
 		if (created == null) throw new RequestFailureException(40003, "There was a problem creating the record.", "", "");
-		return new ResponseEntity<>(created, HttpStatus.CREATED);
-	}
-
-	/**
-	 * {@code POST /}
-	 * Attempts to create a new record using the submitted entity. Throws an exception if the
-	 *   entity already exists.
-	 *
-	 * @param entity entity representation to be persisted
-	 * @return updated representation of the submitted entity
-	 */
-	@RequestMapping(value = "", method = RequestMethod.POST, 
-			produces = { HalMediaType.APPLICATION_JSON_HAL_VALUE })
-	public HttpEntity createWithHal(@RequestBody T entity) {
-		T created = getRepository().insert(entity);
-		if (created == null) throw new RequestFailureException(40003, "There was a problem creating the record.", "", "");
-		FilterableResource resource = getAssembler().toResource(created);
-		return new ResponseEntity<>(resource, HttpStatus.CREATED);
+		if (HalMediaType.isHalMediaType(request.getHeader("Accept"))){
+			FilterableResource resource = getAssembler().toResource(created);
+			return new ResponseEntity<>(resource, HttpStatus.CREATED);
+		} else {
+			return new ResponseEntity<>(created, HttpStatus.CREATED);
+		}
 	}
 
 	/**
@@ -94,30 +83,16 @@ public class CrudApiController<
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, 
 			produces = { MediaType.APPLICATION_JSON_VALUE })
-	public HttpEntity update(@RequestBody T entity, @PathVariable ID id) {
+	public HttpEntity update(@RequestBody T entity, @PathVariable ID id, HttpServletRequest request) {
 		if (!getRepository().exists(id)) throw new ResourceNotFoundException();
 		T updated = getRepository().update(entity);
 		if (updated == null) throw new RequestFailureException(40004, "There was a problem updating the record.", "", "");
-		return new ResponseEntity<>(updated, HttpStatus.CREATED);
-	}
-
-	/**
-	 * {@code PUT /{id}}
-	 * Attempts to update an existing entity record, replacing it with the submitted entity. Throws
-	 *   an exception if the target entity does not exist.
-	 *
-	 * @param entity entity representation to update.
-	 * @param id primary ID of the target entity
-	 * @return updated representation of the submitted entity.
-	 */
-	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, 
-			produces = { HalMediaType.APPLICATION_JSON_HAL_VALUE })
-	public HttpEntity updateWithHal(@RequestBody T entity, @PathVariable ID id) {
-		if (!getRepository().exists(id)) throw new ResourceNotFoundException();
-		T updated = getRepository().update(entity);
-		if (updated == null) throw new RequestFailureException(40004, "There was a problem updating the record.", "", "");
-		FilterableResource resource = getAssembler().toResource(updated);
-		return new ResponseEntity<>(resource, HttpStatus.CREATED);
+		if (HalMediaType.isHalMediaType(request.getHeader("Accept"))){
+			FilterableResource resource = getAssembler().toResource(updated);
+			return new ResponseEntity<>(resource, HttpStatus.CREATED);
+		} else {
+			return new ResponseEntity<>(updated, HttpStatus.CREATED);
+		}
 	}
 
 	/**

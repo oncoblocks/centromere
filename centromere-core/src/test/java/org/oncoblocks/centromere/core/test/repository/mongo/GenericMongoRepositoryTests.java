@@ -158,7 +158,7 @@ public class GenericMongoRepositoryTests {
 	public void findSortedTest(){
 
 		Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC, "primaryGeneSymbol"));
-		List<EntrezGene> genes = geneRepository.findAllSorted(sort);
+		List<EntrezGene> genes = geneRepository.find(sort);
 		Assert.notNull(genes);
 		Assert.notEmpty(genes);
 		Assert.isTrue(genes.size() == 5);
@@ -174,7 +174,7 @@ public class GenericMongoRepositoryTests {
 	public void findPagedTest(){
 
 		PageRequest pageRequest = new PageRequest(1, 2);
-		Page<EntrezGene> page = geneRepository.findAllPaged(pageRequest);
+		Page<EntrezGene> page = geneRepository.find(pageRequest);
 		Assert.notNull(page);
 		Assert.isTrue(page.getTotalPages() == 3);
 		Assert.isTrue(page.getTotalElements() == 5);
@@ -196,7 +196,7 @@ public class GenericMongoRepositoryTests {
 		List<QueryCriteria> searchCriterias = new ArrayList<>();
 		searchCriterias.add(new QueryCriteria("geneType", "protein-coding"));
 		PageRequest pageRequest = new PageRequest(1, 2);
-		Page<EntrezGene> page = geneRepository.findPaged(searchCriterias, pageRequest);
+		Page<EntrezGene> page = geneRepository.find(searchCriterias, pageRequest);
 		Assert.notNull(page);
 		Assert.isTrue(page.getTotalElements() == 3);
 		Assert.isTrue(page.getTotalPages() == 2);

@@ -91,6 +91,16 @@ public class CrudControllerTests {
 	}
 
 	@Test
+	public void findByIdNoHal() throws Exception {
+
+		mockMvc.perform(get("/genes/{id}", 1L))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.entrezGeneId", is(1)))
+				.andExpect(jsonPath("$.primaryGeneSymbol", is("GeneA")))
+				.andExpect(jsonPath("$", not(hasKey("links"))));
+	}
+
+	@Test
 	public void findByIdNotFound() throws Exception{
 		mockMvc.perform(get("/genes/{id}", 99L))
 				.andExpect(status().isNotFound());
@@ -233,7 +243,7 @@ public class CrudControllerTests {
 
 	@Test
 	public void findSorted() throws Exception {
-		mockMvc.perform(get("/genes?sort=primaryGeneSymbol,desc").accept(
+		mockMvc.perform(get("/genes?sort=primaryGeneSymbol+desc").accept(
 				HalMediaType.APPLICATION_JSON_HAL_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))

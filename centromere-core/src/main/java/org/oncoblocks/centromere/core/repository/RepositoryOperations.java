@@ -65,7 +65,7 @@ public interface RepositoryOperations<T, ID extends Serializable> {
 	 * @param sort {@link org.springframework.data.domain.Sort}
 	 * @return every instance of {@code T} in the repository.
 	 */
-	Iterable<T> findAllSorted(Sort sort);
+	Iterable<T> find(Sort sort);
 
 	/**
 	 * Retrieves a paged representation of every records in the repository.
@@ -73,7 +73,7 @@ public interface RepositoryOperations<T, ID extends Serializable> {
 	 * @param pageable {@link org.springframework.data.domain.Pageable}
 	 * @return {@link org.springframework.data.domain.Page} containing the desired set of records. 
 	 */
-	Page<T> findAllPaged(Pageable pageable);
+	Page<T> find(Pageable pageable);
 
 	/**
 	 * Returns a count of total records in the repository.
@@ -100,7 +100,7 @@ public interface RepositoryOperations<T, ID extends Serializable> {
 	 * @param sort {@link org.springframework.data.domain.Sort}
 	 * @return all matching {@code T} records.
 	 */
-	Iterable<T> findSorted(Iterable<QueryCriteria> queryCriterias, Sort sort);
+	Iterable<T> find(Iterable<QueryCriteria> queryCriterias, Sort sort);
 
 	/**
 	 * Searches for all records that satisfy the requested criteria, and returns them as a paged
@@ -110,7 +110,7 @@ public interface RepositoryOperations<T, ID extends Serializable> {
 	 * @param pageable {@link org.springframework.data.domain.Pageable}
 	 * @return {@link org.springframework.data.domain.Page} containing the desired set of records. 
 	 */
-	Page<T> findPaged(Iterable<QueryCriteria> queryCriterias, Pageable pageable);
+	Page<T> find(Iterable<QueryCriteria> queryCriterias, Pageable pageable);
 
 	/**
 	 * Returns a count of all records that satify the requested criteria.

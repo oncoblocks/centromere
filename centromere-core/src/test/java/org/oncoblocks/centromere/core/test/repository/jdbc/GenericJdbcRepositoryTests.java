@@ -80,7 +80,7 @@ public class GenericJdbcRepositoryTests {
 
 	@Test
 	public void findAllSorted(){
-		List<Subject> subjects = subjectRepository.findAllSorted(
+		List<Subject> subjects = subjectRepository.find(
 				new Sort(new Sort.Order(Sort.Direction.DESC, "subjects.subject_id")));
 		Assert.notNull(subjects);
 		Assert.notEmpty(subjects);
@@ -93,7 +93,7 @@ public class GenericJdbcRepositoryTests {
 	@Test
 	public void findAllPaged(){
 		PageRequest pageRequest = new PageRequest(1, 3);
-		Page<Subject> page = subjectRepository.findAllPaged(pageRequest);
+		Page<Subject> page = subjectRepository.find(pageRequest);
 		Assert.notNull(page);
 		Assert.isTrue(page.getTotalPages() == 2);
 		Assert.isTrue(page.getTotalElements() == 5);
@@ -130,7 +130,7 @@ public class GenericJdbcRepositoryTests {
 		queryCriterias.add(new QueryCriteria("subjects.gender", "F", Evaluation.EQUALS));
 		Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC, "subjects.subject_id"));
 
-		List<Subject> subjects = subjectRepository.findSorted(queryCriterias, sort);
+		List<Subject> subjects = subjectRepository.find(queryCriterias, sort);
 		Assert.notNull(subjects);
 		Assert.notEmpty(subjects);
 		Assert.isTrue(subjects.size() == 2);
@@ -147,7 +147,7 @@ public class GenericJdbcRepositoryTests {
 		Sort sort = new Sort(new Sort.Order(Sort.Direction.DESC, "subjects.subject_id"));
 		PageRequest pageRequest = new PageRequest(1, 3, sort);
 
-		Page<Subject> page = subjectRepository.findPaged(queryCriterias, pageRequest);
+		Page<Subject> page = subjectRepository.find(queryCriterias, pageRequest);
 		Assert.notNull(page);
 		Assert.isTrue(page.getTotalPages() == 2);
 		Assert.isTrue(page.getTotalElements() == 5);
@@ -165,7 +165,7 @@ public class GenericJdbcRepositoryTests {
 		List<QueryCriteria> queryCriterias = new ArrayList<>();
 		PageRequest pageRequest = new PageRequest(1, 3);
 
-		Page<Subject> page = subjectRepository.findPaged(queryCriterias, pageRequest);
+		Page<Subject> page = subjectRepository.find(queryCriterias, pageRequest);
 		Assert.notNull(page);
 		Assert.isTrue(page.getTotalElements() == 5);
 		Assert.isTrue(page.getTotalPages() == 2);

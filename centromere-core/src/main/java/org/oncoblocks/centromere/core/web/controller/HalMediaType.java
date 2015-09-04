@@ -16,10 +16,26 @@
 
 package org.oncoblocks.centromere.core.web.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author woemler
  */
 public class HalMediaType {
+	
 	public static final String APPLICATION_JSON_HAL_VALUE = "application/hal+json";
-	public static final String APPLICATION_XML_HAL_VALUE = "application/hal+json";
+	public static final String APPLICATION_XML_HAL_VALUE = "application/hal+xml";
+	
+	public static boolean isHalMediaType(String mediaType){
+		return getHalMediaTypes().contains(mediaType);
+	}
+	
+	public static List<String> getHalMediaTypes(){
+		List<String> mediaTypes = new ArrayList<>();
+		mediaTypes.add(APPLICATION_JSON_HAL_VALUE);
+		mediaTypes.add(APPLICATION_XML_HAL_VALUE);
+		return mediaTypes;
+	}
+	
 }

@@ -76,16 +76,16 @@ public class GenericMongoRepository<T extends Model<ID>, ID extends Serializable
 	}
 
 	/**
-	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#findAllSorted}
+	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#find}
 	 */
-	public List<T> findAllSorted(Sort sort) {
+	public List<T> find(Sort sort) {
 		return mongoOperations.find(new Query().with(sort), model);
 	}
 
 	/**
-	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#findAllPaged}
+	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#find}
 	 */
-	public Page<T> findAllPaged(Pageable pageable) {
+	public Page<T> find(Pageable pageable) {
 		List<T> entities = mongoOperations.find(new Query().with(pageable), model);
 		long count = count();
 		return new PageImpl<T>(entities, pageable, count);
@@ -104,9 +104,9 @@ public class GenericMongoRepository<T extends Model<ID>, ID extends Serializable
 	}
 
 	/**
-	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#findSorted}
+	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#find}
 	 */
-	public List<T> findSorted(Iterable<QueryCriteria> queryCriterias, Sort sort) {
+	public List<T> find(Iterable<QueryCriteria> queryCriterias, Sort sort) {
 		Criteria criteria = getQueryFromQueryCriteria(queryCriterias);
 		Query query = new Query();
 		if (criteria != null){
@@ -116,9 +116,9 @@ public class GenericMongoRepository<T extends Model<ID>, ID extends Serializable
 	}
 
 	/**
-	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#findPaged}
+	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#find}
 	 */
-	public Page<T> findPaged(Iterable<QueryCriteria> queryCriterias, Pageable pageable) {
+	public Page<T> find(Iterable<QueryCriteria> queryCriterias, Pageable pageable) {
 		Criteria criteria = getQueryFromQueryCriteria(queryCriterias);
 		Query query = new Query();
 		if (criteria != null){
