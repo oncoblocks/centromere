@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.model.common;
+package org.oncoblocks.centromere.model.common.sample;
 
-import org.oncoblocks.centromere.core.model.Filterable;
-import org.oncoblocks.centromere.core.model.Model;
+import org.oncoblocks.centromere.model.support.AbstractModel;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -26,10 +25,8 @@ import java.util.Set;
  * @author woemler
  */
 
-@Filterable
-public class Sample<ID extends Serializable> implements Model<ID> {
+public class SampleDto<ID extends Serializable> extends AbstractModel<ID> {
 
-	private ID id;
 	private ID subjectId;
 	private ID dataSetId;
 	private String name;
@@ -39,11 +36,11 @@ public class Sample<ID extends Serializable> implements Model<ID> {
 	private String notes;
 	private Set<ID> studyIds;
 
-	public Sample() { }
+	public SampleDto() { }
 
-	public Sample(ID id, ID subjectId, ID dataSetId, String name, String type, String tissue,
+	public SampleDto(ID id, ID subjectId, ID dataSetId, String name, String type, String tissue,
 			String histology, String notes, Set<ID> studyIds) {
-		this.id = id;
+		super(id);
 		this.subjectId = subjectId;
 		this.dataSetId = dataSetId;
 		this.name = name;
@@ -52,14 +49,6 @@ public class Sample<ID extends Serializable> implements Model<ID> {
 		this.histology = histology;
 		this.notes = notes;
 		this.studyIds = studyIds;
-	}
-
-	public ID getId() {
-		return id;
-	}
-
-	public void setId(ID id) {
-		this.id = id;
 	}
 
 	public ID getSubjectId() {

@@ -61,8 +61,8 @@ public class MongoImportTempFileWriter<T> extends TempFileWriter<T> {
 	}
 
 	@Override 
-	public void open() {
-		super.open();
+	public void before() {
+		super.before();
 		FileWriter writer = this.getFileWriter();
 		try {
 			writer.write("[");
@@ -74,7 +74,7 @@ public class MongoImportTempFileWriter<T> extends TempFileWriter<T> {
 		}
 	}
 
-	@Override public void close() {
+	@Override public void after() {
 		FileWriter writer = this.getFileWriter();
 		try {
 			writer.write("]");
@@ -84,6 +84,6 @@ public class MongoImportTempFileWriter<T> extends TempFileWriter<T> {
 					String.format("There was a problem writing to temp file: %s", 
 							this.getTempFile().getAbsolutePath()));
 		}
-		super.close();
+		super.after();
 	}
 }

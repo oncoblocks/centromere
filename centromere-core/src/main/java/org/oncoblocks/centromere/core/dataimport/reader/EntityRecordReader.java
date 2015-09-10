@@ -20,7 +20,7 @@ package org.oncoblocks.centromere.core.dataimport.reader;
  * @author woemler
  */
 public interface EntityRecordReader<T> {
-	void open();
-	void close();
+	void before();
+	void after();
 	T readRecord();
 }

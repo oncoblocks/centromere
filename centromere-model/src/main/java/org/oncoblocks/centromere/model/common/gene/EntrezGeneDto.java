@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.model.common;
+package org.oncoblocks.centromere.model.common.gene;
 
-import org.oncoblocks.centromere.core.model.Filterable;
-import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.web.query.Attribute;
+import org.oncoblocks.centromere.model.support.AbstractModel;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author woemler
  */
 
-@Filterable
-public class EntrezGene<ID extends Serializable> implements Model<ID> {
+public class EntrezGeneDto<ID extends Serializable> extends AbstractModel<ID> {
 
-	private ID id;
 	private Long entrezGeneId;
 	private String primaryGeneSymbol;
 	private Integer taxId;
@@ -43,13 +42,13 @@ public class EntrezGene<ID extends Serializable> implements Model<ID> {
 	private Map<String, Object> dbXrefs;
 	private Set<String> aliases;
 
-	public EntrezGene() { }
+	public EntrezGeneDto() { }
 
-	public EntrezGene(ID id, Long entrezGeneId, String primaryGeneSymbol, Integer taxId,
+	public EntrezGeneDto(ID id, Long entrezGeneId, String primaryGeneSymbol, Integer taxId,
 			String locusTag, String chromosome, String chromosomeLocation, String description,
 			String geneType, List<Attribute> attributes,
 			Map<String, Object> dbXrefs, Set<String> aliases) {
-		this.id = id;
+		super(id);
 		this.entrezGeneId = entrezGeneId;
 		this.primaryGeneSymbol = primaryGeneSymbol;
 		this.taxId = taxId;
@@ -61,15 +60,6 @@ public class EntrezGene<ID extends Serializable> implements Model<ID> {
 		this.attributes = attributes;
 		this.dbXrefs = dbXrefs;
 		this.aliases = aliases;
-	}
-
-	@Override 
-	public ID getId() {
-		return id;
-	}
-
-	public void setId(ID id) {
-		this.id = id;
 	}
 
 	public Long getEntrezGeneId() {

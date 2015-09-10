@@ -120,11 +120,12 @@ public class QueryParameters {
 	 * @return
 	 */
 	public static List<QueryCriteria> toQueryCriteria(QueryParameters queryParameters){
+		List<String> ignored = Arrays.asList("page", "size", "exclude", "fields");
 		List<QueryCriteria> criterias = new ArrayList<>();
 		for (Field field: queryParameters.getClass().getDeclaredFields()){
 			try {
 				field.setAccessible(true);
-				if (field.get(queryParameters) != null){
+				if (field.get(queryParameters) != null && !ignored.contains(field.getName())){
 					String name = field.getName();
 					Evaluation evaluation = Evaluation.EQUALS;
 					if (field.isAnnotationPresent(QueryParameter.class)){

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.model.repository;
+package org.oncoblocks.centromere.model.common.dataset;
 
 import org.oncoblocks.centromere.core.model.Model;
 
@@ -22,9 +22,11 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
+ * Required operations for Data Set repositories.
+ * 
  * @author woemler
  */
-public interface DataFileRepository<T extends Model<ID>, ID extends Serializable> {
-	List<T> findByDataSetId(ID dataSetId);
-	List<T> findByFileName(String fileName);
+public interface DataSetRepositoryOperations<T extends Model<ID>, ID extends Serializable> {
+	List<T> findByName(String name);
+	List<T> findByDataType(String dataType);
 }

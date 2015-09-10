@@ -14,54 +14,21 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.model.common;
+package org.oncoblocks.centromere.model.common.sample;
 
-import org.oncoblocks.centromere.core.model.Filterable;
 import org.oncoblocks.centromere.core.model.Model;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
+ * Required repository operations for Samples.
+ * 
  * @author woemler
  */
-
-@Filterable
-public abstract class Data<ID extends Serializable> implements Model<ID> {
-	
-	private ID id;
-	private ID sampleId;
-	private ID dataFileId;
-	private ID geneId;
-
-	public ID getId() {
-		return id;
-	}
-
-	public void setId(ID id) {
-		this.id = id;
-	}
-
-	public ID getSampleId() {
-		return sampleId;
-	}
-
-	public void setSampleId(ID sampleId) {
-		this.sampleId = sampleId;
-	}
-
-	public ID getDataFileId() {
-		return dataFileId;
-	}
-
-	public void setDataFileId(ID dataFileId) {
-		this.dataFileId = dataFileId;
-	}
-
-	public ID getGeneId() {
-		return geneId;
-	}
-
-	public void setGeneId(ID geneId) {
-		this.geneId = geneId;
-	}
+public interface SampleRepositoryOperations<T extends Model<ID>, ID extends Serializable> {
+	List<T> findBySubjectId(ID subjectId);
+	List<T> findByDataSetId(ID dataSetId);
+	List<T> findByName(String name);
+	List<T> findByStudyId(ID studyId);
 }

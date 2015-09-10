@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.model.repository;
+package org.oncoblocks.centromere.model.common.study;
 
 import org.oncoblocks.centromere.core.model.Model;
 
@@ -26,7 +26,7 @@ import java.util.List;
  * 
  * @author woemler
  */
-public interface StudyRepository<T extends Model<ID>, ID extends Serializable> {
+public interface StudyRepositoryOperations<T extends Model<ID>, ID extends Serializable> {
 	List<T> findByName(String name);
 	List<T> findByGroup(String group);
 	List<T> findBySampleId(ID sampleId);

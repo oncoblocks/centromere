@@ -20,7 +20,7 @@ package org.oncoblocks.centromere.core.dataimport.writer;
  * @author woemler
  */
 public interface EntityRecordWriter<T> {
-	void open();
-	void close();
+	void before();
+	void after();
 	void writeRecord(T entity);
 }

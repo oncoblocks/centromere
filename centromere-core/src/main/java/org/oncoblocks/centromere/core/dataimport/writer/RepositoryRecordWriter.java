@@ -38,12 +38,12 @@ public class RepositoryRecordWriter<T, ID extends Serializable> implements Entit
 	}
 
 	@Override 
-	public void open() {
+	public void before() {
 		// Do nothing
 	}
 
 	@Override 
-	public void close() {
+	public void after() {
 		// Do nothing
 	}
 }

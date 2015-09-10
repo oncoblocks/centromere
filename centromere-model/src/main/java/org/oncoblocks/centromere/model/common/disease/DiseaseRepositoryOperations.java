@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.model.repository;
+package org.oncoblocks.centromere.model.common.disease;
 
 import org.oncoblocks.centromere.core.model.Model;
 
@@ -22,11 +22,10 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Required operations for Data Set repositories.
+ * Required operations for Disease repository.
  * 
  * @author woemler
  */
-public interface DataSetRepository<T extends Model<ID>, ID extends Serializable> {
+public interface DiseaseRepositoryOperations<T extends Model<ID>, ID extends Serializable> {
 	List<T> findByName(String name);
-	List<T> findByDataType(String dataType);
 }

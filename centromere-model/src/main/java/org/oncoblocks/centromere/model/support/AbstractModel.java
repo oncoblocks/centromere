@@ -30,6 +30,12 @@ public abstract class AbstractModel<ID extends Serializable> implements Model<ID
 	
 	@Id private ID id;
 
+	public AbstractModel() { }
+
+	public AbstractModel(ID id) {
+		this.id = id;
+	}
+
 	public ID getId() {
 		return id;
 	}

@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.model.common;
+package org.oncoblocks.centromere.model.common.dataset;
 
-import org.oncoblocks.centromere.core.model.Filterable;
-import org.oncoblocks.centromere.core.model.Model;
+import org.oncoblocks.centromere.model.support.AbstractModel;
 
 import java.io.Serializable;
 
@@ -25,29 +24,29 @@ import java.io.Serializable;
  * @author woemler
  */
 
-@Filterable
-public class Disease<ID extends Serializable> implements Model<ID> {
+public class DataSetDto<ID extends Serializable> extends AbstractModel<ID> {
 	
-	private ID id;
+	private String source;
 	private String name;
-	private String type;
-	private String meshId;
+	private String dataType;
+	private String notes;
 
-	public Disease() { }
+	public DataSetDto() { }
 
-	public Disease(ID id, String name, String type, String meshId) {
-		this.id = id;
+	public DataSetDto(ID id, String source, String name, String dataType, String notes) {
+		super(id);
+		this.source = source;
 		this.name = name;
-		this.type = type;
-		this.meshId = meshId;
+		this.dataType = dataType;
+		this.notes = notes;
 	}
 
-	public ID getId() {
-		return id;
+	public String getSource() {
+		return source;
 	}
 
-	public void setId(ID id) {
-		this.id = id;
+	public void setSource(String source) {
+		this.source = source;
 	}
 
 	public String getName() {
@@ -58,19 +57,19 @@ public class Disease<ID extends Serializable> implements Model<ID> {
 		this.name = name;
 	}
 
-	public String getType() {
-		return type;
+	public String getDataType() {
+		return dataType;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setDataType(String dataType) {
+		this.dataType = dataType;
 	}
 
-	public String getMeshId() {
-		return meshId;
+	public String getNotes() {
+		return notes;
 	}
 
-	public void setMeshId(String meshId) {
-		this.meshId = meshId;
+	public void setNotes(String notes) {
+		this.notes = notes;
 	}
 }

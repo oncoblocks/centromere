@@ -17,8 +17,10 @@
 package org.oncoblocks.centromere.core.test.web.swagger;
 
 import org.oncoblocks.centromere.core.test.models.EntrezGene;
+import org.oncoblocks.centromere.core.web.controller.HalMediaType;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,24 +37,52 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/swagger")
-public class SwaggerController {
-	
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+public class SwaggerController  {
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET,
+			produces = { HalMediaType.APPLICATION_JSON_HAL_VALUE, MediaType.APPLICATION_JSON_VALUE })
 	public HttpEntity findById(@PathVariable Long id){
 		EntrezGene gene = new EntrezGene();
 		gene.setEntrezGeneId(id);
 		gene.setPrimaryGeneSymbol("TEST");
 		return new ResponseEntity<EntrezGene>(gene, HttpStatus.OK);
 	}
-	
-	@RequestMapping(value = "", method = RequestMethod.GET)
+
+	@RequestMapping(value = "", method = RequestMethod.GET,
+			produces = { MediaType.APPLICATION_JSON_VALUE, HalMediaType.APPLICATION_JSON_HAL_VALUE })
 	public HttpEntity find(@RequestParam(value = "symbol", required = false) String geneSymbol){
 		List<EntrezGene> genes = new ArrayList<>();
 		EntrezGene gene = new EntrezGene();
 		gene.setEntrezGeneId(0L);
-		gene.setPrimaryGeneSymbol( geneSymbol != null ? geneSymbol : "TEST" );
+		gene.setPrimaryGeneSymbol(geneSymbol != null ? geneSymbol : "TEST");
 		genes.add(gene);
 		return new ResponseEntity<>(genes, HttpStatus.OK);
 	}
+	
+	@RequestMapping(method = RequestMethod.HEAD)
+	public HttpEntity head(){
+		return new ResponseEntity(HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "", method = RequestMethod.POST,
+			produces = { MediaType.APPLICATION_JSON_VALUE, HalMediaType.APPLICATION_JSON_HAL_VALUE })
+	public HttpEntity post(){
+		return new ResponseEntity(HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "", method = RequestMethod.PUT,
+			produces = { MediaType.APPLICATION_JSON_VALUE, HalMediaType.APPLICATION_JSON_HAL_VALUE })
+	public HttpEntity put(){
+		return new ResponseEntity(HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "", method = RequestMethod.DELETE,
+			produces = { MediaType.APPLICATION_JSON_VALUE, HalMediaType.APPLICATION_JSON_HAL_VALUE })
+	public HttpEntity delete(){
+		return new ResponseEntity(HttpStatus.OK);
+	}
+	
+	
+	
 	
 }

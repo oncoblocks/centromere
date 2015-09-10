@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.model.common;
+package org.oncoblocks.centromere.model.common.subject;
 
-import org.oncoblocks.centromere.core.model.Filterable;
-import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.web.query.Attribute;
 import org.oncoblocks.centromere.core.web.query.SourcedAlias;
+import org.oncoblocks.centromere.model.support.AbstractModel;
 
 import java.io.Serializable;
 import java.util.List;
@@ -28,10 +27,8 @@ import java.util.List;
  * @author woemler
  */
 
-@Filterable
-public class Subject<ID extends Serializable> implements Model<ID> {
+public class SubjectDto<ID extends Serializable> extends AbstractModel<ID> {
 
-	private ID id;
 	private String name;
 	private String species;
 	private String gender;
@@ -40,11 +37,11 @@ public class Subject<ID extends Serializable> implements Model<ID> {
 	private List<SourcedAlias> aliases;
 	private List<Attribute> attributes;
 
-	public Subject() { }
+	public SubjectDto() { }
 
-	public Subject(ID id, String name, String species, String gender, String type, String notes,
+	public SubjectDto(ID id, String name, String species, String gender, String type, String notes,
 			List<SourcedAlias> aliases, List<Attribute> attributes) {
-		this.id = id;
+		super(id);
 		this.name = name;
 		this.species = species;
 		this.gender = gender;
@@ -52,15 +49,6 @@ public class Subject<ID extends Serializable> implements Model<ID> {
 		this.notes = notes;
 		this.aliases = aliases;
 		this.attributes = attributes;
-	}
-
-	@Override 
-	public ID getId() {
-		return id;
-	}
-
-	public void setId(ID id) {
-		this.id = id;
 	}
 
 	public String getName() {

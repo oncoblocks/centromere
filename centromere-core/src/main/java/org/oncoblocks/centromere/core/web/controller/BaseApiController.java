@@ -75,7 +75,7 @@ public abstract class BaseApiController<
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET,
 			produces = { HalMediaType.APPLICATION_JSON_HAL_VALUE, MediaType.APPLICATION_JSON_VALUE })
-	public HttpEntity findByIdWithHal(
+	public HttpEntity findById(
 			@PathVariable ID id,
 			@RequestParam(required = false) Set<String> fields,
 			@RequestParam(required = false) Set<String> exclude,
@@ -118,7 +118,6 @@ public abstract class BaseApiController<
 			Pageable pageable = QueryParameters.remapPageable(params);
 			Page<T> page = repository.find(criterias, pageable);
 			if (HalMediaType.isHalMediaType(mediaType)){
-				
 				PagedResources<FilterableResource> pagedResources
 						= pagedResourcesAssembler.toResource(page, assembler, selfLink);
 				envelope = new ResponseEnvelope(pagedResources, params.getIncludedFields(), params.getExcludedFields());

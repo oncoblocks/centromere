@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.model.repository;
+package org.oncoblocks.centromere.model.common.datafile;
 
 import org.oncoblocks.centromere.core.model.Model;
 
@@ -22,13 +22,9 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Required operations for Subject repositories.
- * 
  * @author woemler
  */
-public interface SubjectRepository<T extends Model<ID>, ID extends Serializable> {
-	List<T> findByName(String name);
-	List<T> findByDiseaseId(ID diseaseId);
-	List<T> findByAlias(String alias);
-	List<T> guessSubject(String keyword);
+public interface DataFileRepositoryOperations<T extends Model<ID>, ID extends Serializable> {
+	List<T> findByDataSetId(ID dataSetId);
+	List<T> findByFileName(String fileName);
 }

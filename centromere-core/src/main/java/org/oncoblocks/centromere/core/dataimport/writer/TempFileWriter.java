@@ -37,7 +37,7 @@ public abstract class TempFileWriter<T> implements EntityRecordWriter<T> {
 		this.tempFile = tempFilePath;
 	}
 
-	public void open(){
+	public void before(){
 		try {
 			writer = new FileWriter(tempFile);
 		} catch (IOException e){
@@ -47,7 +47,7 @@ public abstract class TempFileWriter<T> implements EntityRecordWriter<T> {
 		}
 	}
 
-	public void close(){
+	public void after(){
 		if (writer != null){
 			try{
 				writer.close();

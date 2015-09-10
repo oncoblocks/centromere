@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.model.common;
+package org.oncoblocks.centromere.model.common.datafile;
 
-import org.oncoblocks.centromere.core.model.Filterable;
-import org.oncoblocks.centromere.core.model.Model;
+import org.oncoblocks.centromere.model.support.AbstractModel;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -26,31 +25,21 @@ import java.util.Date;
  * @author woemler
  */
 
-@Filterable
-public class DataFile<ID extends Serializable> implements Model<ID> {
+public class DataFileDto<ID extends Serializable> extends AbstractModel<ID> {
 	
-	private ID id;
 	private ID dataSetId;
 	private String filePath;
 	private Date importDate;
 	private String notes;
 
-	public DataFile() { }
+	public DataFileDto() { }
 
-	public DataFile(ID id, ID dataSetId, String filePath, Date importDate, String notes) {
-		this.id = id;
+	public DataFileDto(ID id, ID dataSetId, String filePath, Date importDate, String notes) {
+		super(id);
 		this.dataSetId = dataSetId;
 		this.filePath = filePath;
 		this.importDate = importDate;
 		this.notes = notes;
-	}
-
-	public ID getId() {
-		return id;
-	}
-
-	public void setId(ID id) {
-		this.id = id;
 	}
 
 	public ID getDataSetId() {

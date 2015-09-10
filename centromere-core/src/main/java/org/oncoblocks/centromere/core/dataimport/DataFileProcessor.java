@@ -47,8 +47,8 @@ public class DataFileProcessor<T> {
 
 	public void run(){
 		try {
-			reader.open();
-			writer.open();
+			reader.before();
+			writer.before();
 			T record = reader.readRecord();
 			while (record != null) {
 				if (validator != null) {
@@ -63,8 +63,8 @@ public class DataFileProcessor<T> {
 		} catch (Exception e) {
 			throw new DataFileProcessingException(e.getMessage());
 		} finally {
-			reader.close();
-			writer.close();
+			reader.after();
+			writer.after();
 		}
 	}
 	

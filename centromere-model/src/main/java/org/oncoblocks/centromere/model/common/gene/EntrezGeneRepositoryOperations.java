@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.model.repository;
+package org.oncoblocks.centromere.model.common.gene;
 
 import org.oncoblocks.centromere.core.model.Model;
 
@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * @author woemler
  */
-public interface EntrezGeneRepository<T extends Model<ID>, ID extends Serializable> {
+public interface EntrezGeneRepositoryOperations<T extends Model<ID>, ID extends Serializable> {
 	List<T> findByEntrezGeneId(Long entrezGeneId);
 	List<T> findByPrimaryGeneSymbol(String primaryGeneSymbol);
 	List<T> findByAlias(String alias);

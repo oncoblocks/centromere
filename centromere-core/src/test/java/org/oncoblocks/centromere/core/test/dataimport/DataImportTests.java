@@ -60,7 +60,7 @@ public class DataImportTests {
 		GeneInfoReader geneInfoReader = new GeneInfoReader(geneInfoPath);
 		List<EntrezGene> genes = new ArrayList<>();
 		try {
-			geneInfoReader.open();
+			geneInfoReader.before();
 			EntrezGene gene = geneInfoReader.readRecord();
 			while (gene != null){
 				genes.add(gene);
@@ -69,7 +69,7 @@ public class DataImportTests {
 		} catch (Exception e){
 			e.printStackTrace();
 		} finally {
-			geneInfoReader.close();
+			geneInfoReader.after();
 		}
 		Assert.notEmpty(genes);
 		Assert.isTrue(genes.size() == 5);
@@ -82,8 +82,8 @@ public class DataImportTests {
 		File tempFile = temporaryFolder.newFile("genes.tmp");
 		MongoImportTempFileWriter<EntrezGene> geneWriter = new MongoImportTempFileWriter<>(tempFile, mongoTemplate);
 		try {
-			geneWriter.open();
-			geneInfoReader.open();
+			geneWriter.before();
+			geneInfoReader.before();
 			EntrezGene gene = geneInfoReader.readRecord();
 			while (gene != null){
 				geneWriter.writeRecord(gene);
@@ -92,8 +92,8 @@ public class DataImportTests {
 		} catch (Exception e){
 			e.printStackTrace();
 		} finally {
-			geneInfoReader.close();
-			geneWriter.close();
+			geneInfoReader.after();
+			geneWriter.after();
 		}
 
 		BufferedReader reader = null;
@@ -151,8 +151,8 @@ public class DataImportTests {
 //		File tempFile = temporaryFolder.newFile("gene_info.tmp");
 //		MongoImportTempFileWriter<EntrezGene> geneWriter = new MongoImportTempFileWriter<>(tempFile, mongoTemplate);
 //		try {
-//			geneWriter.open();
-//			geneInfoReader.open();
+//			geneWriter.before();
+//			geneInfoReader.before();
 //			EntrezGene gene = geneInfoReader.readRecord();
 //			while (gene != null){
 //				geneWriter.writeRecord(gene);
@@ -161,8 +161,8 @@ public class DataImportTests {
 //		} catch (Exception e){
 //			e.printStackTrace();
 //		} finally {
-//			geneInfoReader.close();
-//			geneWriter.close();
+//			geneInfoReader.after();
+//			geneWriter.after();
 //		}
 //		MongoImportTempFileImporter importer = new MongoImportTempFileImporter(tempFile, "localhost", "centromere-test", "genes", "", "");
 //		importer.importFile();

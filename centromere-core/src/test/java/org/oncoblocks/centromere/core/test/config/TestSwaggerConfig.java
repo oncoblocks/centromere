@@ -16,6 +16,7 @@
 
 package org.oncoblocks.centromere.core.test.config;
 
+import com.google.common.base.Predicate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -42,10 +43,11 @@ public class TestSwaggerConfig {
 	public Docket api(){
 		return new Docket(DocumentationType.SWAGGER_2)
 				.select()
-					.apis(RequestHandlerSelectors.any())
-					.paths(regex("/swagger.*"))
-					.build()
-					.apiInfo(apiInfo());
+				.apis(RequestHandlerSelectors.any())
+				.paths(apiPaths())
+				.build()
+				.apiInfo(apiInfo())
+				.enableUrlTemplating(true);
 	}
 
 	private ApiInfo apiInfo(){
@@ -58,6 +60,10 @@ public class TestSwaggerConfig {
 				"Apache License 2.0", 
 				"https://github.com/oncoblocks/centromere/blob/master/LICENSE"
 		);
+	}
+
+	private Predicate<String> apiPaths(){
+		return regex("/swagger.*");
 	}
 	
 }

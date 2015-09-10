@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.model.common;
+package org.oncoblocks.centromere.model.common.study;
 
-import org.oncoblocks.centromere.core.model.Filterable;
-import org.oncoblocks.centromere.core.model.Model;
+import org.oncoblocks.centromere.model.support.AbstractModel;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -26,31 +25,21 @@ import java.util.Set;
  * @author woemler
  */
 
-@Filterable
-public class Study<ID extends Serializable> implements Model<ID> {
+public class StudyDto<ID extends Serializable> extends AbstractModel<ID> {
 	
-	private ID id;
 	private String name;
 	private String group;
 	private String description;
 	private Set<ID> sampleIds;
 
-	public Study() { }
+	public StudyDto() { }
 
-	public Study(ID id, String name, String group, String description, Set<ID> sampleIds) {
-		this.id = id;
+	public StudyDto(ID id, String name, String group, String description, Set<ID> sampleIds) {
+		super(id);
 		this.name = name;
 		this.group = group;
 		this.description = description;
 		this.sampleIds = sampleIds;
-	}
-
-	public ID getId() {
-		return id;
-	}
-
-	public void setId(ID id) {
-		this.id = id;
 	}
 
 	public String getName() {

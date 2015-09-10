@@ -38,7 +38,7 @@ public abstract class DataFileReader<T> implements EntityRecordReader<T> {
 	}
 	
 	@Override
-	public void open(){
+	public void before(){
 		try {
 			reader = new BufferedReader(new java.io.FileReader(new File(inputFilePath)));
 		} catch (IOException e){
@@ -48,7 +48,7 @@ public abstract class DataFileReader<T> implements EntityRecordReader<T> {
 	}
 
 	@Override
-	public void close(){
+	public void after(){
 		if (reader != null){
 			try {
 				reader.close();
