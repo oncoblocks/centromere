@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.reader;
+package org.oncoblocks.centromere.core.repository.impl;
+
+import org.oncoblocks.centromere.core.model.impl.DataSetDto;
+import org.oncoblocks.centromere.core.repository.RepositoryOperations;
+
+import java.io.Serializable;
 
 /**
+ * Required operations for Data Set repositories.
+ * 
  * @author woemler
  */
-public interface EntityRecordReader<T> {
-	void before();
-	void after();
-	void setInputFilePath(String inputFilePath);
-	T readRecord();
+public interface DataSetRepositoryOperations<T extends DataSetDto<ID>, ID extends Serializable> 
+		extends RepositoryOperations<T, ID> {
+	T getByName(String name);
 }

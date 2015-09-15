@@ -14,14 +14,32 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.reader;
+package org.oncoblocks.centromere.core.dataimport.config;
+
+import org.oncoblocks.centromere.core.dataimport.job.DataFileProcessor;
+
+import java.util.Map;
 
 /**
  * @author woemler
  */
-public interface EntityRecordReader<T> {
-	void before();
-	void after();
-	void setInputFilePath(String inputFilePath);
-	T readRecord();
+public class DataFileProcessorMapper {
+
+	private Map<String, DataFileProcessor<?>> processorMap;
+
+	public DataFileProcessorMapper() {
+	}
+
+	public void addMapping(String fileType, DataFileProcessor<?> processor) {
+		processorMap.put(fileType, processor);
+	}
+
+	public DataFileProcessor<?> getDataFileProcessor(String fileType) {
+		if (this.processorMap.containsKey(fileType)) {
+			return this.processorMap.get(fileType);
+		} else {
+			return null;
+		}
+	}
+
 }

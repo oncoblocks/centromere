@@ -22,5 +22,6 @@ package org.oncoblocks.centromere.core.dataimport.writer;
 public interface EntityRecordWriter<T> {
 	void before();
 	void after();
+	void setTempFilePath(String tempFilePath);
 	void writeRecord(T entity);
 }

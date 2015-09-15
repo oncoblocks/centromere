@@ -14,41 +14,50 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.writer;
-
-import org.oncoblocks.centromere.core.repository.RepositoryOperations;
+package org.oncoblocks.centromere.core.model.impl;
 
 import java.io.Serializable;
 
 /**
  * @author woemler
  */
-public class RepositoryRecordWriter<T, ID extends Serializable> implements EntityRecordWriter<T> {
+
+public class DataSetDto<ID extends Serializable> extends AbstractModel<ID> {
 	
-	RepositoryOperations<T, ID> repository;
+	private String source;
+	private String name;
+	private String notes;
 
-	public RepositoryRecordWriter(
-			RepositoryOperations<T, ID> repository) {
-		this.repository = repository;
+	public DataSetDto() { }
+
+	public DataSetDto(ID id, String source, String name, String notes) {
+		super(id);
+		this.source = source;
+		this.name = name;
+		this.notes = notes;
 	}
 
-	@Override 
-	public void writeRecord(T entity) {
-		repository.insert(entity);	
+	public String getSource() {
+		return source;
 	}
 
-	@Override 
-	public void before() {
-		// Do nothing
+	public void setSource(String source) {
+		this.source = source;
 	}
 
-	@Override 
-	public void after() {
-		// Do nothing
+	public String getName() {
+		return name;
 	}
 
-	@Override 
-	public void setTempFilePath(String tempFilePath) {
-		// DO nothing
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
 	}
 }

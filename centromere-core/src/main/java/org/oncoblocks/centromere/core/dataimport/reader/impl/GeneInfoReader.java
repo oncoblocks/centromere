@@ -14,27 +14,30 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.test.dataimport;
+package org.oncoblocks.centromere.core.dataimport.reader.impl;
 
 import org.oncoblocks.centromere.core.dataimport.job.DataFileProcessingException;
 import org.oncoblocks.centromere.core.dataimport.reader.DataFileReader;
-import org.oncoblocks.centromere.core.test.models.EntrezGene;
+import org.oncoblocks.centromere.core.model.impl.EntrezGeneDto;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 /**
  * @author woemler
  */
-public class GeneInfoReader extends DataFileReader<EntrezGene> {
+public class GeneInfoReader extends DataFileReader<EntrezGeneDto> {
 
 	public GeneInfoReader() {
 		super();
 	}
 
 	@Override 
-	public EntrezGene readRecord() throws DataFileProcessingException {
-		EntrezGene gene = null;
+	public EntrezGeneDto readRecord() throws DataFileProcessingException {
+		EntrezGeneDto gene = null;
 		String line;
 		try {
 			boolean flag = true;
@@ -55,9 +58,9 @@ public class GeneInfoReader extends DataFileReader<EntrezGene> {
 		
 	}
 	
-	private EntrezGene getRecordFromLine(String line){
+	private EntrezGeneDto getRecordFromLine(String line){
 		String[] bits = line.split("\\t");
-		EntrezGene gene = new EntrezGene();
+		EntrezGeneDto gene = new EntrezGeneDto();
 		gene.setTaxId(Integer.parseInt(bits[0]));
 		gene.setEntrezGeneId(Long.parseLong(bits[1]));
 		gene.setPrimaryGeneSymbol(bits[2]);

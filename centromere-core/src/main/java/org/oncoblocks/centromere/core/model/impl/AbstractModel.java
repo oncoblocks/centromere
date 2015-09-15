@@ -14,14 +14,33 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.reader;
+package org.oncoblocks.centromere.core.model.impl;
+
+import org.oncoblocks.centromere.core.model.Filterable;
+import org.oncoblocks.centromere.core.model.Model;
+import org.springframework.data.annotation.Id;
+
+import java.io.Serializable;
 
 /**
  * @author woemler
  */
-public interface EntityRecordReader<T> {
-	void before();
-	void after();
-	void setInputFilePath(String inputFilePath);
-	T readRecord();
+@Filterable
+public abstract class AbstractModel<ID extends Serializable> implements Model<ID> {
+	
+	@Id private ID id;
+
+	public AbstractModel() { }
+
+	public AbstractModel(ID id) {
+		this.id = id;
+	}
+
+	public ID getId() {
+		return id;
+	}
+
+	public void setId(ID id) {
+		this.id = id;
+	}
 }

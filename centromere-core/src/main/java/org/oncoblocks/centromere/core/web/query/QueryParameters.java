@@ -51,6 +51,11 @@ public class QueryParameters {
 		return size;
 	}
 
+	/**
+	 * Returns {@link Sort} object if the request includes sorting parameters.
+	 * 
+	 * @return
+	 */
 	public Sort getSort() {
 		Sort pageSort = null;
 		List<Sort.Order> orders = new ArrayList<>();
@@ -90,7 +95,12 @@ public class QueryParameters {
 	public void setExclude(Set<String> exclude) {
 		this.exclude = exclude;
 	}
-	
+
+	/**
+	 * Creates a {@link Pageable} implementation instance from the request parameters.
+	 * 
+	 * @return
+	 */
 	public Pageable getPageRequest(){
 		PageRequest pageRequest = null;
 		if (page != null || size != null){
@@ -102,13 +112,32 @@ public class QueryParameters {
 		}
 		return pageRequest;
 	}
-	
+
+	/**
+	 * Returns true if result pagination is requested.
+	 * 
+	 * @return
+	 */
 	public boolean isPaged(){
 		return page != null || size != null;
 	}
-	
+
+	/**
+	 * Returns true if result sorting is requested.
+	 * 
+	 * @return
+	 */
 	public boolean isSorted(){
 		return sort != null && !sort.isEmpty();
+	}
+
+	/**
+	 * Returns a list of parameter names to be ignored by {@link QueryParameters#toQueryCriteria(QueryParameters)}
+	 * 
+	 * @return
+	 */
+	public List<String> getIgnoredParameters(){
+		return Arrays.asList("page", "size", "exclude", "fields");
 	}
 
 	/**
@@ -120,12 +149,13 @@ public class QueryParameters {
 	 * @return
 	 */
 	public static List<QueryCriteria> toQueryCriteria(QueryParameters queryParameters){
-		List<String> ignored = Arrays.asList("page", "size", "exclude", "fields");
+		
 		List<QueryCriteria> criterias = new ArrayList<>();
 		for (Field field: queryParameters.getClass().getDeclaredFields()){
 			try {
 				field.setAccessible(true);
-				if (field.get(queryParameters) != null && !ignored.contains(field.getName())){
+				if (field.get(queryParameters) != null 
+						&& !queryParameters.getIgnoredParameters().contains(field.getName())){
 					String name = field.getName();
 					Evaluation evaluation = Evaluation.EQUALS;
 					if (field.isAnnotationPresent(QueryParameter.class)){

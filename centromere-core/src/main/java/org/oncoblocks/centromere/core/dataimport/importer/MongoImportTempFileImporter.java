@@ -47,14 +47,24 @@ public class MongoImportTempFileImporter extends TempFileImporter {
 		String command = String.format("mongoimport --quiet --host %s --db %s --collection %s --file %s", 
 				host, db, collection, getTempFile().getAbsolutePath());
 		try {
+			
 			process = Runtime.getRuntime().exec(new String[]{"bash", "-c", command});
-			process.waitFor();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-			String line = reader.readLine();
+			//process.waitFor();
+			
+			BufferedReader stdIn = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			String line = stdIn.readLine();
 			while (line != null){
 				System.out.println("MongoImport output: " + line);
-				line = reader.readLine();
+				line = stdIn.readLine();
 			}
+
+			BufferedReader stdErr = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			line = stdErr.readLine();
+			while (line != null){
+				System.out.println("MongoImport error output: " + line);
+				line = stdErr.readLine();
+			}
+
 		} catch (Exception e){
 			e.printStackTrace();
 			throw new TempFileImportException(

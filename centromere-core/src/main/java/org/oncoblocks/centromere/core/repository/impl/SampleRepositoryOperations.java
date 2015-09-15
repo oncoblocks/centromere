@@ -14,14 +14,23 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.reader;
+package org.oncoblocks.centromere.core.repository.impl;
+
+import org.oncoblocks.centromere.core.model.Model;
+import org.oncoblocks.centromere.core.repository.RepositoryOperations;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
+ * Required repository operations for Samples.
+ * 
  * @author woemler
  */
-public interface EntityRecordReader<T> {
-	void before();
-	void after();
-	void setInputFilePath(String inputFilePath);
-	T readRecord();
+public interface SampleRepositoryOperations<T extends Model<ID>, ID extends Serializable>
+		extends RepositoryOperations<T, ID> {
+	List<T> findBySubjectId(ID subjectId);
+	List<T> findByDataSetId(ID dataSetId);
+	List<T> findByName(String name);
+	List<T> findByStudyId(ID studyId);
 }

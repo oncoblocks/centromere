@@ -16,10 +16,9 @@
 
 package org.oncoblocks.centromere.core.dataimport.writer;
 
-import org.oncoblocks.centromere.core.dataimport.MongoDbUtils;
+import org.oncoblocks.centromere.core.dataimport.support.MongoDbUtils;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -33,14 +32,10 @@ public class MongoImportTempFileWriter<T> extends TempFileWriter<T> {
 	private MongoDbUtils mongoUtils;
 	private boolean flag;
 
-	public MongoImportTempFileWriter(File tempFile, MongoTemplate mongoTemplate) {
-		super(tempFile);
+	public MongoImportTempFileWriter(MongoTemplate mongoTemplate) {
+		super();
 		this.mongoUtils = new MongoDbUtils(mongoTemplate);
 		this.flag = false;
-	}
-
-	public MongoImportTempFileWriter(String tempFilePath, MongoTemplate mongoTemplate) {
-		this(new File(tempFilePath), mongoTemplate);
 	}
 
 	@Override 
@@ -56,7 +51,7 @@ public class MongoImportTempFileWriter<T> extends TempFileWriter<T> {
 			e.printStackTrace();
 			throw new TempFileWriterException(
 					String.format("There was a problem writing to temp file: %s", 
-							this.getTempFile().getAbsolutePath()));
+							this.getTempFilePath()));
 		}
 	}
 
@@ -70,7 +65,7 @@ public class MongoImportTempFileWriter<T> extends TempFileWriter<T> {
 			e.printStackTrace();
 			throw new TempFileWriterException(
 					String.format("There was a problem writing to temp file: %s", 
-							this.getTempFile().getAbsolutePath()));
+							this.getTempFilePath()));
 		}
 	}
 
@@ -82,7 +77,7 @@ public class MongoImportTempFileWriter<T> extends TempFileWriter<T> {
 			e.printStackTrace();
 			throw new TempFileWriterException(
 					String.format("There was a problem writing to temp file: %s", 
-							this.getTempFile().getAbsolutePath()));
+							this.getTempFilePath()));
 		}
 		super.after();
 	}

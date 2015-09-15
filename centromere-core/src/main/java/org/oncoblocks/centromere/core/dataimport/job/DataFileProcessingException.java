@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.reader;
+package org.oncoblocks.centromere.core.dataimport.job;
 
 /**
+ * Generic exception for data file parsing issues.
+ * 
  * @author woemler
  */
-public interface EntityRecordReader<T> {
-	void before();
-	void after();
-	void setInputFilePath(String inputFilePath);
-	T readRecord();
+public class DataFileProcessingException extends RuntimeException {
+	public DataFileProcessingException(String message) {
+		super(message);
+	}
 }

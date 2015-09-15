@@ -16,9 +16,6 @@
 
 package org.oncoblocks.centromere.core.dataimport.writer;
 
-import org.springframework.util.Assert;
-
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -29,21 +26,18 @@ import java.io.IOException;
 */
 public abstract class TempFileWriter<T> implements EntityRecordWriter<T> {
 	
-	private File tempFile;
+	private String tempFilePath;
 	private FileWriter writer;
 
-	public TempFileWriter(File tempFilePath) {
-		Assert.notNull(tempFilePath);
-		this.tempFile = tempFilePath;
-	}
+	public TempFileWriter() { }
 
 	public void before(){
 		try {
-			writer = new FileWriter(tempFile);
+			writer = new FileWriter(tempFilePath);
 		} catch (IOException e){
 			e.printStackTrace();
 			throw new TempFileWriterException(
-					String.format("Unable to create temp file: %s", tempFile.getAbsolutePath()));
+					String.format("Unable to create temp file: %s", tempFilePath));
 		}
 	}
 
@@ -57,11 +51,15 @@ public abstract class TempFileWriter<T> implements EntityRecordWriter<T> {
 		}
 	}
 	
-	protected FileWriter getFileWriter(){
+	public FileWriter getFileWriter(){
 		return this.writer;
 	}
 	
-	public File getTempFile() {
-		return tempFile;
+	public String getTempFilePath() {
+		return tempFilePath;
+	}
+	
+	public void setTempFilePath(String tempFilePath){
+		this.tempFilePath = tempFilePath;
 	}
 }

@@ -5,17 +5,27 @@
 
     <modelVersion>4.0.0</modelVersion>
     
-    <parent>
-        <groupId>org.oncoblocks.centromere</groupId>
-        <artifactId>centromere-parent</artifactId>
-        <version>0.2.0</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
-    
+    <groupId>org.oncoblocks.centromere</groupId>
     <artifactId>centromere-core</artifactId>
-    <version>0.2.0</version>
+    <version>0.2.1-SNAPSHOT</version>
     <name>Oncoblocks: Centromere Core</name>
     <packaging>jar</packaging>
+
+    <properties>
+        <spring.platform.version>1.1.2.RELEASE</spring.platform.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.spring.platform</groupId>
+                <artifactId>platform-bom</artifactId>
+                <version>${spring.platform.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
 

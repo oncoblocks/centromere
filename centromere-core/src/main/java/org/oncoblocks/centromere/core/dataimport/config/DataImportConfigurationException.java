@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.reader;
+package org.oncoblocks.centromere.core.dataimport.config;
 
 /**
  * @author woemler
  */
-public interface EntityRecordReader<T> {
-	void before();
-	void after();
-	void setInputFilePath(String inputFilePath);
-	T readRecord();
+public class DataImportConfigurationException extends RuntimeException {
+	public DataImportConfigurationException(String message) {
+		super(message);
+	}
 }

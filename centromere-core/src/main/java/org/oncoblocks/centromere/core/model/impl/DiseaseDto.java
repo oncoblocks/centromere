@@ -14,41 +14,50 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.writer;
-
-import org.oncoblocks.centromere.core.repository.RepositoryOperations;
+package org.oncoblocks.centromere.core.model.impl;
 
 import java.io.Serializable;
 
 /**
  * @author woemler
  */
-public class RepositoryRecordWriter<T, ID extends Serializable> implements EntityRecordWriter<T> {
+
+public class DiseaseDto<ID extends Serializable> extends AbstractModel<ID> {
 	
-	RepositoryOperations<T, ID> repository;
+	private String name;
+	private String type;
+	private String meshId;
 
-	public RepositoryRecordWriter(
-			RepositoryOperations<T, ID> repository) {
-		this.repository = repository;
+	public DiseaseDto() { }
+
+	public DiseaseDto(ID id, String name, String type, String meshId) {
+		super(id);
+		this.name = name;
+		this.type = type;
+		this.meshId = meshId;
 	}
 
-	@Override 
-	public void writeRecord(T entity) {
-		repository.insert(entity);	
+	public String getName() {
+		return name;
 	}
 
-	@Override 
-	public void before() {
-		// Do nothing
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	@Override 
-	public void after() {
-		// Do nothing
+	public String getType() {
+		return type;
 	}
 
-	@Override 
-	public void setTempFilePath(String tempFilePath) {
-		// DO nothing
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getMeshId() {
+		return meshId;
+	}
+
+	public void setMeshId(String meshId) {
+		this.meshId = meshId;
 	}
 }

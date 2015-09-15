@@ -57,7 +57,8 @@ public class DataImportTests {
 	
 	@Test
 	public void geneInfoReaderTest(){
-		GeneInfoReader geneInfoReader = new GeneInfoReader(geneInfoPath);
+		GeneInfoReader geneInfoReader = new GeneInfoReader();
+		geneInfoReader.setInputFilePath(geneInfoPath);
 		List<EntrezGene> genes = new ArrayList<>();
 		try {
 			geneInfoReader.before();
@@ -78,9 +79,11 @@ public class DataImportTests {
 	
 	@Test
 	public void tempGeneFileTest() throws Exception{
-		GeneInfoReader geneInfoReader = new GeneInfoReader(geneInfoPath);
+		GeneInfoReader geneInfoReader = new GeneInfoReader();
+		geneInfoReader.setInputFilePath(geneInfoPath);
 		File tempFile = temporaryFolder.newFile("genes.tmp");
-		MongoImportTempFileWriter<EntrezGene> geneWriter = new MongoImportTempFileWriter<>(tempFile, mongoTemplate);
+		MongoImportTempFileWriter<EntrezGene> geneWriter = new MongoImportTempFileWriter<>(mongoTemplate);
+		geneWriter.setTempFilePath(tempFile.getAbsolutePath());
 		try {
 			geneWriter.before();
 			geneInfoReader.before();
@@ -147,9 +150,11 @@ public class DataImportTests {
 //	@Test
 //	public void importTest() throws Exception {
 //		repository.deleteAll();
-//		GeneInfoReader geneInfoReader = new GeneInfoReader(geneInfoPath);
+//		GeneInfoReader geneInfoReader = new GeneInfoReader();
+//		geneInfoReader.setInputFilePath(geneInfoPath);
 //		File tempFile = temporaryFolder.newFile("gene_info.tmp");
-//		MongoImportTempFileWriter<EntrezGene> geneWriter = new MongoImportTempFileWriter<>(tempFile, mongoTemplate);
+//		MongoImportTempFileWriter<EntrezGene> geneWriter = new MongoImportTempFileWriter<>(mongoTemplate);
+//		geneWriter.setTempFilePath(tempFile.getAbsolutePath());
 //		try {
 //			geneWriter.before();
 //			geneInfoReader.before();

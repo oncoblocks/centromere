@@ -14,14 +14,21 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.reader;
+package org.oncoblocks.centromere.core.repository.impl;
+
+import org.oncoblocks.centromere.core.model.Model;
+import org.oncoblocks.centromere.core.repository.RepositoryOperations;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author woemler
  */
-public interface EntityRecordReader<T> {
-	void before();
-	void after();
-	void setInputFilePath(String inputFilePath);
-	T readRecord();
+public interface EntrezGeneRepositoryOperations<T extends Model<ID>, ID extends Serializable>
+		extends RepositoryOperations<T, ID> {
+	List<T> findByEntrezGeneId(Long entrezGeneId);
+	List<T> findByPrimaryGeneSymbol(String primaryGeneSymbol);
+	List<T> findByAlias(String alias);
+	List<T> guessGene(String keyword);
 }

@@ -16,8 +16,6 @@
 
 package org.oncoblocks.centromere.core.dataimport.reader;
 
-import org.springframework.util.Assert;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -32,10 +30,7 @@ public abstract class DataFileReader<T> implements EntityRecordReader<T> {
 	private String inputFilePath;
 	private BufferedReader reader;
 	
-	public DataFileReader(String inputFilePath){
-		Assert.notNull(inputFilePath);
-		this.inputFilePath = inputFilePath;
-	}
+	public DataFileReader(){ }
 	
 	@Override
 	public void before(){
@@ -60,6 +55,11 @@ public abstract class DataFileReader<T> implements EntityRecordReader<T> {
 	
 	public BufferedReader getReader(){
 		return this.reader;
+	}
+	
+	@Override
+	public void setInputFilePath(String inputFilePath){
+		this.inputFilePath = inputFilePath;
 	}
 	
 }
