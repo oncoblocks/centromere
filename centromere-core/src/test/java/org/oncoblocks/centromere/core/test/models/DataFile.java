@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.repository.impl;
+package org.oncoblocks.centromere.core.test.models;
 
-import org.oncoblocks.centromere.core.model.Model;
-import org.oncoblocks.centromere.core.repository.RepositoryOperations;
+import org.oncoblocks.centromere.core.model.impl.DataFileDto;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.io.Serializable;
-import java.util.List;
+import java.util.Date;
 
 /**
  * @author woemler
  */
-public interface EntrezGeneRepositoryOperations<T extends Model<ID>, ID extends Serializable>
-		extends RepositoryOperations<T, ID> {
-	T findByEntrezGeneId(Long entrezGeneId);
-	List<T> findByPrimaryGeneSymbol(String primaryGeneSymbol);
-	List<T> findByAlias(String alias);
-	List<T> guessGene(String keyword);
+
+@Document(collection = "data_files")
+public class DataFile extends DataFileDto<String> {
+	public DataFile() { }
+
+	public DataFile(String id, String dataSetId, String filePath, String dataType,
+			Date importDate, String notes) {
+		super(id, dataSetId, filePath, dataType, importDate, notes);
+	}
 }

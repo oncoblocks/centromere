@@ -17,6 +17,7 @@
 package org.oncoblocks.centromere.core.test.repository.mongo;
 
 import org.oncoblocks.centromere.core.repository.GenericMongoRepository;
+import org.oncoblocks.centromere.core.repository.impl.EntrezGeneRepositoryOperations;
 import org.oncoblocks.centromere.core.test.models.EntrezGene;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -25,7 +26,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -33,14 +33,16 @@ import java.util.List;
  */
 
 @Repository
-public class EntrezGeneRepository extends GenericMongoRepository<EntrezGene, Long>  {
+public class EntrezGeneRepository extends GenericMongoRepository<EntrezGene, Long> 
+		implements EntrezGeneRepositoryOperations<EntrezGene, Long> {
+	
 	@Autowired
 	public EntrezGeneRepository(MongoTemplate mongoTemplate) {
 		super(mongoTemplate, EntrezGene.class);
 	}
 
-	public <S extends Serializable> EntrezGene findByPrimaryGeneId(S primaryGeneId) {
-		Query query = new Query(Criteria.where("entrezGeneId").is(primaryGeneId));
+	public EntrezGene findByEntrezGeneId(Long entrezGeneId) {
+		Query query = new Query(Criteria.where("entrezGeneId").is(entrezGeneId));
 		return getMongoOperations().findOne(query, getModel());
 	}
 
@@ -54,14 +56,14 @@ public class EntrezGeneRepository extends GenericMongoRepository<EntrezGene, Lon
 		return getMongoOperations().find(query, getModel());
 	}
 
-	public EntrezGene guessGene(String keyword) {
+	public List<EntrezGene> guessGene(String keyword) {
 		Query query = new Query(Criteria.where("primaryGeneSymbol").is(keyword));
 		Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, "entrezGeneId"));
 		List<EntrezGene> genes = getMongoOperations().find(query.with(sort), getModel());
-		if (genes != null && genes.size() > 0) return genes.get(0);
+		if (genes != null && genes.size() > 0) return genes;
 		query = new Query(Criteria.where("aliases").is(keyword));
 		genes = getMongoOperations().find(query.with(sort), getModel());
-		if (genes != null && genes.size() > 0) return genes.get(0);
+		if (genes != null && genes.size() > 0) return genes;
 		return null;
 	}
 }

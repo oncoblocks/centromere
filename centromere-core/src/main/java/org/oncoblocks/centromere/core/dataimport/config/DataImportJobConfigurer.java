@@ -27,7 +27,14 @@ public abstract class DataImportJobConfigurer {
 	
 	@Bean
 	public DataFileQueue dataFileQueue(){
-		return new DataFileQueue(jobConfiguration().getFileListPath());
+		DataFileQueue dataFileQueue = null;
+		if (jobConfiguration().getFileListPath() == null || jobConfiguration().getFileListPath().equals("")){
+			dataFileQueue = new DataFileQueue();
+		} else {
+			dataFileQueue = new DataFileQueue(jobConfiguration().getFileListPath());
+		}
+		dataFileQueue = addFilesToQueue(dataFileQueue);
+		return dataFileQueue;
 	}
 	
 	@Bean
@@ -40,6 +47,10 @@ public abstract class DataImportJobConfigurer {
 	@Bean
 	public DataImportJob dataImportJob(){
 		return new DataImportJob(jobConfiguration(), dataFileQueue(), dataFileProcessorMapper());
+	}
+
+	public DataFileQueue addFilesToQueue(DataFileQueue dataFileQueue){
+		return dataFileQueue;
 	}
 	
 	public abstract JobConfiguration jobConfiguration();

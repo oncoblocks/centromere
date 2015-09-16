@@ -38,9 +38,9 @@ public class DataImportJob {
 	private JobConfiguration config;
 	private DataFileQueue dataFileQueue;
 	private DataFileProcessorMapper processorMapper;
-	private DataFileRepositoryOperations<DataFileDto<?>, ?> dataFileRepository;
-	private DataSetRepositoryOperations<DataSetDto<?>, ?> dataSetRepository;
-	private DataSetDto<?> dataSet;
+	private DataFileRepositoryOperations dataFileRepository;
+	private DataSetRepositoryOperations dataSetRepository;
+	private DataSetDto dataSet;
 
 	public DataImportJob(JobConfiguration jobConfiguration, DataFileQueue dataFileQueue, 
 			DataFileProcessorMapper processorMapper) {
@@ -74,7 +74,7 @@ public class DataImportJob {
 					return;
 				}
 			} else {
-				dataSet = dataSetRepository.insert(dataSet);
+				dataSet = (DataSetDto) dataSetRepository.insert(dataSet);
 			}
 		}
 
@@ -96,9 +96,9 @@ public class DataImportJob {
 						isValid = false;
 					}
 				} else {
-					DataFileDto<?> dataFile = new DataFileDto<>(null, dataSet.getId(), inputFilePath,
+					DataFileDto dataFile = new DataFileDto<>(null, dataSet.getId(), inputFilePath,
 							fileType, new Date(), fileNotes);
-					dataFile = dataFileRepository.insert(dataFile);
+					dataFile = (DataFileDto) dataFileRepository.insert(dataFile);
 					dataFileId = dataFile.getId();
 				}
 			}

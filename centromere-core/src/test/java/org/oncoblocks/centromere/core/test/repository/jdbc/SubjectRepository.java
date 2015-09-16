@@ -17,10 +17,10 @@
 package org.oncoblocks.centromere.core.test.repository.jdbc;
 
 import com.nurkiewicz.jdbcrepository.RowUnmapper;
-import org.oncoblocks.centromere.core.web.query.Attribute;
-import org.oncoblocks.centromere.core.web.query.SourcedAlias;
 import org.oncoblocks.centromere.core.repository.GenericJdbcRepository;
 import org.oncoblocks.centromere.core.test.models.Subject;
+import org.oncoblocks.centromere.core.web.query.Attribute;
+import org.oncoblocks.centromere.core.web.query.SourcedAlias;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -38,7 +38,7 @@ import java.util.Map;
  */
 
 @Repository
-public class SubjectRepository extends GenericJdbcRepository<Subject, Long> {
+public class SubjectRepository extends GenericJdbcRepository<Subject, Long>  {
 	
 	@Autowired
 	public SubjectRepository(DataSource dataSource) {
@@ -49,7 +49,7 @@ public class SubjectRepository extends GenericJdbcRepository<Subject, Long> {
 		public Subject mapRow(ResultSet resultSet, int i) throws SQLException {
 			
 			Subject subject = new Subject();
-			subject.setSubjectId(resultSet.getLong("subject_id"));
+			subject.setId(resultSet.getLong("subject_id"));
 			subject.setName(resultSet.getString("name"));
 			subject.setSpecies(resultSet.getString("species"));
 			subject.setGender(resultSet.getString("gender"));
@@ -78,7 +78,7 @@ public class SubjectRepository extends GenericJdbcRepository<Subject, Long> {
 		@Override 
 		public Map<String, Object> mapColumns(Subject subject) {
 			Map<String,Object> map = new LinkedHashMap<>();
-			map.put("subject_id", subject.getSubjectId());
+			map.put("subject_id", subject.getId());
 			map.put("name", subject.getName());
 			map.put("species", subject.getSpecies());
 			map.put("gender", subject.getGender());

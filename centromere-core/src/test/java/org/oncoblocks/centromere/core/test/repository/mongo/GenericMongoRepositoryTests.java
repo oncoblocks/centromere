@@ -268,7 +268,7 @@ public class GenericMongoRepositoryTests {
 	@Test
 	public void findByPrimaryIdTest() throws Exception {
 		
-		EntrezGene gene = geneRepository.findByPrimaryGeneId(1L);
+		EntrezGene gene = geneRepository.findByEntrezGeneId(1L);
 		Assert.notNull(gene);
 		Assert.isTrue(gene.getEntrezGeneId().equals(1L));
 		
@@ -301,16 +301,22 @@ public class GenericMongoRepositoryTests {
 	@Test
 	public void guessGeneTest() throws Exception {
 		
-		EntrezGene gene = geneRepository.guessGene("GeneA");
-		Assert.notNull(gene);
+		List<EntrezGene> genes = geneRepository.guessGene("GeneA");
+		Assert.notNull(genes);
+		Assert.notEmpty(genes);
+		
+		EntrezGene gene = genes.get(0);
 		Assert.isTrue(gene.getEntrezGeneId().equals(1L));
 		
-		gene = geneRepository.guessGene("MNO");
-		Assert.notNull(gene);
+		genes = geneRepository.guessGene("MNO");
+		Assert.notNull(genes);
+		Assert.notEmpty(genes);
+		
+		gene = genes.get(0);
 		Assert.isTrue(gene.getEntrezGeneId().equals(5L));
 		
-		gene = geneRepository.guessGene("XYZ");
-		Assert.isNull(gene);
+		genes = geneRepository.guessGene("XYZ");
+		Assert.isNull(genes);
 		
 	}
 	

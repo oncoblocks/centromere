@@ -14,21 +14,25 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.repository.impl;
+package org.oncoblocks.centromere.core.web.query;
 
-import org.oncoblocks.centromere.core.model.Model;
-import org.oncoblocks.centromere.core.repository.RepositoryOperations;
+import org.oncoblocks.centromere.core.repository.QueryCriteria;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author woemler
  */
-public interface EntrezGeneRepositoryOperations<T extends Model<ID>, ID extends Serializable>
-		extends RepositoryOperations<T, ID> {
-	T findByEntrezGeneId(Long entrezGeneId);
-	List<T> findByPrimaryGeneSymbol(String primaryGeneSymbol);
-	List<T> findByAlias(String alias);
-	List<T> guessGene(String keyword);
+public abstract class QueryParameterCriteria {
+	
+	private List<QueryCriteria> queryCriterias;
+	
+	public void addQueryCriteria(QueryCriteria criteria){
+		queryCriterias.add(criteria);
+	}
+
+	public List<QueryCriteria> getQueryCriterias() {
+		return queryCriterias;
+	}
+	
 }

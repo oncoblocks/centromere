@@ -72,8 +72,8 @@ public class ReadOnlyControllerTests {
 	public void findById() throws Exception {
 		mockMvc.perform(get("/subjects/1").accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$", hasKey("subjectId")))
-				.andExpect(jsonPath("$.subjectId", is(1)))
+				.andExpect(jsonPath("$", hasKey("id")))
+				.andExpect(jsonPath("$.id", is(1)))
 				.andExpect(jsonPath("$.name", is("PersonA")))
 				.andExpect(jsonPath("$", hasKey("links")))
 				.andExpect(jsonPath("$.links", hasSize(1)))
@@ -85,8 +85,8 @@ public class ReadOnlyControllerTests {
 	public void findByIdWithoutLinks() throws Exception {
 		mockMvc.perform(get("/subjects/1").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$", hasKey("subjectId")))
-				.andExpect(jsonPath("$.subjectId", is(1)))
+				.andExpect(jsonPath("$", hasKey("id")))
+				.andExpect(jsonPath("$.id", is(1)))
 				.andExpect(jsonPath("$.name", is("PersonA")))
 				.andExpect(jsonPath("$", not(hasKey("links"))));
 	}
@@ -95,8 +95,8 @@ public class ReadOnlyControllerTests {
 	public void findByIdFiltered() throws Exception {
 		mockMvc.perform(get("/subjects/1?exclude=links,gender").accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$", hasKey("subjectId")))
-				.andExpect(jsonPath("$.subjectId", is(1)))
+				.andExpect(jsonPath("$", hasKey("id")))
+				.andExpect(jsonPath("$.id", is(1)))
 				.andExpect(jsonPath("$.name", is("PersonA")))
 				.andExpect(jsonPath("$", not(hasKey("links"))))
 				.andExpect(jsonPath("$", not(hasKey("gender"))));
@@ -104,10 +104,10 @@ public class ReadOnlyControllerTests {
 
 	@Test
 	public void findByIdWithoutLinksFiltered() throws Exception {
-		mockMvc.perform(get("/subjects/1?fields=subjectId,name").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/subjects/1?fields=id,name").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$", hasKey("subjectId")))
-				.andExpect(jsonPath("$.subjectId", is(1)))
+				.andExpect(jsonPath("$", hasKey("id")))
+				.andExpect(jsonPath("$.id", is(1)))
 				.andExpect(jsonPath("$.name", is("PersonA")))
 				.andExpect(jsonPath("$", not(hasKey("links"))))
 				.andExpect(jsonPath("$", not(hasKey("gender"))))
@@ -120,8 +120,8 @@ public class ReadOnlyControllerTests {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(5)))
-				.andExpect(jsonPath("$.content[0]", hasKey("subjectId")))
-				.andExpect(jsonPath("$.content[0].subjectId", is(1)))
+				.andExpect(jsonPath("$.content[0]", hasKey("id")))
+				.andExpect(jsonPath("$.content[0].id", is(1)))
 				.andExpect(jsonPath("$", hasKey("links")))
 				.andExpect(jsonPath("$.links", hasSize(1)))
 				.andExpect(jsonPath("$.links[0].rel", is("self")))
@@ -134,8 +134,8 @@ public class ReadOnlyControllerTests {
 		mockMvc.perform(get("/subjects").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasSize(5)))
-				.andExpect(jsonPath("$[0]", hasKey("subjectId")))
-				.andExpect(jsonPath("$[0].subjectId", is(1)))
+				.andExpect(jsonPath("$[0]", hasKey("id")))
+				.andExpect(jsonPath("$[0].id", is(1)))
 				.andExpect(jsonPath("$[0]", not(hasKey("links"))))
 				.andExpect(jsonPath("$", not(hasKey("pageMetadata"))));
 	}
@@ -147,8 +147,8 @@ public class ReadOnlyControllerTests {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(5)))
-				.andExpect(jsonPath("$.content[0]", hasKey("subjectId")))
-				.andExpect(jsonPath("$.content[0].subjectId", is(1)))
+				.andExpect(jsonPath("$.content[0]", hasKey("id")))
+				.andExpect(jsonPath("$.content[0].id", is(1)))
 				.andExpect(jsonPath("$.content[0]", not(hasKey("name"))))
 				.andExpect(jsonPath("$.content[0]", not(hasKey("links"))));
 	}
@@ -160,7 +160,7 @@ public class ReadOnlyControllerTests {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(5)))
-				.andExpect(jsonPath("$.content[0]", not(hasKey("subjectId"))))
+				.andExpect(jsonPath("$.content[0]", not(hasKey("id"))))
 				.andExpect(jsonPath("$.content[0]", hasKey("name")))
 				.andExpect(jsonPath("$.content[0]", hasKey("links")));
 	}
@@ -171,8 +171,8 @@ public class ReadOnlyControllerTests {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(1)))
-				.andExpect(jsonPath("$.content[0]", hasKey("subjectId")))
-				.andExpect(jsonPath("$.content[0].subjectId", is(4)))
+				.andExpect(jsonPath("$.content[0]", hasKey("id")))
+				.andExpect(jsonPath("$.content[0].id", is(4)))
 				.andExpect(jsonPath("$", hasKey("links")))
 				.andExpect(jsonPath("$.links", hasSize(1)))
 				.andExpect(jsonPath("$.links[0].rel", is("self")))
@@ -186,8 +186,8 @@ public class ReadOnlyControllerTests {
 	//				.andExpect(status().isOk())
 	//				.andExpect(jsonPath("$", hasKey("content")))
 	//				.andExpect(jsonPath("$.content", hasSize(1)))
-	//				.andExpect(jsonPath("$.content[0]", hasKey("subjectId")))
-	//				.andExpect(jsonPath("$.content[0].subjectId", is(4)))
+	//				.andExpect(jsonPath("$.content[0]", hasKey("id")))
+	//				.andExpect(jsonPath("$.content[0].id", is(4)))
 	//				.andExpect(jsonPath("$", hasKey("links")))
 	//				.andExpect(jsonPath("$.links", hasSize(1)))
 	//				.andExpect(jsonPath("$.links[0].rel", is("self")))
@@ -201,8 +201,8 @@ public class ReadOnlyControllerTests {
 	//				.andExpect(status().isOk())
 	//				.andExpect(jsonPath("$", hasKey("content")))
 	//				.andExpect(jsonPath("$.content", hasSize(2)))
-	//				.andExpect(jsonPath("$.content[0]", hasKey("subjectId")))
-	//				.andExpect(jsonPath("$.content[0].subjectId", is(4)))
+	//				.andExpect(jsonPath("$.content[0]", hasKey("id")))
+	//				.andExpect(jsonPath("$.content[0].id", is(4)))
 	//				.andExpect(jsonPath("$", hasKey("links")))
 	//				.andExpect(jsonPath("$.links", hasSize(1)))
 	//				.andExpect(jsonPath("$.links[0].rel", is("self")))
@@ -216,8 +216,8 @@ public class ReadOnlyControllerTests {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(2)))
-				.andExpect(jsonPath("$.content[0]", hasKey("subjectId")))
-				.andExpect(jsonPath("$.content[0].subjectId", is(4)))
+				.andExpect(jsonPath("$.content[0]", hasKey("id")))
+				.andExpect(jsonPath("$.content[0].id", is(4)))
 				.andExpect(jsonPath("$", hasKey("links")))
 				.andExpect(jsonPath("$.links", hasSize(2)))
 				.andExpect(jsonPath("$.links[0].rel", is("self")))
@@ -234,8 +234,8 @@ public class ReadOnlyControllerTests {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(2)))
-				.andExpect(jsonPath("$.content[0]", hasKey("subjectId")))
-				.andExpect(jsonPath("$.content[0].subjectId", is(4)))
+				.andExpect(jsonPath("$.content[0]", hasKey("id")))
+				.andExpect(jsonPath("$.content[0].id", is(4)))
 				.andExpect(jsonPath("$", not(hasKey("links"))));
 	}
 
@@ -245,8 +245,8 @@ public class ReadOnlyControllerTests {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(5)))
-				.andExpect(jsonPath("$.content[0]", hasKey("subjectId")))
-				.andExpect(jsonPath("$.content[0].subjectId", is(5)));
+				.andExpect(jsonPath("$.content[0]", hasKey("id")))
+				.andExpect(jsonPath("$.content[0].id", is(5)));
 	}
 	
 	@Test

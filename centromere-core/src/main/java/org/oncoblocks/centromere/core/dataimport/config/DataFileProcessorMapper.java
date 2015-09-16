@@ -18,6 +18,7 @@ package org.oncoblocks.centromere.core.dataimport.config;
 
 import org.oncoblocks.centromere.core.dataimport.job.DataFileProcessor;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -28,6 +29,7 @@ public class DataFileProcessorMapper {
 	private Map<String, DataFileProcessor<?>> processorMap;
 
 	public DataFileProcessorMapper() {
+		this.processorMap = new HashMap<>();
 	}
 
 	public void addMapping(String fileType, DataFileProcessor<?> processor) {

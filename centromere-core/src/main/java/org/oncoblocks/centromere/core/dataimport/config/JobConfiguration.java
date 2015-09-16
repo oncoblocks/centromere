@@ -16,7 +16,6 @@
 
 package org.oncoblocks.centromere.core.dataimport.config;
 
-import org.oncoblocks.centromere.core.model.impl.DataFileDto;
 import org.oncoblocks.centromere.core.model.impl.DataSetDto;
 import org.oncoblocks.centromere.core.repository.impl.DataFileRepositoryOperations;
 import org.oncoblocks.centromere.core.repository.impl.DataSetRepositoryOperations;
@@ -29,9 +28,9 @@ public class JobConfiguration {
 	private String fileListPath;
 	private String tempFileDirectory;
 	private String logFilePath;
-	private DataSetDto<?> dataSet;
-	private DataSetRepositoryOperations<DataSetDto<?>, ?> dataSetRepository;
-	private DataFileRepositoryOperations<DataFileDto<?>, ?> dataFileRepository;
+	private DataSetDto dataSet;
+	private DataSetRepositoryOperations dataSetRepository;
+	private DataFileRepositoryOperations dataFileRepository;
 	private boolean failOnMissingFile = true;
 	private boolean failOnMissingFileType = true;
 	private boolean failOnExistingFile = true;
@@ -86,27 +85,27 @@ public class JobConfiguration {
 	}
 
 	public JobConfiguration setDataSet(
-			DataSetDto<?> dataSet) {
+			DataSetDto dataSet) {
 		this.dataSet = dataSet;
 		return this;
 	}
 
-	public DataSetRepositoryOperations<DataSetDto<?>, ?> getDataSetRepository() {
+	public DataSetRepositoryOperations getDataSetRepository() {
 		return dataSetRepository;
 	}
 
 	public JobConfiguration setDataSetRepository(
-			DataSetRepositoryOperations<DataSetDto<?>, ?> dataSetRepository) {
+			DataSetRepositoryOperations dataSetRepository) {
 		this.dataSetRepository = dataSetRepository;
 		return this;
 	}
 
-	public DataFileRepositoryOperations<DataFileDto<?>, ?> getDataFileRepository() {
+	public DataFileRepositoryOperations getDataFileRepository() {
 		return dataFileRepository;
 	}
 
 	public JobConfiguration setDataFileRepository(
-			DataFileRepositoryOperations<DataFileDto<?>, ?> dataFileRepository) {
+			DataFileRepositoryOperations dataFileRepository) {
 		this.dataFileRepository = dataFileRepository;
 		return this;
 	}

@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.repository.impl;
+package org.oncoblocks.centromere.core.test.models;
 
-import org.oncoblocks.centromere.core.model.Model;
-import org.oncoblocks.centromere.core.repository.RepositoryOperations;
-
-import java.io.Serializable;
-import java.util.List;
+import org.oncoblocks.centromere.core.model.impl.DataSetDto;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * @author woemler
  */
-public interface EntrezGeneRepositoryOperations<T extends Model<ID>, ID extends Serializable>
-		extends RepositoryOperations<T, ID> {
-	T findByEntrezGeneId(Long entrezGeneId);
-	List<T> findByPrimaryGeneSymbol(String primaryGeneSymbol);
-	List<T> findByAlias(String alias);
-	List<T> guessGene(String keyword);
+
+@Document(collection = "data_sets")
+public class DataSet extends DataSetDto<String> {
+	public DataSet() {
+	}
+
+	public DataSet(String id, String source, String name, String notes) {
+		super(id, source, name, notes);
+	}
 }

@@ -16,8 +16,7 @@
 
 package org.oncoblocks.centromere.core.test.models;
 
-import org.oncoblocks.centromere.core.model.Filterable;
-import org.oncoblocks.centromere.core.model.Model;
+import org.oncoblocks.centromere.core.model.impl.SubjectDto;
 import org.oncoblocks.centromere.core.repository.sqlbuilder.ComplexTableDescription;
 import org.oncoblocks.centromere.core.web.query.Attribute;
 import org.oncoblocks.centromere.core.web.query.SourcedAlias;
@@ -30,89 +29,13 @@ import java.util.List;
  * @author woemler
  */
 
-@Filterable
-public class Subject implements Model<Long> {
+public class Subject extends SubjectDto<Long> {
 	
-	private Long subjectId;
-	private String name;
-	private String species;
-	private String gender;
-	private List<SourcedAlias> aliases;
-	private List<Attribute> attributes;
-	private String notes;
-
 	public Subject() { }
 
-	public Subject(Long subjectId, String name, String species, String gender,
-			List<SourcedAlias> aliases,
-			List<Attribute> attributes, String notes) {
-		this.subjectId = subjectId;
-		this.name = name;
-		this.species = species;
-		this.gender = gender;
-		this.aliases = aliases;
-		this.attributes = attributes;
-		this.notes = notes;
-	}
-
-	public Long getId(){
-		return subjectId;
-	}
-	
-	public Long getSubjectId() {
-		return subjectId;
-	}
-
-	public void setSubjectId(Long subjectId) {
-		this.subjectId = subjectId;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getSpecies() {
-		return species;
-	}
-
-	public void setSpecies(String species) {
-		this.species = species;
-	}
-
-	public String getGender() {
-		return gender;
-	}
-
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
-
-	public List<SourcedAlias> getAliases() {
-		return aliases;
-	}
-
-	public void setAliases(List<SourcedAlias> aliases) {
-		this.aliases = aliases;
-	}
-
-	public List<Attribute> getAttributes() {
-		return attributes;
-	}
-
-	public void setAttributes(List<Attribute> attributes) {
-		this.attributes = attributes;
-	}
-
-	public String getNotes() {
-		return notes;
-	}
-
-	public void setNotes(String notes) {
-		this.notes = notes;
+	public Subject(Long subjectId, String name, String species, String gender, String type,
+			List<SourcedAlias> aliases, List<Attribute> attributes, String notes) {
+		super(subjectId, name, species, gender, type, notes, aliases, attributes);
 	}
 
 	public static ComplexTableDescription getSubjectTableDescription(){
@@ -133,7 +56,7 @@ public class Subject implements Model<Long> {
 		List<SourcedAlias> aliases = new ArrayList<>();
 		List<Attribute> attributes = new ArrayList<>();
 		
-		Subject subject = new Subject(1L, "PersonA", "Homo sapiens", "M", null, null, null);
+		Subject subject = new Subject(1L, "PersonA", "Homo sapiens", "M", "patient", null, null, null);
 		aliases.add(new SourcedAlias("clinic", "patient01"));
 		attributes.add(new Attribute("cancerType", "colon"));
 		subject.setAliases(aliases);
@@ -142,7 +65,7 @@ public class Subject implements Model<Long> {
 		aliases = new ArrayList<>();
 		attributes = new ArrayList<>();
 
-		subject = new Subject(2L, "PersonB", "Homo sapiens", "F", null, null, null);
+		subject = new Subject(2L, "PersonB", "Homo sapiens", "F", "patient", null, null, null);
 		aliases.add(new SourcedAlias("clinic", "patient02"));
 		attributes.add(new Attribute("cancerType","breast"));
 		subject.setAliases(aliases);
@@ -151,7 +74,7 @@ public class Subject implements Model<Long> {
 		aliases = new ArrayList<>();
 		attributes = new ArrayList<>();
 
-		subject = new Subject(3L, "PersonC", "Homo sapiens", "M", null, null, null);
+		subject = new Subject(3L, "PersonC", "Homo sapiens", "M", "patient", null, null, null);
 		aliases.add(new SourcedAlias("clinic","patient03"));
 		attributes.add(new Attribute("cancerType","lung"));
 		subject.setAliases(aliases);
@@ -160,7 +83,7 @@ public class Subject implements Model<Long> {
 		aliases = new ArrayList<>();
 		attributes = new ArrayList<>();
 
-		subject = new Subject(4L, "MCF7", "Homo sapiens", "F", null, null, null);
+		subject = new Subject(4L, "MCF7", "Homo sapiens", "F", "cell line", null, null, null);
 		aliases.add(new SourcedAlias("CCLE","MCF7_BREAST"));
 		attributes.add(new Attribute("cancerType","breast"));
 		attributes.add(new Attribute("isCellLine","Y"));
@@ -170,7 +93,7 @@ public class Subject implements Model<Long> {
 		aliases = new ArrayList<>();
 		attributes = new ArrayList<>();
 
-		subject = new Subject(5L, "A375", "Homo sapiens", "U", null, null, null);
+		subject = new Subject(5L, "A375", "Homo sapiens", "U", "cell line", null, null, null);
 		aliases.add(new SourcedAlias("CCLE","A375_SKIN"));
 		attributes.add(new Attribute("cancerType","skin"));
 		attributes.add(new Attribute("isCellLine","Y"));

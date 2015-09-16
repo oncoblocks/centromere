@@ -29,7 +29,11 @@ import java.util.List;
 public class DataFileQueue {
 	
 	private List<QueuedFile> queuedFiles;
-	
+
+	public DataFileQueue() {
+		queuedFiles = new ArrayList<>();
+	}
+
 	public DataFileQueue(String filePath){
 		queuedFiles = new ArrayList<>();
 		BufferedReader reader = null;
@@ -60,6 +64,10 @@ public class DataFileQueue {
 				}
 			}
 		}
+	}
+	
+	public void addQueuedFile(QueuedFile queuedFile){
+		queuedFiles.add(queuedFile);
 	}
 	
 	public QueuedFile next(){

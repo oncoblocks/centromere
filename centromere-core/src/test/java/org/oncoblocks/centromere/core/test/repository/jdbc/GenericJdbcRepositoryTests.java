@@ -184,7 +184,7 @@ public class GenericJdbcRepositoryTests {
 	public void insertTest(){
 
 		Subject subject = subjectRepository.insert(
-				new Subject(6L, "PersonD", "Homo sapiens", "F", null, null, null));
+				new Subject(6L, "PersonD", "Homo sapiens", "F", "patient", null, null, null));
 		Assert.notNull(subject);
 		Assert.isTrue(subject.getId().equals(6L));
 
@@ -200,7 +200,7 @@ public class GenericJdbcRepositoryTests {
 	public void updateTest(){
 
 		Subject subject = subjectRepository.insert(
-				new Subject(6L, "PersonD", "Homo sapiens", "F", null, null, null));
+				new Subject(6L, "PersonD", "Homo sapiens", "F", "patient", null, null, null));
 
 		subject.setName("TEST_NAME");
 
@@ -220,7 +220,7 @@ public class GenericJdbcRepositoryTests {
 	public void deleteTest(){
 
 		Subject subject = subjectRepository.insert(
-				new Subject(6L, "PersonD", "Homo sapiens", "F", null, null, null));
+				new Subject(6L, "PersonD", "Homo sapiens", "F", "patient",null, null, null));
 		Assert.isTrue(subject.getId().equals(6L));
 		Assert.notNull(subject);
 		subjectRepository.delete(6L);
