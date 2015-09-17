@@ -196,6 +196,13 @@
             <version>2.1.2</version>
             <scope>test</scope>
         </dependency>
+        
+        <!-- Lombok -->
+        
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
 
         <!-- Servlet -->
 

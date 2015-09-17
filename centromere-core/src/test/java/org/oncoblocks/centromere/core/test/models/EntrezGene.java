@@ -16,9 +16,10 @@
 
 package org.oncoblocks.centromere.core.test.models;
 
-import org.oncoblocks.centromere.core.model.impl.EntrezGeneDto;
+import org.oncoblocks.centromere.core.model.Filterable;
+import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.web.query.Attribute;
-import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.*;
@@ -26,19 +27,135 @@ import java.util.*;
 /**
  * @author woemler
  */
-@Document(collection = "genes")
-public class EntrezGene extends EntrezGeneDto<Long> {
 
+@Filterable
+@Document(collection = "genes")
+public class EntrezGene implements Model<Long> {
+
+	@Id private Long entrezGeneId;
+	private String primaryGeneSymbol;
+	private Integer taxId;
+	private String locusTag;
+	private String chromosome;
+	private String chromosomeLocation;
+	private String description;
+	private String geneType;
+	private List<Attribute> attributes;
+	private Map<String, Object> dbXrefs;
+	private Set<String> aliases;
+	
 	public EntrezGene() { }
-	
-	@PersistenceConstructor
-	public EntrezGene(Long entrezGeneId, String primaryGeneSymbol, Integer taxId, String locusTag,
-			String chromosome, String chromosomeLocation, String description, String geneType,
-			List<Attribute> attributes, Set<String> aliases, Map<String, Object> dbXrefs) {
-		super(entrezGeneId, entrezGeneId, primaryGeneSymbol, taxId, locusTag, chromosome, chromosomeLocation, 
-				description, geneType, attributes, dbXrefs, aliases);
+
+	public EntrezGene(Long entrezGeneId, String primaryGeneSymbol, Integer taxId,
+			String locusTag, String chromosome, String chromosomeLocation, String description,
+			String geneType, List<Attribute> attributes,
+			Map<String, Object> dbXrefs, Set<String> aliases) {
+		this.entrezGeneId = entrezGeneId;
+		this.primaryGeneSymbol = primaryGeneSymbol;
+		this.taxId = taxId;
+		this.locusTag = locusTag;
+		this.chromosome = chromosome;
+		this.chromosomeLocation = chromosomeLocation;
+		this.description = description;
+		this.geneType = geneType;
+		this.attributes = attributes;
+		this.dbXrefs = dbXrefs;
+		this.aliases = aliases;
 	}
-	
+
+	@Override public Long getId() {
+		return entrezGeneId;
+	}
+
+	public Long getEntrezGeneId() {
+		return entrezGeneId;
+	}
+
+	public void setEntrezGeneId(Long entrezGeneId) {
+		this.entrezGeneId = entrezGeneId;
+	}
+
+	public String getPrimaryGeneSymbol() {
+		return primaryGeneSymbol;
+	}
+
+	public void setPrimaryGeneSymbol(String primaryGeneSymbol) {
+		this.primaryGeneSymbol = primaryGeneSymbol;
+	}
+
+	public Integer getTaxId() {
+		return taxId;
+	}
+
+	public void setTaxId(Integer taxId) {
+		this.taxId = taxId;
+	}
+
+	public String getLocusTag() {
+		return locusTag;
+	}
+
+	public void setLocusTag(String locusTag) {
+		this.locusTag = locusTag;
+	}
+
+	public String getChromosome() {
+		return chromosome;
+	}
+
+	public void setChromosome(String chromosome) {
+		this.chromosome = chromosome;
+	}
+
+	public String getChromosomeLocation() {
+		return chromosomeLocation;
+	}
+
+	public void setChromosomeLocation(String chromosomeLocation) {
+		this.chromosomeLocation = chromosomeLocation;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getGeneType() {
+		return geneType;
+	}
+
+	public void setGeneType(String geneType) {
+		this.geneType = geneType;
+	}
+
+	public List<Attribute> getAttributes() {
+		return attributes;
+	}
+
+	public void setAttributes(
+			List<Attribute> attributes) {
+		this.attributes = attributes;
+	}
+
+	public Map<String, Object> getDbXrefs() {
+		return dbXrefs;
+	}
+
+	public void setDbXrefs(Map<String, Object> dbXrefs) {
+		this.dbXrefs = dbXrefs;
+	}
+
+	public Set<String> getAliases() {
+		return aliases;
+	}
+
+	public void setAliases(Set<String> aliases) {
+		this.aliases = aliases;
+	}
+
 	public static List<EntrezGene> createDummyData(){
 		
 		List<EntrezGene> genes = new ArrayList<>();

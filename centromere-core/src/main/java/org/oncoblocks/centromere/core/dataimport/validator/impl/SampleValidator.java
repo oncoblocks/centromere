@@ -18,7 +18,7 @@ package org.oncoblocks.centromere.core.dataimport.validator.impl;
 
 import org.oncoblocks.centromere.core.dataimport.validator.EntityValidationException;
 import org.oncoblocks.centromere.core.dataimport.validator.EntityValidator;
-import org.oncoblocks.centromere.core.model.impl.SampleDto;
+import org.oncoblocks.centromere.core.model.support.SampleDto;
 import org.springframework.util.Assert;
 
 /**

@@ -17,7 +17,7 @@
 package org.oncoblocks.centromere.core.test.repository.mongo;
 
 import org.oncoblocks.centromere.core.repository.GenericMongoRepository;
-import org.oncoblocks.centromere.core.repository.impl.DataSetRepositoryOperations;
+import org.oncoblocks.centromere.core.repository.support.DataSetRepositoryOperations;
 import org.oncoblocks.centromere.core.test.models.DataSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;

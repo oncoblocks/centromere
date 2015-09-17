@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.config;
+package org.oncoblocks.centromere.core.repository.support;
 
-import org.springframework.context.annotation.Import;
+import org.oncoblocks.centromere.core.model.support.DataSetMetadata;
+import org.oncoblocks.centromere.core.repository.RepositoryOperations;
 
-import java.lang.annotation.*;
+import java.io.Serializable;
 
 /**
+ * Required operations for Data Set repositories.
+ * 
  * @author woemler
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
-@Inherited
-@Import({ WebServicesConfig.class, SpringBootConfig.class, CentromerePropertiesConfig.class, 
-		SwaggerConfig.class })
-public @interface AutoConfigureCentromereWeb {
+public interface DataSetRepositoryOperations<T extends DataSetMetadata<ID>, ID extends Serializable> 
+		extends RepositoryOperations<T, ID> {
+	T getByName(String name);
 }

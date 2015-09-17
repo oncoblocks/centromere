@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.config;
+package org.oncoblocks.centromere.core.web.config;
 
 import com.fasterxml.classmate.TypeResolver;
 import com.google.common.base.Predicate;
@@ -37,7 +37,7 @@ import static springfox.documentation.builders.PathSelectors.regex;
 @EnableSwagger2
 public class SwaggerConfig {
 	
-	@Autowired private CentromereProperties props;
+	@Autowired private CentromereWebProperties props;
 	@Autowired private TypeResolver typeResolver;
 
 	@Bean

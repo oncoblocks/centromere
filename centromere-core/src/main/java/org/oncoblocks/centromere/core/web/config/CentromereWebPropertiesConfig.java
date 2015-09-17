@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.config;
+package org.oncoblocks.centromere.core.web.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -31,14 +31,14 @@ import org.springframework.core.env.Environment;
 
 @Configuration
 @PropertySource(value = "classpath:centromere.properties", ignoreResourceNotFound = true)
-public class CentromerePropertiesConfig {
+public class CentromereWebPropertiesConfig {
 	
 	@Autowired Environment env;
 	
 	@Bean
-	public CentromereProperties properties(){
+	public CentromereWebProperties properties(){
 		
-		CentromereProperties properties = new CentromereProperties();
+		CentromereWebProperties properties = new CentromereWebProperties();
 		String rootUrl = env.getProperty("api.rooturl") != null ?
 				env.getRequiredProperty("api.rooturl") : "/api";
 		properties.setApiRootUrl(rootUrl);

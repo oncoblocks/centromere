@@ -16,19 +16,62 @@
 
 package org.oncoblocks.centromere.core.test.models;
 
-import org.oncoblocks.centromere.core.model.impl.DataSetDto;
+import org.oncoblocks.centromere.core.model.support.DataSetMetadata;
+import org.oncoblocks.centromere.core.model.Filterable;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * @author woemler
  */
 
+@Filterable
 @Document(collection = "data_sets")
-public class DataSet extends DataSetDto<String> {
-	public DataSet() {
-	}
+public class DataSet implements DataSetMetadata<String> {
+
+	@Id private String id;
+	private String source;
+	private String name;
+	private String notes;
+
+	public DataSet() { }
 
 	public DataSet(String id, String source, String name, String notes) {
-		super(id, source, name, notes);
+		this.id = id;
+		this.source = source;
+		this.name = name;
+		this.notes = notes;
+	}
+
+	@Override public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+	@Override public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
 	}
 }

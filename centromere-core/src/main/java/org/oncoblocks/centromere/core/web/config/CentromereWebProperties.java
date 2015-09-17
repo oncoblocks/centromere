@@ -14,30 +14,28 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport;
+package org.oncoblocks.centromere.core.web.config;
 
 /**
  * @author woemler
  */
-public enum DataSetType {
+public class CentromereWebProperties {
 	
-	SUBJECTS,
-	SAMPLES,
-	GENES,
-	DISEASES,
-	STUDIES,
-	DATA;
+	private String apiRootUrl;
 
-	public static DataSetType fromString(String type){
-		switch (type.toLowerCase()){
-			case "subjects": return SUBJECTS;
-			case "samples": return SAMPLES;
-			case "genes": return GENES;
-			case "diseases": return DISEASES;
-			case "studies": return STUDIES;
-			case "data": return DATA;
-			default: return DATA;
-		}
+	public String getApiRootUrl() {
+		return apiRootUrl;
 	}
 	
+	public String getApiUrlRegex() {
+		return apiRootUrl + "/.*";
+	}
+
+	public String getApiUrlAntMatcher() {
+		return apiRootUrl + "/**";
+	}
+
+	public void setApiRootUrl(String apiRootUrl) {
+		this.apiRootUrl = apiRootUrl;
+	}
 }

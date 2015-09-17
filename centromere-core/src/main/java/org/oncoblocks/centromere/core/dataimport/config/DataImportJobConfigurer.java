@@ -17,45 +17,52 @@
 package org.oncoblocks.centromere.core.dataimport.config;
 
 import org.oncoblocks.centromere.core.dataimport.job.DataImportJob;
+import org.oncoblocks.centromere.core.repository.support.DataFileRepositoryOperations;
+import org.oncoblocks.centromere.core.repository.support.DataSetRepositoryOperations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author woemler
  */
 
+@Configuration
 public abstract class DataImportJobConfigurer {
+	
+	@Autowired ApplicationContext applicationContext;
 	
 	@Bean
 	public DataFileQueue dataFileQueue(){
-		DataFileQueue dataFileQueue = null;
-		if (jobConfiguration().getFileListPath() == null || jobConfiguration().getFileListPath().equals("")){
-			dataFileQueue = new DataFileQueue();
-		} else {
-			dataFileQueue = new DataFileQueue(jobConfiguration().getFileListPath());
-		}
-		dataFileQueue = addFilesToQueue(dataFileQueue);
+		DataFileQueue dataFileQueue = new DataFileQueue();
+		dataFileQueue = configureDataFileQueue(dataFileQueue);
 		return dataFileQueue;
-	}
-	
-	@Bean
-	public DataFileProcessorMapper dataFileProcessorMapper(){
-		DataFileProcessorMapper mapper = new DataFileProcessorMapper();
-		mapper = this.addDataFileProcessorMappings(mapper);
-		return mapper;
 	}
 	
 	@Bean
 	public DataImportJob dataImportJob(){
-		return new DataImportJob(jobConfiguration(), dataFileQueue(), dataFileProcessorMapper());
+		DataImportOptions options = new DataImportOptions();
+		options = configureDataImportOptions(options);
+		return new DataImportJob(options, dataFileQueue(), 
+				configureDataFileRepository(), configureDataSetRepository());
 	}
 
-	public DataFileQueue addFilesToQueue(DataFileQueue dataFileQueue){
-		return dataFileQueue;
+	public DataImportOptions configureDataImportOptions(DataImportOptions options){
+		return options;	
+	}
+
+	public abstract DataFileQueue configureDataFileQueue(DataFileQueue dataFileQueue);
+	
+	public DataSetRepositoryOperations configureDataSetRepository(){
+		return applicationContext.getBean(DataSetRepositoryOperations.class);
 	}
 	
-	public abstract JobConfiguration jobConfiguration();
+	public DataFileRepositoryOperations configureDataFileRepository(){
+		return applicationContext.getBean(DataFileRepositoryOperations.class);
+	}
 	
-	public abstract DataFileProcessorMapper addDataFileProcessorMappings(DataFileProcessorMapper mapper);
+	
 
 
 }

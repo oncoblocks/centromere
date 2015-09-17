@@ -16,7 +16,7 @@
 
 package org.oncoblocks.centromere.core.test.config;
 
-import org.oncoblocks.centromere.core.config.AutoConfigureCentromereWeb;
+import org.oncoblocks.centromere.core.web.config.AutoConfigureCentromereWeb;
 import org.springframework.context.annotation.Configuration;
 
 /**

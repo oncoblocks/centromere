@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.model.impl;
+package org.oncoblocks.centromere.core.model.support;
+
+import org.oncoblocks.centromere.core.model.Model;
+import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -23,8 +26,9 @@ import java.util.Set;
  * @author woemler
  */
 
-public class SampleDto<ID extends Serializable> extends AbstractModel<ID> {
+public class SampleDto<ID extends Serializable> implements Model<ID> {
 
+	@Id private ID id;
 	private ID subjectId;
 	private ID dataSetId;
 	private String name;
@@ -38,7 +42,7 @@ public class SampleDto<ID extends Serializable> extends AbstractModel<ID> {
 
 	public SampleDto(ID id, ID subjectId, ID dataSetId, String name, String type, String tissue,
 			String histology, String notes, Set<ID> studyIds) {
-		super(id);
+		this.id = id;
 		this.subjectId = subjectId;
 		this.dataSetId = dataSetId;
 		this.name = name;
@@ -47,6 +51,14 @@ public class SampleDto<ID extends Serializable> extends AbstractModel<ID> {
 		this.histology = histology;
 		this.notes = notes;
 		this.studyIds = studyIds;
+	}
+
+	@Override public ID getId() {
+		return id;
+	}
+
+	public void setId(ID id) {
+		this.id = id;
 	}
 
 	public ID getSubjectId() {

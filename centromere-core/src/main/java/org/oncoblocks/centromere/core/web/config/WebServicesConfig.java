@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.config;
+package org.oncoblocks.centromere.core.web.config;
 
 import org.oncoblocks.centromere.core.web.util.CorsFilter;
 import org.oncoblocks.centromere.core.web.util.FilteringJackson2HttpMessageConverter;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.repository.impl;
+package org.oncoblocks.centromere.core.repository.support;
 
 import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.repository.RepositoryOperations;
@@ -23,12 +23,11 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
+ * Required operations for Disease repository.
+ * 
  * @author woemler
  */
-public interface EntrezGeneRepositoryOperations<T extends Model<ID>, ID extends Serializable>
+public interface DiseaseRepositoryOperations<T extends Model<ID>, ID extends Serializable> 
 		extends RepositoryOperations<T, ID> {
-	T findByEntrezGeneId(Long entrezGeneId);
-	List<T> findByPrimaryGeneSymbol(String primaryGeneSymbol);
-	List<T> findByAlias(String alias);
-	List<T> guessGene(String keyword);
+	List<T> findByName(String name);
 }

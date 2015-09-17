@@ -16,10 +16,6 @@
 
 package org.oncoblocks.centromere.core.dataimport.config;
 
-import org.oncoblocks.centromere.core.dataimport.job.DataFileProcessingException;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,38 +30,11 @@ public class DataFileQueue {
 		queuedFiles = new ArrayList<>();
 	}
 
-	public DataFileQueue(String filePath){
-		queuedFiles = new ArrayList<>();
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new FileReader(filePath));
-			String line = reader.readLine();
-			if (line.startsWith("path\ttype")){
-				line = reader.readLine();
-			}
-			while (line != null){
-				if (!line.trim().equals("")){
-					QueuedFile queuedFile = QueuedFile.fromLine(line);
-					if (queuedFile != null){
-						queuedFiles.add(queuedFile);
-					}
-				}
-				line = reader.readLine();
-			}
-		} catch (Exception e){
-			e.printStackTrace();
-			throw new DataFileProcessingException(String.format("There was a problem reading the data file list file: %s", filePath));
-		} finally {
-			if (reader != null){
-				try {
-					reader.close();
-				} catch (Exception e){
-					e.printStackTrace();
-				}
-			}
-		}
+	public DataFileQueue(
+			List<QueuedFile> queuedFiles) {
+		this.queuedFiles = queuedFiles;
 	}
-	
+
 	public void addQueuedFile(QueuedFile queuedFile){
 		queuedFiles.add(queuedFile);
 	}

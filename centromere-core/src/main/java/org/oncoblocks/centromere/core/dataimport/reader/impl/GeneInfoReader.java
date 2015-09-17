@@ -18,7 +18,7 @@ package org.oncoblocks.centromere.core.dataimport.reader.impl;
 
 import org.oncoblocks.centromere.core.dataimport.job.DataFileProcessingException;
 import org.oncoblocks.centromere.core.dataimport.reader.DataFileReader;
-import org.oncoblocks.centromere.core.model.impl.EntrezGeneDto;
+import org.oncoblocks.centromere.core.model.support.EntrezGeneDto;
 
 import java.io.IOException;
 import java.util.Arrays;

@@ -16,53 +16,55 @@
 
 package org.oncoblocks.centromere.core.dataimport.config;
 
+import org.oncoblocks.centromere.core.dataimport.job.DataFileProcessor;
+import org.oncoblocks.centromere.core.model.support.DataFileMetadata;
+import org.oncoblocks.centromere.core.model.support.DataSetMetadata;
+import org.springframework.util.Assert;
+
 /**
  * @author woemler
  */
 public class QueuedFile {
 	
-	private String filePath;
-	private String type;
-	private String notes;
+	private DataFileMetadata dataFileMetadata;
+	private DataSetMetadata dataSetMetadata;
+	private DataFileProcessor dataFileProcessor;
 
-	public QueuedFile(String filePath, String type, String notes) {
-		this.filePath = filePath;
-		this.type = type;
-		this.notes = notes;
+	public QueuedFile(DataFileMetadata dataFileMetadata,
+			DataSetMetadata dataSetMetadata,
+			DataFileProcessor dataFileProcessor) {
+		Assert.notNull(dataFileMetadata);
+		Assert.notNull(dataSetMetadata);
+		Assert.notNull(dataFileProcessor);
+		this.dataFileMetadata = dataFileMetadata;
+		this.dataSetMetadata = dataSetMetadata;
+		this.dataFileProcessor = dataFileProcessor;
 	}
 
-	public String getFilePath() {
-		return filePath;
+	public DataFileMetadata getDataFileMetadata() {
+		return dataFileMetadata;
 	}
 
-	public void setFilePath(String filePath) {
-		this.filePath = filePath;
+	public void setDataFileMetadata(
+			DataFileMetadata dataFileMetadata) {
+		this.dataFileMetadata = dataFileMetadata;
 	}
 
-	public String getType() {
-		return type;
+	public DataSetMetadata getDataSetMetadata() {
+		return dataSetMetadata;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setDataSetMetadata(
+			DataSetMetadata dataSetMetadata) {
+		this.dataSetMetadata = dataSetMetadata;
 	}
 
-
-	public String getNotes() {
-		return notes;
+	public DataFileProcessor getDataFileProcessor() {
+		return dataFileProcessor;
 	}
 
-	public void setNotes(String notes) {
-		this.notes = notes;
+	public void setDataFileProcessor(
+			DataFileProcessor dataFileProcessor) {
+		this.dataFileProcessor = dataFileProcessor;
 	}
-	
-	public static QueuedFile fromLine(String line){
-		String[] bits = line.split("\\t");
-		QueuedFile queuedFile = null;
-		if (bits.length == 3){
-			queuedFile = new QueuedFile(bits[0].trim(), bits[1].trim(), bits[2].trim());
-		}
-		return queuedFile;
-	}
-	
 }

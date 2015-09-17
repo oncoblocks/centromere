@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.model.impl;
+package org.oncoblocks.centromere.core.model.support;
 
+import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.web.query.Attribute;
 import org.oncoblocks.centromere.core.web.query.SourcedAlias;
+import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
 import java.util.List;
@@ -26,8 +28,9 @@ import java.util.List;
  * @author woemler
  */
 
-public class SubjectDto<ID extends Serializable> extends AbstractModel<ID> {
+public class SubjectDto<ID extends Serializable> implements Model<ID> {
 
+	@Id private ID id;
 	private String name;
 	private String species;
 	private String gender;
@@ -40,7 +43,7 @@ public class SubjectDto<ID extends Serializable> extends AbstractModel<ID> {
 
 	public SubjectDto(ID id, String name, String species, String gender, String type, String notes,
 			List<SourcedAlias> aliases, List<Attribute> attributes) {
-		super(id);
+		this.id = id;
 		this.name = name;
 		this.species = species;
 		this.gender = gender;
@@ -48,6 +51,14 @@ public class SubjectDto<ID extends Serializable> extends AbstractModel<ID> {
 		this.notes = notes;
 		this.aliases = aliases;
 		this.attributes = attributes;
+	}
+
+	@Override public ID getId() {
+		return id;
+	}
+
+	public void setId(ID id) {
+		this.id = id;
 	}
 
 	public String getName() {

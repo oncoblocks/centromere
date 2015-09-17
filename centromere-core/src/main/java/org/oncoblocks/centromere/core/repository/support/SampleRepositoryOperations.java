@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.repository.impl;
+package org.oncoblocks.centromere.core.repository.support;
 
 import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.repository.RepositoryOperations;
@@ -23,14 +23,14 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Required operations for Subject repositories.
+ * Required repository operations for Samples.
  * 
  * @author woemler
  */
-public interface SubjectRepositoryOperations<T extends Model<ID>, ID extends Serializable>
+public interface SampleRepositoryOperations<T extends Model<ID>, ID extends Serializable>
 		extends RepositoryOperations<T, ID> {
+	List<T> findBySubjectId(ID subjectId);
+	List<T> findByDataSetId(ID dataSetId);
 	List<T> findByName(String name);
-	List<T> findByDiseaseId(ID diseaseId);
-	List<T> findByAlias(String alias);
-	List<T> guessSubject(String keyword);
+	List<T> findByStudyId(ID studyId);
 }

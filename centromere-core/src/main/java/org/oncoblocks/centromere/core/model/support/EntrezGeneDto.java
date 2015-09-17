@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.model.impl;
+package org.oncoblocks.centromere.core.model.support;
 
+import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.web.query.Attribute;
+import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
 import java.util.List;
@@ -27,8 +29,9 @@ import java.util.Set;
  * @author woemler
  */
 
-public class EntrezGeneDto<ID extends Serializable> extends AbstractModel<ID> {
+public class EntrezGeneDto<ID extends Serializable> implements Model<ID> {
 
+	@Id private ID id;
 	private Long entrezGeneId;
 	private String primaryGeneSymbol;
 	private Integer taxId;
@@ -47,7 +50,7 @@ public class EntrezGeneDto<ID extends Serializable> extends AbstractModel<ID> {
 			String locusTag, String chromosome, String chromosomeLocation, String description,
 			String geneType, List<Attribute> attributes,
 			Map<String, Object> dbXrefs, Set<String> aliases) {
-		super(id);
+		this.id = id;
 		this.entrezGeneId = entrezGeneId;
 		this.primaryGeneSymbol = primaryGeneSymbol;
 		this.taxId = taxId;
@@ -59,6 +62,14 @@ public class EntrezGeneDto<ID extends Serializable> extends AbstractModel<ID> {
 		this.attributes = attributes;
 		this.dbXrefs = dbXrefs;
 		this.aliases = aliases;
+	}
+
+	@Override public ID getId() {
+		return id;
+	}
+
+	public void setId(ID id) {
+		this.id = id;
 	}
 
 	public Long getEntrezGeneId() {

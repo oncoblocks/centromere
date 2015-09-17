@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.model.impl;
+package org.oncoblocks.centromere.core.model.support;
 
-import org.oncoblocks.centromere.core.model.Filterable;
 import org.oncoblocks.centromere.core.model.Model;
 import org.springframework.data.annotation.Id;
 
@@ -25,22 +24,52 @@ import java.io.Serializable;
 /**
  * @author woemler
  */
-@Filterable
-public abstract class AbstractModel<ID extends Serializable> implements Model<ID> {
+
+public class DataSetDto<ID extends Serializable> implements Model<ID> {
 	
-	@Id private ID id;
+	@Id ID id;
+	private String source;
+	private String name;
+	private String notes;
 
-	public AbstractModel() { }
+	public DataSetDto() { }
 
-	public AbstractModel(ID id) {
+	public DataSetDto(ID id, String source, String name, String notes) {
 		this.id = id;
+		this.source = source;
+		this.name = name;
+		this.notes = notes;
 	}
 
-	public ID getId() {
+	@Override public ID getId() {
 		return id;
 	}
 
 	public void setId(ID id) {
 		this.id = id;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
 	}
 }

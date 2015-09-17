@@ -16,15 +16,13 @@
 
 package org.oncoblocks.centromere.core.dataimport.job;
 
-import org.oncoblocks.centromere.core.dataimport.config.DataFileProcessorMapper;
 import org.oncoblocks.centromere.core.dataimport.config.DataFileQueue;
-import org.oncoblocks.centromere.core.dataimport.config.JobConfiguration;
+import org.oncoblocks.centromere.core.dataimport.config.DataImportOptions;
 import org.oncoblocks.centromere.core.dataimport.config.QueuedFile;
-import org.oncoblocks.centromere.core.model.impl.DataFileDto;
-import org.oncoblocks.centromere.core.model.impl.DataSetDto;
-import org.oncoblocks.centromere.core.repository.impl.DataFileRepositoryOperations;
-import org.oncoblocks.centromere.core.repository.impl.DataSetRepositoryOperations;
-import org.springframework.util.Assert;
+import org.oncoblocks.centromere.core.model.support.DataFileMetadata;
+import org.oncoblocks.centromere.core.model.support.DataSetMetadata;
+import org.oncoblocks.centromere.core.repository.support.DataFileRepositoryOperations;
+import org.oncoblocks.centromere.core.repository.support.DataSetRepositoryOperations;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -35,26 +33,19 @@ import java.util.Date;
  */
 public class DataImportJob {
 
-	private JobConfiguration config;
+	private DataImportOptions options;
 	private DataFileQueue dataFileQueue;
-	private DataFileProcessorMapper processorMapper;
 	private DataFileRepositoryOperations dataFileRepository;
 	private DataSetRepositoryOperations dataSetRepository;
-	private DataSetDto dataSet;
 
-	public DataImportJob(JobConfiguration jobConfiguration, DataFileQueue dataFileQueue, 
-			DataFileProcessorMapper processorMapper) {
-		this.config = jobConfiguration;
-		Assert.notNull(jobConfiguration);
-		Assert.notNull(dataFileQueue);
-		Assert.notNull(processorMapper);
-		Assert.notNull(jobConfiguration.getDataFileRepository());
-		Assert.notNull(jobConfiguration.getDataSetRepository());
+	public DataImportJob(DataImportOptions options,
+			DataFileQueue dataFileQueue,
+			DataFileRepositoryOperations dataFileRepository,
+			DataSetRepositoryOperations dataSetRepository) {
+		this.options = options;
 		this.dataFileQueue = dataFileQueue;
-		this.processorMapper = processorMapper;
-		this.dataFileRepository = jobConfiguration.getDataFileRepository();
-		this.dataSetRepository = jobConfiguration.getDataSetRepository();
-		this.dataSet = jobConfiguration.getDataSet();
+		this.dataFileRepository = dataFileRepository;
+		this.dataSetRepository = dataSetRepository;
 	}
 
 	public void run() {
@@ -63,61 +54,32 @@ public class DataImportJob {
 		Date startDate = new Date();
 		System.out.println("CENTROMERE: Beginning Data Import @ " + dateFormat.format(new Date()));
 
-		if (dataSet != null) {
-			System.out.println("CENTROMERE: Creating new data set record: " + dataSet.getName());
-			if (dataSetRepository.getByName(dataSet.getName()) != null) {
-				if (config.isFailOnExistingDataSet()){
-					throw new DataImportException(
-							String.format("Data set already exists: %s", dataSet.getName()));
-				} else {
-					System.out.println("CENTROMERE: Data set already exists.  Aborting import.");
-					return;
+		while (dataFileQueue.hasNext()) {
+			
+			QueuedFile queuedFile = dataFileQueue.next();
+			DataSetMetadata dataSetMetadata = queuedFile.getDataSetMetadata();
+
+			System.out.println("CENTROMERE: Creating new data set record: " + dataSetMetadata.getName());
+			if (dataSetMetadata.getId() == null || !dataSetRepository.exists(dataSetMetadata.getId())) {
+				dataSetMetadata = (DataSetMetadata) dataSetRepository.insert(dataSetMetadata);
+			} else {
+				System.out.println("CENTROMERE: Data set already exists.");
+			}
+
+			DataFileMetadata dataFileMetadata = queuedFile.getDataFileMetadata();
+			dataFileMetadata.setDataSetId(dataSetMetadata.getId());
+			
+			if ((dataFileMetadata.getId() != null && dataFileRepository.exists(dataFileMetadata.getId()))
+					|| dataFileRepository.getFileByPath(dataFileMetadata.getFilePath()) != null){
+				if (options.isFailOnExistingFile()){
+					throw new DataImportException("Data file already exists: " + dataFileMetadata.getFilePath());
 				}
 			} else {
-				dataSet = (DataSetDto) dataSetRepository.insert(dataSet);
-			}
-		}
-
-		while (dataFileQueue.hasNext()) {
-
-			QueuedFile queuedFile = dataFileQueue.next();
-			String inputFilePath = queuedFile.getFilePath();
-			String tempFilePath = null;
-			String fileType = queuedFile.getType();
-			String fileNotes = queuedFile.getNotes();
-			Object dataFileId = null;
-			boolean isValid = true;
-
-			if (dataSet.getId() != null) {
-				if (dataFileRepository.getFileByPath(inputFilePath) != null){
-					if (config.isFailOnExistingFile()){
-						throw new DataImportException("Data file already exists: " + inputFilePath);
-					} else {
-						isValid = false;
-					}
-				} else {
-					DataFileDto dataFile = new DataFileDto<>(null, dataSet.getId(), inputFilePath,
-							fileType, new Date(), fileNotes);
-					dataFile = (DataFileDto) dataFileRepository.insert(dataFile);
-					dataFileId = dataFile.getId();
-				}
-			}
-
-			DataFileProcessor<?> processor = processorMapper.getDataFileProcessor(fileType);
-			if (processor == null) {
-				if (config.isFailOnMissingFileType()) {
-					throw new DataImportException(String.format("Invalid data file type, '%s' for file: %s",
-							fileType, inputFilePath));
-				} else {
-					System.out.println("Skipping unsupported file type: " + fileType);
-					isValid = false;
-				}
-			}
-
-			if (isValid) {
-				System.out.println("CENTROMERE: Processing file " + inputFilePath);
+				dataFileMetadata = (DataFileMetadata) dataFileRepository.insert(dataFileMetadata);
+				DataFileProcessor processor = queuedFile.getDataFileProcessor();
+				System.out.println("CENTROMERE: Processing file " + dataFileMetadata.getFilePath());
 				Date fileStart = new Date();
-				long count = processor.run(inputFilePath, tempFilePath, dataFileId);
+				long count = processor.run(dataFileMetadata.getFilePath(), null, dataFileMetadata.getId()); //TODO: temp file path
 				Date fileEnd = new Date();
 				System.out.println("CENTROMERE: Done.  Created " + count + " records.  Elapsed time: "
 						+ (fileEnd.getTime() - fileStart.getTime()) + " ms");

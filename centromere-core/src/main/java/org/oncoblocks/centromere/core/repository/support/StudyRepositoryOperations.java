@@ -14,13 +14,22 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.config;
+package org.oncoblocks.centromere.core.repository.support;
+
+import org.oncoblocks.centromere.core.model.Model;
+import org.oncoblocks.centromere.core.repository.RepositoryOperations;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
+ * Requires Study repository operations.
+ * 
  * @author woemler
  */
-public class DataImportConfigurationException extends RuntimeException {
-	public DataImportConfigurationException(String message) {
-		super(message);
-	}
+public interface StudyRepositoryOperations<T extends Model<ID>, ID extends Serializable>
+		extends RepositoryOperations<T, ID> {
+	List<T> findByName(String name);
+	List<T> findByGroup(String group);
+	List<T> findBySampleId(ID sampleId);
 }

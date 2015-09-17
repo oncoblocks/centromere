@@ -19,6 +19,7 @@ package org.oncoblocks.centromere.core.test.dataimport;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.oncoblocks.centromere.core.dataimport.job.DataImportJob;
@@ -31,6 +32,7 @@ import org.oncoblocks.centromere.core.test.repository.mongo.MongoRepositoryConfi
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.util.Assert;
 
 /**
  * @author woemler
@@ -62,16 +64,16 @@ public class DataImportJobTests {
 		isConfigured = true;
 		
 	}
-//	
-//	@Test
-//	public void dataImportTest(){
-//		Assert.isTrue(dataFileRepository.count() == 0);
-//		Assert.isTrue(dataSetRepository.count() == 0);
-//		Assert.isTrue(entrezGeneRepository.count() == 0);
-//		dataImportJob.run();
-//		Assert.isTrue(dataFileRepository.count() == 1);
-//		Assert.isTrue(dataSetRepository.count() == 1);
-//		Assert.isTrue(entrezGeneRepository.count() == 5);
-//	}
+	
+	@Test
+	public void dataImportTest(){
+		Assert.isTrue(dataFileRepository.count() == 0);
+		Assert.isTrue(dataSetRepository.count() == 0);
+		Assert.isTrue(entrezGeneRepository.count() == 0);
+		dataImportJob.run();
+		Assert.isTrue(dataFileRepository.count() == 1);
+		Assert.isTrue(dataSetRepository.count() == 1);
+		Assert.isTrue(entrezGeneRepository.count() == 5);
+	}
 	
 }

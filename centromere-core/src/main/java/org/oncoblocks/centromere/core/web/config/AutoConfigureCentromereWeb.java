@@ -14,28 +14,19 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.config;
+package org.oncoblocks.centromere.core.web.config;
+
+import org.springframework.context.annotation.Import;
+
+import java.lang.annotation.*;
 
 /**
  * @author woemler
  */
-public class CentromereProperties {
-	
-	private String apiRootUrl;
-
-	public String getApiRootUrl() {
-		return apiRootUrl;
-	}
-	
-	public String getApiUrlRegex() {
-		return apiRootUrl + "/.*";
-	}
-
-	public String getApiUrlAntMatcher() {
-		return apiRootUrl + "/**";
-	}
-
-	public void setApiRootUrl(String apiRootUrl) {
-		this.apiRootUrl = apiRootUrl;
-	}
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
+@Inherited
+@Import({ WebServicesConfig.class, SpringBootConfig.class, CentromereWebPropertiesConfig.class, 
+		SwaggerConfig.class })
+public @interface AutoConfigureCentromereWeb {
 }
