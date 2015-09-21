@@ -16,37 +16,22 @@
 
 package org.oncoblocks.centromere.core.model.support;
 
-import org.oncoblocks.centromere.core.model.Model;
-import org.springframework.data.annotation.Id;
-
-import java.io.Serializable;
-
 /**
+ * Simple class for representing key-value attributes in other entity classes.
+ * 
  * @author woemler
  */
 
-public class DiseaseDto<ID extends Serializable> implements Model<ID> {
+public class Attribute {
 	
-	@Id private ID id;
 	private String name;
-	private String type;
-	private String meshId;
+	private String value;
 
-	public DiseaseDto() { }
+	public Attribute() { }
 
-	public DiseaseDto(ID id, String name, String type, String meshId) {
-		this.id = id;
+	public Attribute(String name, String value) {
 		this.name = name;
-		this.type = type;
-		this.meshId = meshId;
-	}
-
-	@Override public ID getId() {
-		return id;
-	}
-
-	public void setId(ID id) {
-		this.id = id;
+		this.value = value;
 	}
 
 	public String getName() {
@@ -57,19 +42,12 @@ public class DiseaseDto<ID extends Serializable> implements Model<ID> {
 		this.name = name;
 	}
 
-	public String getType() {
-		return type;
+	public String getValue() {
+		return value;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setValue(String value) {
+		this.value = value;
 	}
 
-	public String getMeshId() {
-		return meshId;
-	}
-
-	public void setMeshId(String meshId) {
-		this.meshId = meshId;
-	}
 }

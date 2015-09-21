@@ -27,7 +27,7 @@ import java.util.List;
  */
 public interface DataFileRepositoryOperations<T extends DataFileMetadata<ID>, ID extends Serializable> 
 		extends RepositoryOperations<T, ID> {
-	T getFileByPath(String filePath);
+	T getByFilePath(String filePath);
 	List<T> findByDataSetId(ID dataSetId);
 	List<T> findByDataType(String dataType);
 }

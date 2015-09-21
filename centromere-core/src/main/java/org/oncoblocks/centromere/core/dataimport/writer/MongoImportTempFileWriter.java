@@ -30,55 +30,20 @@ import java.io.IOException;
 public class MongoImportTempFileWriter<T> extends TempFileWriter<T> {
 
 	private MongoDbUtils mongoUtils;
-	private boolean flag;
-
+	
 	public MongoImportTempFileWriter(MongoTemplate mongoTemplate) {
 		super();
 		this.mongoUtils = new MongoDbUtils(mongoTemplate);
-		this.flag = false;
 	}
 
 	@Override 
 	public void writeRecord(T record) {
 		FileWriter writer = getFileWriter();
 		try {
-			if (flag){
-				writer.write(",");
-			}
-			this.flag = true;
 			writer.write(mongoUtils.convertEntityToJson(record));
 		} catch (IOException e){
 			e.printStackTrace();
-			throw new TempFileWriterException(
-					String.format("There was a problem writing to temp file: %s", 
-							this.getTempFilePath()));
+			throw new TempFileWriterException(e.getMessage());
 		}
-	}
-
-	@Override 
-	public void before() {
-		super.before();
-		FileWriter writer = this.getFileWriter();
-		try {
-			writer.write("[");
-		} catch (IOException e){
-			e.printStackTrace();
-			throw new TempFileWriterException(
-					String.format("There was a problem writing to temp file: %s", 
-							this.getTempFilePath()));
-		}
-	}
-
-	@Override public void after() {
-		FileWriter writer = this.getFileWriter();
-		try {
-			writer.write("]");
-		} catch (IOException e){
-			e.printStackTrace();
-			throw new TempFileWriterException(
-					String.format("There was a problem writing to temp file: %s", 
-							this.getTempFilePath()));
-		}
-		super.after();
 	}
 }

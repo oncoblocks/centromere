@@ -16,11 +16,11 @@
 
 package org.oncoblocks.centromere.core.web.util;
 
-import org.oncoblocks.centromere.core.web.query.Attribute;
+import org.oncoblocks.centromere.core.model.support.Attribute;
 import org.springframework.core.convert.converter.Converter;
 
 /**
- * Simple converter for {@link org.oncoblocks.centromere.core.web.query.Attribute}
+ * Simple converter for {@link Attribute}
  * 
  * @author woemler
  */

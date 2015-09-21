@@ -27,13 +27,13 @@ import java.io.IOException;
 */
 public abstract class DataFileReader<T> implements EntityRecordReader<T> {
 	
-	private String inputFilePath;
 	private BufferedReader reader;
 	
 	public DataFileReader(){ }
-	
+
 	@Override
-	public void before(){
+	public void open(String inputFilePath){
+		this.close();
 		try {
 			reader = new BufferedReader(new java.io.FileReader(new File(inputFilePath)));
 		} catch (IOException e){
@@ -43,7 +43,7 @@ public abstract class DataFileReader<T> implements EntityRecordReader<T> {
 	}
 
 	@Override
-	public void after(){
+	public void close(){
 		if (reader != null){
 			try {
 				reader.close();
@@ -57,9 +57,5 @@ public abstract class DataFileReader<T> implements EntityRecordReader<T> {
 		return this.reader;
 	}
 	
-	@Override
-	public void setInputFilePath(String inputFilePath){
-		this.inputFilePath = inputFilePath;
-	}
 	
 }

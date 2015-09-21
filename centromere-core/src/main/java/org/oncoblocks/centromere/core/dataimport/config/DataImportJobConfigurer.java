@@ -42,6 +42,7 @@ public abstract class DataImportJobConfigurer {
 	
 	@Bean
 	public DataImportJob dataImportJob(){
+		doBefore();
 		DataImportOptions options = new DataImportOptions();
 		options = configureDataImportOptions(options);
 		return new DataImportJob(options, dataFileQueue(), 
@@ -62,7 +63,6 @@ public abstract class DataImportJobConfigurer {
 		return applicationContext.getBean(DataFileRepositoryOperations.class);
 	}
 	
+	public void doBefore(){ }
 	
-
-
 }

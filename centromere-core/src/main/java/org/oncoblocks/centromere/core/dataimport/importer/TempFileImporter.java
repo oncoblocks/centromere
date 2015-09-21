@@ -16,24 +16,11 @@
 
 package org.oncoblocks.centromere.core.dataimport.importer;
 
-import org.springframework.util.Assert;
-
-import java.io.File;
-
 /**
  * @author woemler
  */
 public abstract class TempFileImporter implements EntityRecordImporter {
 	
-	private File tempFile;
+	public TempFileImporter() { }
 
-	public TempFileImporter(File tempFile) {
-		Assert.notNull(tempFile);
-		this.tempFile = tempFile;
-	}
-
-	public File getTempFile() {
-		return tempFile;
-	}
-	
 }

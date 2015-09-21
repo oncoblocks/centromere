@@ -21,7 +21,7 @@ package org.oncoblocks.centromere.core.dataimport.importer;
  */
 public class EmptyImporter implements EntityRecordImporter {
 	@Override 
-	public void importFile() {
+	public void importFile(String filePath) {
 		// Do nothing
 	}
 }

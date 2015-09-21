@@ -16,11 +16,13 @@
 
 package org.oncoblocks.centromere.core.test.dataimport;
 
+import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
+import org.oncoblocks.centromere.core.dataimport.importer.MongoImportTempFileImporter;
 import org.oncoblocks.centromere.core.dataimport.validator.EntityValidationException;
 import org.oncoblocks.centromere.core.dataimport.writer.MongoImportTempFileWriter;
 import org.oncoblocks.centromere.core.test.config.TestMongoConfig;
@@ -49,19 +51,25 @@ import java.util.List;
 @FixMethodOrder
 public class DataImportTests {
 	
-	@Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
+	@Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();;
+	private File tempFile;
 	private String geneInfoPath = ClassLoader.getSystemClassLoader().getResource("Homo_sapiens.gene_info").getPath();
+	private static boolean isConfigured = false;
 	
 	@Autowired private MongoTemplate mongoTemplate;
 	@Autowired private EntrezGeneRepository repository;
 	
+	@Before
+	public void setup() throws Exception{
+		tempFile = temporaryFolder.newFile("genes.tmp.json"); 
+	}
+	
 	@Test
 	public void geneInfoReaderTest(){
 		GeneInfoReader geneInfoReader = new GeneInfoReader();
-		geneInfoReader.setInputFilePath(geneInfoPath);
 		List<EntrezGene> genes = new ArrayList<>();
 		try {
-			geneInfoReader.before();
+			geneInfoReader.open(geneInfoPath);
 			EntrezGene gene = geneInfoReader.readRecord();
 			while (gene != null){
 				genes.add(gene);
@@ -70,7 +78,7 @@ public class DataImportTests {
 		} catch (Exception e){
 			e.printStackTrace();
 		} finally {
-			geneInfoReader.after();
+			geneInfoReader.close();
 		}
 		Assert.notEmpty(genes);
 		Assert.isTrue(genes.size() == 5);
@@ -80,40 +88,41 @@ public class DataImportTests {
 	@Test
 	public void tempGeneFileTest() throws Exception{
 		GeneInfoReader geneInfoReader = new GeneInfoReader();
-		geneInfoReader.setInputFilePath(geneInfoPath);
-		File tempFile = temporaryFolder.newFile("genes.tmp");
 		MongoImportTempFileWriter<EntrezGene> geneWriter = new MongoImportTempFileWriter<>(mongoTemplate);
-		geneWriter.setTempFilePath(tempFile.getAbsolutePath());
 		try {
-			geneWriter.before();
-			geneInfoReader.before();
+			geneWriter.open(tempFile.getAbsolutePath());
+			geneInfoReader.open(geneInfoPath);
 			EntrezGene gene = geneInfoReader.readRecord();
 			while (gene != null){
 				geneWriter.writeRecord(gene);
 				gene = geneInfoReader.readRecord();
 			}
 		} catch (Exception e){
-			e.printStackTrace();
+			throw e;
 		} finally {
-			geneInfoReader.after();
-			geneWriter.after();
+			geneInfoReader.close();
+			geneWriter.close();
 		}
 
-		BufferedReader reader = null;
+		StringBuilder stringBuilder = new StringBuilder();
+		BufferedReader bufferedReader = null;
 		try {
-			reader = new BufferedReader(new FileReader(tempFile));
-			String line = reader.readLine();
-			while (line != null){
-				System.out.println(line);
-				line = reader.readLine();
+			bufferedReader = new BufferedReader(new FileReader(tempFile));
+			String line = bufferedReader.readLine();
+			while (line != null) {
+				stringBuilder.append(line);
+				line = bufferedReader.readLine();
 			}
 		} catch (Exception e){
 			e.printStackTrace();
 		} finally {
-			if (reader != null){
-				reader.close();
+			if (bufferedReader != null){
+				bufferedReader.close();
 			}
 		}
+		String content = stringBuilder.toString();
+		Assert.notNull(content);
+		System.out.print(content);
 		
 	}
 	
@@ -147,34 +156,55 @@ public class DataImportTests {
 		validator.validate(gene);
 	}
 	
-//	@Test
-//	public void importTest() throws Exception {
-//		repository.deleteAll();
-//		GeneInfoReader geneInfoReader = new GeneInfoReader();
-//		geneInfoReader.setInputFilePath(geneInfoPath);
-//		File tempFile = temporaryFolder.newFile("gene_info.tmp");
-//		MongoImportTempFileWriter<EntrezGene> geneWriter = new MongoImportTempFileWriter<>(mongoTemplate);
-//		geneWriter.setTempFilePath(tempFile.getAbsolutePath());
-//		try {
-//			geneWriter.before();
-//			geneInfoReader.before();
-//			EntrezGene gene = geneInfoReader.readRecord();
-//			while (gene != null){
-//				geneWriter.writeRecord(gene);
-//				gene = geneInfoReader.readRecord();
-//			}
-//		} catch (Exception e){
-//			e.printStackTrace();
-//		} finally {
-//			geneInfoReader.after();
-//			geneWriter.after();
-//		}
-//		MongoImportTempFileImporter importer = new MongoImportTempFileImporter(tempFile, "localhost", "centromere-test", "genes", "", "");
-//		importer.importFile();
-//		List<EntrezGene> genes = repository.findAll();
-//		Assert.notNull(genes);
-//		Assert.notEmpty(genes);
-//		Assert.isTrue(genes.size() == 5);
-//	}
+	@Test
+	public void importTest() throws Exception {
+		
+		repository.deleteAll();
+		
+		GeneInfoReader geneInfoReader = new GeneInfoReader();
+		MongoImportTempFileWriter<EntrezGene> geneWriter = new MongoImportTempFileWriter<>(mongoTemplate);
+		try {
+			geneWriter.open(tempFile.getAbsolutePath());
+			geneInfoReader.open(geneInfoPath);
+			EntrezGene gene = geneInfoReader.readRecord();
+			while (gene != null){
+				geneWriter.writeRecord(gene);
+				gene = geneInfoReader.readRecord();
+			}
+		} catch (Exception e){
+			e.printStackTrace();
+		} finally {
+			geneInfoReader.close();
+			geneWriter.close();
+		}
+
+		StringBuilder stringBuilder = new StringBuilder();
+		BufferedReader bufferedReader = null;
+		try {
+			bufferedReader = new BufferedReader(new FileReader(tempFile));
+			String line = bufferedReader.readLine();
+			while (line != null) {
+				stringBuilder.append(line);
+				line = bufferedReader.readLine();
+			}
+		} catch (Exception e){
+			e.printStackTrace();
+		} finally {
+			if (bufferedReader != null){
+				bufferedReader.close();
+			}
+		}
+		String content = stringBuilder.toString();
+		Assert.notNull(content);
+		System.out.print(content);
+		
+		MongoImportTempFileImporter importer = new MongoImportTempFileImporter("localhost:27017", 
+				"centromere-test", "genes", "centromere", "centromere");
+		importer.importFile(tempFile.getAbsolutePath());
+		List<EntrezGene> genes = repository.findAll();
+		Assert.notNull(genes);
+		Assert.notEmpty(genes);
+		Assert.isTrue(genes.size() == 5);
+	}
 	
 }

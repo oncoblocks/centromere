@@ -26,12 +26,13 @@ import java.io.IOException;
 */
 public abstract class TempFileWriter<T> implements EntityRecordWriter<T> {
 	
-	private String tempFilePath;
 	private FileWriter writer;
 
 	public TempFileWriter() { }
 
-	public void before(){
+	@Override
+	public void open(String tempFilePath){
+		this.close();
 		try {
 			writer = new FileWriter(tempFilePath);
 		} catch (IOException e){
@@ -41,7 +42,8 @@ public abstract class TempFileWriter<T> implements EntityRecordWriter<T> {
 		}
 	}
 
-	public void after(){
+	@Override
+	public void close(){
 		if (writer != null){
 			try{
 				writer.close();
@@ -55,11 +57,4 @@ public abstract class TempFileWriter<T> implements EntityRecordWriter<T> {
 		return this.writer;
 	}
 	
-	public String getTempFilePath() {
-		return tempFilePath;
-	}
-	
-	public void setTempFilePath(String tempFilePath){
-		this.tempFilePath = tempFilePath;
-	}
 }

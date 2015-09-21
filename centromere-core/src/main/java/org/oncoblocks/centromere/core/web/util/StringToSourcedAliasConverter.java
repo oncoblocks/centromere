@@ -16,11 +16,11 @@
 
 package org.oncoblocks.centromere.core.web.util;
 
-import org.oncoblocks.centromere.core.web.query.SourcedAlias;
+import org.oncoblocks.centromere.core.model.support.SourcedAlias;
 import org.springframework.core.convert.converter.Converter;
 
 /**
- * Simple converter for {@link org.oncoblocks.centromere.core.web.query.SourcedAlias}
+ * Simple converter for {@link SourcedAlias}
  * 
  * @author woemler
  */

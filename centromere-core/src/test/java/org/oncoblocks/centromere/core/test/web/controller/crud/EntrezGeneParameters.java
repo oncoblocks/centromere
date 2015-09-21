@@ -16,6 +16,9 @@
 
 package org.oncoblocks.centromere.core.test.web.controller.crud;
 
+import org.oncoblocks.centromere.core.model.support.Attribute;
+import org.oncoblocks.centromere.core.model.support.Attributes;
+import org.oncoblocks.centromere.core.model.support.SimpleAliases;
 import org.oncoblocks.centromere.core.web.query.*;
 
 /**

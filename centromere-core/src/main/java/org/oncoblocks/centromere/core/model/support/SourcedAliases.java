@@ -14,40 +14,15 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.web.query;
+package org.oncoblocks.centromere.core.model.support;
 
 /**
- * Simple representation of alias names for embedding in other entities.
+ * Interface for adding controller query methods to entity classes with key-value aliases.  
  * 
  * @author woemler
  */
-
-public class SourcedAlias {
-
-	private String source;
-	private String name;
-
-	public SourcedAlias() { }
-
-	public SourcedAlias(String source, String name) {
-		this.source = source;
-		this.name = name;
-	}
-
-	public String getSource() {
-		return source;
-	}
-
-	public void setSource(String source) {
-		this.source = source;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
+public interface SourcedAliases {
+	void setAliasName(String aliasName);
+	void setAliasSource(String aliasSource);
+	void setAlias(SourcedAlias alias);
 }

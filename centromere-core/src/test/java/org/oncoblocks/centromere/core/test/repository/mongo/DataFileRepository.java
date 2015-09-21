@@ -41,7 +41,7 @@ public class DataFileRepository extends GenericMongoRepository<DataFile, String>
 	}
 
 	@Override 
-	public DataFile getFileByPath(String filePath) {
+	public DataFile getByFilePath(String filePath) {
 		return this.getMongoOperations().findOne(new Query(Criteria.where("filePath").is(filePath)), this.getModel());
 	}
 

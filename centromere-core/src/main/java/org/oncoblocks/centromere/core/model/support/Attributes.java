@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.web.query;
+package org.oncoblocks.centromere.core.model.support;
 
 /**
- * Interface for adding controller query methods to entity classes with key-value aliases.  
+ * Interface for adding controller query methods to entity classes with key-value attributes.
  * 
  * @author woemler
  */
-public interface SourcedAliases {
-	void setAliasName(String aliasName);
-	void setAliasSource(String aliasSource);
-	void setAlias(SourcedAlias alias);
+public interface Attributes {
+	void setAttributeName(String attributeName);
+	void setAttributeValue(String attributeValue);
+	void setAttribute(Attribute attribute);
 }

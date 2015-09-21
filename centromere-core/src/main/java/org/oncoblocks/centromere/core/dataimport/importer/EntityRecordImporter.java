@@ -20,5 +20,5 @@ package org.oncoblocks.centromere.core.dataimport.importer;
  * @author woemler
  */
 public interface EntityRecordImporter {
-	void importFile();
+	void importFile(String filePath);
 }

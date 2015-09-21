@@ -31,6 +31,8 @@ public class DataFileProcessor<T> {
 	private EntityValidator<T> validator;
 	private EntityRecordWriter<T> writer;
 	private EntityRecordImporter importer;
+	
+	public DataFileProcessor(){ }
 
 	public DataFileProcessor(
 			EntityRecordReader<T> reader,
@@ -47,11 +49,9 @@ public class DataFileProcessor<T> {
 
 	public long run(String inputFilePath, String tempFilePath, Object dataFileId){
 		long counter = 0;
-		reader.setInputFilePath(inputFilePath);
-		if (tempFilePath != null) writer.setTempFilePath(tempFilePath);
 		try {
-			reader.before();
-			writer.before();
+			reader.open(inputFilePath);
+			writer.open(tempFilePath);
 			T record = reader.readRecord();
 			while (record != null) {
 				if (validator != null) {
@@ -67,16 +67,39 @@ public class DataFileProcessor<T> {
 				}
 			}
 			if (importer != null) {
-				importer.importFile();
+				importer.importFile(tempFilePath);
 			}
 		} catch (Exception e){
 			e.printStackTrace();
 			throw new DataFileProcessingException(e.getMessage());
 		} finally {
-			reader.after();
-			writer.after();
+			reader.close();
+			writer.close();
 		}
 		return counter;
 	}
-	
+
+	public DataFileProcessor setReader(
+			EntityRecordReader<T> reader) {
+		this.reader = reader;
+		return this;
+	}
+
+	public DataFileProcessor setValidator(
+			EntityValidator<T> validator) {
+		this.validator = validator;
+		return this;
+	}
+
+	public DataFileProcessor setWriter(
+			EntityRecordWriter<T> writer) {
+		this.writer = writer;
+		return this;
+	}
+
+	public DataFileProcessor setImporter(
+			EntityRecordImporter importer) {
+		this.importer = importer;
+		return this;
+	}
 }

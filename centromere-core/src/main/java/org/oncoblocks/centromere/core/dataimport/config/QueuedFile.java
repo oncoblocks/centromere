@@ -30,6 +30,8 @@ public class QueuedFile {
 	private DataSetMetadata dataSetMetadata;
 	private DataFileProcessor dataFileProcessor;
 
+	public QueuedFile() { }
+
 	public QueuedFile(DataFileMetadata dataFileMetadata,
 			DataSetMetadata dataSetMetadata,
 			DataFileProcessor dataFileProcessor) {
@@ -45,26 +47,29 @@ public class QueuedFile {
 		return dataFileMetadata;
 	}
 
-	public void setDataFileMetadata(
+	public QueuedFile setDataFileMetadata(
 			DataFileMetadata dataFileMetadata) {
 		this.dataFileMetadata = dataFileMetadata;
+		return this;
 	}
 
 	public DataSetMetadata getDataSetMetadata() {
 		return dataSetMetadata;
 	}
 
-	public void setDataSetMetadata(
+	public QueuedFile setDataSetMetadata(
 			DataSetMetadata dataSetMetadata) {
 		this.dataSetMetadata = dataSetMetadata;
+		return this;
 	}
 
 	public DataFileProcessor getDataFileProcessor() {
 		return dataFileProcessor;
 	}
 
-	public void setDataFileProcessor(
+	public QueuedFile setDataFileProcessor(
 			DataFileProcessor dataFileProcessor) {
 		this.dataFileProcessor = dataFileProcessor;
+		return this;
 	}
 }

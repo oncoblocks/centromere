@@ -28,9 +28,7 @@ import java.util.*;
  */
 public class GeneInfoReader extends DataFileReader<EntrezGene> {
 
-	public GeneInfoReader() {
-		super();
-	}
+	public GeneInfoReader() { }
 
 	@Override 
 	public EntrezGene readRecord() throws DataFileProcessingException {

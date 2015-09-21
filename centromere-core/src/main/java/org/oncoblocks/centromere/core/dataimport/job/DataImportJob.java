@@ -68,9 +68,10 @@ public class DataImportJob {
 
 			DataFileMetadata dataFileMetadata = queuedFile.getDataFileMetadata();
 			dataFileMetadata.setDataSetId(dataSetMetadata.getId());
-			
+
+			System.out.println("CENTROMERE: Creating new data file record: " + dataFileMetadata.getFilePath());
 			if ((dataFileMetadata.getId() != null && dataFileRepository.exists(dataFileMetadata.getId()))
-					|| dataFileRepository.getFileByPath(dataFileMetadata.getFilePath()) != null){
+					|| dataFileRepository.getByFilePath(dataFileMetadata.getFilePath()) != null){
 				if (options.isFailOnExistingFile()){
 					throw new DataImportException("Data file already exists: " + dataFileMetadata.getFilePath());
 				}

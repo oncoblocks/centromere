@@ -16,37 +16,22 @@
 
 package org.oncoblocks.centromere.core.model.support;
 
-import org.oncoblocks.centromere.core.model.Model;
-import org.springframework.data.annotation.Id;
-
-import java.io.Serializable;
-
 /**
+ * Simple representation of alias names for embedding in other entities.
+ * 
  * @author woemler
  */
 
-public class DataSetDto<ID extends Serializable> implements Model<ID> {
-	
-	@Id ID id;
+public class SourcedAlias {
+
 	private String source;
 	private String name;
-	private String notes;
 
-	public DataSetDto() { }
+	public SourcedAlias() { }
 
-	public DataSetDto(ID id, String source, String name, String notes) {
-		this.id = id;
+	public SourcedAlias(String source, String name) {
 		this.source = source;
 		this.name = name;
-		this.notes = notes;
-	}
-
-	@Override public ID getId() {
-		return id;
-	}
-
-	public void setId(ID id) {
-		this.id = id;
 	}
 
 	public String getSource() {
@@ -65,11 +50,4 @@ public class DataSetDto<ID extends Serializable> implements Model<ID> {
 		this.name = name;
 	}
 
-	public String getNotes() {
-		return notes;
-	}
-
-	public void setNotes(String notes) {
-		this.notes = notes;
-	}
 }

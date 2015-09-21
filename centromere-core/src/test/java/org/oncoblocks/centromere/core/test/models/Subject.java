@@ -19,8 +19,8 @@ package org.oncoblocks.centromere.core.test.models;
 import org.oncoblocks.centromere.core.model.Filterable;
 import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.repository.sqlbuilder.ComplexTableDescription;
-import org.oncoblocks.centromere.core.web.query.Attribute;
-import org.oncoblocks.centromere.core.web.query.SourcedAlias;
+import org.oncoblocks.centromere.core.model.support.Attribute;
+import org.oncoblocks.centromere.core.model.support.SourcedAlias;
 import org.springframework.data.annotation.Id;
 
 import java.util.ArrayList;

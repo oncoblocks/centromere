@@ -20,8 +20,7 @@ package org.oncoblocks.centromere.core.dataimport.reader;
  * @author woemler
  */
 public interface EntityRecordReader<T> {
-	void before();
-	void after();
-	void setInputFilePath(String inputFilePath);
+	void open(String filePath);
+	void close();
 	T readRecord();
 }

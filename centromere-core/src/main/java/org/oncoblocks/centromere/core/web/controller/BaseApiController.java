@@ -174,9 +174,7 @@ public abstract class BaseApiController<
 //		optionsResponse.setEndpoints(descriptors);
 //		return optionsResponse;
 //	}
-
-
-
+	
 	public RepositoryOperations<T, ID> getRepository() {
 		return repository;
 	}

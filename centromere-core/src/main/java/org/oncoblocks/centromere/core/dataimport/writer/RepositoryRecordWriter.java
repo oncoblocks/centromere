@@ -38,17 +38,17 @@ public class RepositoryRecordWriter<T, ID extends Serializable> implements Entit
 	}
 
 	@Override 
-	public void before() {
+	public void open(String filePath) {
 		// Do nothing
+	}
+	
+	public void open(){
+		this.open(null);
 	}
 
 	@Override 
-	public void after() {
+	public void close() {
 		// Do nothing
 	}
 
-	@Override 
-	public void setTempFilePath(String tempFilePath) {
-		// DO nothing
-	}
 }
