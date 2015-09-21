@@ -57,17 +57,13 @@ public class DataFileProcessor<T> {
 				if (validator != null) {
 					if (validator.validate(record)) {
 						writer.writeRecord(record);
-						record = reader.readRecord();
-						counter++;
+						
 					}
 				} else {
 					writer.writeRecord(record);
-					record = reader.readRecord();
-					counter++;
 				}
-			}
-			if (importer != null) {
-				importer.importFile(tempFilePath);
+				record = reader.readRecord();
+				counter++;
 			}
 		} catch (Exception e){
 			e.printStackTrace();
@@ -75,6 +71,9 @@ public class DataFileProcessor<T> {
 		} finally {
 			reader.close();
 			writer.close();
+		}
+		if (importer != null) {
+			importer.importFile(tempFilePath);
 		}
 		return counter;
 	}

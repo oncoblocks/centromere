@@ -197,9 +197,10 @@ public class DataImportTests {
 		String content = stringBuilder.toString();
 		Assert.notNull(content);
 		System.out.print(content);
-		
-		MongoImportTempFileImporter importer = new MongoImportTempFileImporter("localhost:27017", 
-				"centromere-test", "genes", "centromere", "centromere");
+
+		MongoImportTempFileImporter.MongoImportCredentials credentials = 
+				new MongoImportTempFileImporter.MongoImportCredentials("centromere", "centromere", "localhost", "27017", "centromere-test");
+		MongoImportTempFileImporter importer = new MongoImportTempFileImporter(credentials, "genes");
 		importer.importFile(tempFile.getAbsolutePath());
 		List<EntrezGene> genes = repository.findAll();
 		Assert.notNull(genes);

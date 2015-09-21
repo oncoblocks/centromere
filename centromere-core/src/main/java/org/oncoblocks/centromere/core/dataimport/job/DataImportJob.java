@@ -24,6 +24,7 @@ import org.oncoblocks.centromere.core.model.support.DataSetMetadata;
 import org.oncoblocks.centromere.core.repository.support.DataFileRepositoryOperations;
 import org.oncoblocks.centromere.core.repository.support.DataSetRepositoryOperations;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -53,7 +54,7 @@ public class DataImportJob {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date startDate = new Date();
 		System.out.println("CENTROMERE: Beginning Data Import @ " + dateFormat.format(new Date()));
-
+		
 		while (dataFileQueue.hasNext()) {
 			
 			QueuedFile queuedFile = dataFileQueue.next();
@@ -76,14 +77,22 @@ public class DataImportJob {
 					throw new DataImportException("Data file already exists: " + dataFileMetadata.getFilePath());
 				}
 			} else {
+				
 				dataFileMetadata = (DataFileMetadata) dataFileRepository.insert(dataFileMetadata);
 				DataFileProcessor processor = queuedFile.getDataFileProcessor();
+				
+				File inputFile = new File(dataFileMetadata.getFilePath());
+				String tempFileName = inputFile.getName() + ".tmp";
+				File tempFile = new File(options.getTempFileDirectory(), tempFileName);
+				
 				System.out.println("CENTROMERE: Processing file " + dataFileMetadata.getFilePath());
 				Date fileStart = new Date();
-				long count = processor.run(dataFileMetadata.getFilePath(), null, dataFileMetadata.getId()); //TODO: temp file path
+				long count = processor.run(dataFileMetadata.getFilePath(), tempFile.getAbsolutePath(), 
+						dataFileMetadata.getId()); 
 				Date fileEnd = new Date();
 				System.out.println("CENTROMERE: Done.  Created " + count + " records.  Elapsed time: "
 						+ (fileEnd.getTime() - fileStart.getTime()) + " ms");
+				
 			}
 				
 		}
