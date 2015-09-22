@@ -30,6 +30,8 @@ import org.oncoblocks.centromere.core.test.models.EntrezGene;
 import org.oncoblocks.centromere.core.test.repository.mongo.EntrezGeneRepository;
 import org.oncoblocks.centromere.core.test.repository.mongo.MongoRepositoryConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -46,6 +48,7 @@ import java.util.List;
  */
 
 @RunWith(SpringJUnit4ClassRunner.class)
+@PropertySource({"classpath:test-mongo-data-source.properties"})
 @ContextConfiguration(classes = { DataImportConfig.class, TestMongoConfig.class,
 		MongoRepositoryConfig.class})
 @FixMethodOrder
@@ -58,6 +61,7 @@ public class DataImportTests {
 	
 	@Autowired private MongoTemplate mongoTemplate;
 	@Autowired private EntrezGeneRepository repository;
+	@Autowired Environment environment;
 	
 	@Before
 	public void setup() throws Exception{
@@ -199,7 +203,12 @@ public class DataImportTests {
 		System.out.print(content);
 
 		MongoImportTempFileImporter.MongoImportCredentials credentials = 
-				new MongoImportTempFileImporter.MongoImportCredentials("centromere", "centromere", "localhost", "27017", "centromere-test");
+				new MongoImportTempFileImporter.MongoImportCredentials(
+						environment.getRequiredProperty("mongo.username"),
+						environment.getRequiredProperty("mongo.password"),
+						environment.getRequiredProperty("mongo.host"),
+						environment.getRequiredProperty("mongo.port"),
+						environment.getRequiredProperty("mongo.name"));
 		MongoImportTempFileImporter importer = new MongoImportTempFileImporter(credentials, "genes");
 		importer.importFile(tempFile.getAbsolutePath());
 		List<EntrezGene> genes = repository.findAll();
