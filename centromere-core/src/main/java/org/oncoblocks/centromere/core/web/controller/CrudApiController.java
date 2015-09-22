@@ -21,6 +21,7 @@ import org.oncoblocks.centromere.core.repository.RepositoryOperations;
 import org.oncoblocks.centromere.core.web.exceptions.RequestFailureException;
 import org.oncoblocks.centromere.core.web.exceptions.ResourceNotFoundException;
 import org.oncoblocks.centromere.core.web.query.QueryParameters;
+import org.oncoblocks.centromere.core.web.util.HalMediaType;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -60,7 +61,8 @@ public class CrudApiController<
 	 * @return updated representation of the submitted entity
 	 */
 	@RequestMapping(value = "", method = RequestMethod.POST, 
-			produces = { MediaType.APPLICATION_JSON_VALUE, HalMediaType.APPLICATION_JSON_HAL_VALUE })
+			produces = { MediaType.APPLICATION_JSON_VALUE, HalMediaType.APPLICATION_HAL_JSON_VALUE,
+					HalMediaType.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE})
 	public HttpEntity create(@RequestBody T entity, HttpServletRequest request) {
 		T created = getRepository().insert(entity);
 		if (created == null) throw new RequestFailureException(40003, "There was a problem creating the record.", "", "");
@@ -82,7 +84,7 @@ public class CrudApiController<
 	 * @return updated representation of the submitted entity.
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, 
-			produces = { MediaType.APPLICATION_JSON_VALUE })
+			produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public HttpEntity update(@RequestBody T entity, @PathVariable ID id, HttpServletRequest request) {
 		if (!getRepository().exists(id)) throw new ResourceNotFoundException();
 		T updated = getRepository().update(entity);

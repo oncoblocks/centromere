@@ -20,7 +20,7 @@
 
     <developers>
         <developer>
-            <name>Will Iemler</name>
+            <name>Will Oemler</name>
             <email>woemler@blueprintmedicines.com</email>
             <organization>Blueprint Medicines</organization>
             <organizationUrl>http://www.blueprintmedicines.com</organizationUrl>
@@ -246,21 +246,6 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
         </dependency>
-
-        <!--<dependency>-->
-            <!--<groupId>log4j</groupId>-->
-            <!--<artifactId>log4j</artifactId>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>org.apache.commons</groupId>-->
-            <!--<artifactId>commons-lang3</artifactId>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>commons-logging</groupId>-->
-            <!--<artifactId>commons-logging</artifactId>-->
-        <!--</dependency>-->
 
         <!-- Testing -->
 

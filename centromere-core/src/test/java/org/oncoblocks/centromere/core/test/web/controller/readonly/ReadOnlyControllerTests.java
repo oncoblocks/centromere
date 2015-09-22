@@ -25,7 +25,7 @@ import org.oncoblocks.centromere.core.test.config.TestWebConfig;
 import org.oncoblocks.centromere.core.test.models.Subject;
 import org.oncoblocks.centromere.core.test.repository.jdbc.JdbcRepositoryConfig;
 import org.oncoblocks.centromere.core.test.repository.jdbc.SubjectRepository;
-import org.oncoblocks.centromere.core.web.controller.HalMediaType;
+import org.oncoblocks.centromere.core.web.util.HalMediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
@@ -70,7 +70,7 @@ public class ReadOnlyControllerTests {
 	
 	@Test
 	public void findById() throws Exception {
-		mockMvc.perform(get("/subjects/1").accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
+		mockMvc.perform(get("/subjects/1").accept(HalMediaType.APPLICATION_HAL_JSON_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("id")))
 				.andExpect(jsonPath("$.id", is(1)))
@@ -93,7 +93,7 @@ public class ReadOnlyControllerTests {
 
 	@Test
 	public void findByIdFiltered() throws Exception {
-		mockMvc.perform(get("/subjects/1?exclude=links,gender").accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
+		mockMvc.perform(get("/subjects/1?exclude=links,gender").accept(HalMediaType.APPLICATION_HAL_JSON_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("id")))
 				.andExpect(jsonPath("$.id", is(1)))
@@ -116,7 +116,7 @@ public class ReadOnlyControllerTests {
 
 	@Test
 	public void findAll() throws Exception {
-		mockMvc.perform(get("/subjects").accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
+		mockMvc.perform(get("/subjects").accept(HalMediaType.APPLICATION_HAL_JSON_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(5)))
@@ -143,7 +143,7 @@ public class ReadOnlyControllerTests {
 	@Test
 	public void findFiltered() throws Exception {
 		mockMvc.perform(get("/subjects?exclude=links,name")
-				.accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
+				.accept(HalMediaType.APPLICATION_HAL_JSON_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(5)))
@@ -156,7 +156,7 @@ public class ReadOnlyControllerTests {
 	@Test
 	public void findFieldFiltered() throws Exception {
 		mockMvc.perform(get("/subjects?fields=links,name")
-				.accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
+				.accept(HalMediaType.APPLICATION_HAL_JSON_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(5)))
@@ -167,7 +167,7 @@ public class ReadOnlyControllerTests {
 
 	@Test
 	public void findMultipleBySingleParam() throws Exception {
-		mockMvc.perform(get("/subjects?name=MCF7").accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
+		mockMvc.perform(get("/subjects?name=MCF7").accept(HalMediaType.APPLICATION_HAL_JSON_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(1)))
@@ -182,7 +182,7 @@ public class ReadOnlyControllerTests {
 
 	//	@Test
 	//	public void findMultipleByAlias() throws Exception {
-	//		mockMvc.perform(get("/subjects?aliasName=MCF7_BREAST").accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
+	//		mockMvc.perform(get("/subjects?aliasName=MCF7_BREAST").accept(HalMediaType.APPLICATION_HAL_JSON_VALUE))
 	//				.andExpect(status().isOk())
 	//				.andExpect(jsonPath("$", hasKey("content")))
 	//				.andExpect(jsonPath("$.content", hasSize(1)))
@@ -197,7 +197,7 @@ public class ReadOnlyControllerTests {
 
 	//	@Test
 	//	public void findMultipleByAttribute() throws Exception {
-	//		mockMvc.perform(get("/subjects?attributeName=isCellLine&attributeValue=Y").accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
+	//		mockMvc.perform(get("/subjects?attributeName=isCellLine&attributeValue=Y").accept(HalMediaType.APPLICATION_HAL_JSON_VALUE))
 	//				.andExpect(status().isOk())
 	//				.andExpect(jsonPath("$", hasKey("content")))
 	//				.andExpect(jsonPath("$.content", hasSize(2)))
@@ -212,7 +212,7 @@ public class ReadOnlyControllerTests {
 
 	@Test
 	public void findPaged() throws Exception {
-		mockMvc.perform(get("/subjects?page=1&size=3").accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
+		mockMvc.perform(get("/subjects?page=1&size=3").accept(HalMediaType.APPLICATION_HAL_JSON_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(2)))
@@ -241,7 +241,7 @@ public class ReadOnlyControllerTests {
 
 	@Test
 	public void findSorted() throws Exception {
-		mockMvc.perform(get("/subjects?sort=subjectId+desc").accept(HalMediaType.APPLICATION_JSON_HAL_VALUE))
+		mockMvc.perform(get("/subjects?sort=subjectId+desc").accept(HalMediaType.APPLICATION_HAL_JSON_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(5)))

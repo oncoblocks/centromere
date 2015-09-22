@@ -17,7 +17,7 @@
 package org.oncoblocks.centromere.core.test.web.swagger;
 
 import org.oncoblocks.centromere.core.test.models.EntrezGene;
-import org.oncoblocks.centromere.core.web.controller.HalMediaType;
+import org.oncoblocks.centromere.core.web.util.HalMediaType;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -40,7 +40,7 @@ import java.util.List;
 public class SwaggerController  {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET,
-			produces = { HalMediaType.APPLICATION_JSON_HAL_VALUE, MediaType.APPLICATION_JSON_VALUE })
+			produces = { HalMediaType.APPLICATION_HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE })
 	public HttpEntity findById(@PathVariable Long id){
 		EntrezGene gene = new EntrezGene();
 		gene.setEntrezGeneId(id);
@@ -49,7 +49,7 @@ public class SwaggerController  {
 	}
 
 	@RequestMapping(value = "", method = RequestMethod.GET,
-			produces = { MediaType.APPLICATION_JSON_VALUE, HalMediaType.APPLICATION_JSON_HAL_VALUE })
+			produces = { MediaType.APPLICATION_JSON_VALUE, HalMediaType.APPLICATION_HAL_JSON_VALUE})
 	public HttpEntity find(@RequestParam(value = "symbol", required = false) String geneSymbol){
 		List<EntrezGene> genes = new ArrayList<>();
 		EntrezGene gene = new EntrezGene();
@@ -65,19 +65,19 @@ public class SwaggerController  {
 	}
 
 	@RequestMapping(value = "", method = RequestMethod.POST,
-			produces = { MediaType.APPLICATION_JSON_VALUE, HalMediaType.APPLICATION_JSON_HAL_VALUE })
+			produces = { MediaType.APPLICATION_JSON_VALUE, HalMediaType.APPLICATION_HAL_JSON_VALUE})
 	public HttpEntity post(){
 		return new ResponseEntity(HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "", method = RequestMethod.PUT,
-			produces = { MediaType.APPLICATION_JSON_VALUE, HalMediaType.APPLICATION_JSON_HAL_VALUE })
+			produces = { MediaType.APPLICATION_JSON_VALUE, HalMediaType.APPLICATION_HAL_JSON_VALUE})
 	public HttpEntity put(){
 		return new ResponseEntity(HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "", method = RequestMethod.DELETE,
-			produces = { MediaType.APPLICATION_JSON_VALUE, HalMediaType.APPLICATION_JSON_HAL_VALUE })
+			produces = { MediaType.APPLICATION_JSON_VALUE, HalMediaType.APPLICATION_HAL_JSON_VALUE})
 	public HttpEntity delete(){
 		return new ResponseEntity(HttpStatus.OK);
 	}

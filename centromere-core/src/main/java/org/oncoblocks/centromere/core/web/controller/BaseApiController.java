@@ -21,6 +21,7 @@ import org.oncoblocks.centromere.core.repository.QueryCriteria;
 import org.oncoblocks.centromere.core.repository.RepositoryOperations;
 import org.oncoblocks.centromere.core.web.exceptions.ResourceNotFoundException;
 import org.oncoblocks.centromere.core.web.query.QueryParameters;
+import org.oncoblocks.centromere.core.web.util.HalMediaType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -74,7 +75,8 @@ public abstract class BaseApiController<
 	 * @return {@code T} instance
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET,
-			produces = { HalMediaType.APPLICATION_JSON_HAL_VALUE, MediaType.APPLICATION_JSON_VALUE })
+			produces = { HalMediaType.APPLICATION_HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE, 
+					HalMediaType.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public HttpEntity findById(
 			@PathVariable ID id,
 			@RequestParam(required = false) Set<String> fields,
@@ -103,7 +105,8 @@ public abstract class BaseApiController<
 	 * @return
 	 */
 	@RequestMapping(value = "", method = RequestMethod.GET,
-			produces = { MediaType.APPLICATION_JSON_VALUE, HalMediaType.APPLICATION_JSON_HAL_VALUE })
+			produces = { MediaType.APPLICATION_JSON_VALUE, HalMediaType.APPLICATION_HAL_JSON_VALUE,
+					HalMediaType.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE})
 	public HttpEntity find(
 			@ModelAttribute Q params, 
 			PagedResourcesAssembler<T> pagedResourcesAssembler, 

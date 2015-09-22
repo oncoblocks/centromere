@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.web.controller;
+package org.oncoblocks.centromere.core.web.util;
+
+import org.springframework.http.MediaType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,17 +26,30 @@ import java.util.List;
  */
 public class HalMediaType {
 	
-	public static final String APPLICATION_JSON_HAL_VALUE = "application/hal+json";
-	public static final String APPLICATION_XML_HAL_VALUE = "application/hal+xml";
+	public static final String APPLICATION_HAL_JSON_VALUE = "application/hal+json";
+	public static final MediaType APPLICATION_HAL_JSON = new MediaType("application", "hal+json");
+	public static final String APPLICATION_HAL_XML_VALUE = "application/hal+xml";
+	public static final MediaType APPLICATION_HAL_XML = new MediaType("application", "hal+xml");
 	
 	public static boolean isHalMediaType(String mediaType){
+		return getHalMediaTypeValues().contains(mediaType);
+	}
+	
+	public static boolean isHalMediaType(MediaType mediaType){
 		return getHalMediaTypes().contains(mediaType);
 	}
 	
-	public static List<String> getHalMediaTypes(){
+	public static List<String> getHalMediaTypeValues(){
 		List<String> mediaTypes = new ArrayList<>();
-		mediaTypes.add(APPLICATION_JSON_HAL_VALUE);
-		mediaTypes.add(APPLICATION_XML_HAL_VALUE);
+		mediaTypes.add(APPLICATION_HAL_JSON_VALUE);
+		mediaTypes.add(APPLICATION_HAL_XML_VALUE);
+		return mediaTypes;
+	}
+	
+	public static List<MediaType> getHalMediaTypes(){
+		List<MediaType> mediaTypes = new ArrayList<>();
+		mediaTypes.add(APPLICATION_HAL_JSON);
+		mediaTypes.add(APPLICATION_HAL_XML);
 		return mediaTypes;
 	}
 	

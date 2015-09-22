@@ -16,10 +16,7 @@
 
 package org.oncoblocks.centromere.core.web.config;
 
-import org.oncoblocks.centromere.core.web.util.CorsFilter;
-import org.oncoblocks.centromere.core.web.util.FilteringJackson2HttpMessageConverter;
-import org.oncoblocks.centromere.core.web.util.StringToAttributeConverter;
-import org.oncoblocks.centromere.core.web.util.StringToSourcedAliasConverter;
+import org.oncoblocks.centromere.core.web.util.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
@@ -28,10 +25,13 @@ import org.springframework.hateoas.config.EnableEntityLinks;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.xml.MarshallingHttpMessageConverter;
+import org.springframework.oxm.xstream.XStreamMarshaller;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -52,18 +52,25 @@ public class WebServicesConfig extends WebMvcConfigurerAdapter {
 
 	@Override
 	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+		
 		FilteringJackson2HttpMessageConverter jsonConverter = new FilteringJackson2HttpMessageConverter();
 		jsonConverter.setPrettyPrint(true);
 		converters.add(jsonConverter);
+		
+		List<MediaType> xmlMediaTypes = Arrays.asList(MediaType.APPLICATION_XML,
+				HalMediaType.APPLICATION_HAL_XML);
+		MarshallingHttpMessageConverter xmlConverter = new MarshallingHttpMessageConverter();
+		xmlConverter.setSupportedMediaTypes(xmlMediaTypes);
+		XStreamMarshaller xStreamMarshaller = new XStreamMarshaller();
+		xmlConverter.setMarshaller(xStreamMarshaller);
+		xmlConverter.setUnmarshaller(xStreamMarshaller);
+		converters.add(xmlConverter);
+		
 	}
 
 	@Override
 	public void configureContentNegotiation(ContentNegotiationConfigurer configurer){
 		configurer.defaultContentType(MediaType.APPLICATION_JSON);
-		//configurer.favorPathExtension(true);
-		//configurer.ignoreAcceptHeader(true);
-		//configurer.mediaType("txt", MediaType.TEXT_PLAIN);
-		//configurer.mediaType("csv", new MediaType("text", "csv"));
 	}
 
 	@Bean
