@@ -76,7 +76,8 @@ public abstract class BaseApiController<
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET,
 			produces = { HalMediaType.APPLICATION_HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE, 
-					HalMediaType.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE })
+					HalMediaType.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE, 
+					MediaType.TEXT_PLAIN_VALUE })
 	public HttpEntity findById(
 			@PathVariable ID id,
 			@RequestParam(required = false) Set<String> fields,
@@ -106,7 +107,8 @@ public abstract class BaseApiController<
 	 */
 	@RequestMapping(value = "", method = RequestMethod.GET,
 			produces = { MediaType.APPLICATION_JSON_VALUE, HalMediaType.APPLICATION_HAL_JSON_VALUE,
-					HalMediaType.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE})
+					HalMediaType.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE,
+					MediaType.TEXT_PLAIN_VALUE})
 	public HttpEntity find(
 			@ModelAttribute Q params, 
 			PagedResourcesAssembler<T> pagedResourcesAssembler, 

@@ -31,6 +31,7 @@ import org.springframework.web.servlet.config.annotation.ContentNegotiationConfi
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 
@@ -65,6 +66,11 @@ public class WebServicesConfig extends WebMvcConfigurerAdapter {
 		xmlConverter.setMarshaller(xStreamMarshaller);
 		xmlConverter.setUnmarshaller(xStreamMarshaller);
 		converters.add(xmlConverter);
+		
+		TextMessageConverter textMessageConverter = 
+				new TextMessageConverter(new MediaType("text", "plain", Charset.forName("utf-8")));
+		textMessageConverter.setDelimiter("\t");
+		converters.add(textMessageConverter);
 		
 	}
 

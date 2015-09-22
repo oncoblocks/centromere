@@ -62,7 +62,8 @@ public class CrudApiController<
 	 */
 	@RequestMapping(value = "", method = RequestMethod.POST, 
 			produces = { MediaType.APPLICATION_JSON_VALUE, HalMediaType.APPLICATION_HAL_JSON_VALUE,
-					HalMediaType.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE})
+					HalMediaType.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE,
+					MediaType.TEXT_PLAIN_VALUE})
 	public HttpEntity create(@RequestBody T entity, HttpServletRequest request) {
 		T created = getRepository().insert(entity);
 		if (created == null) throw new RequestFailureException(40003, "There was a problem creating the record.", "", "");
@@ -84,7 +85,8 @@ public class CrudApiController<
 	 * @return updated representation of the submitted entity.
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, 
-			produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+			produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE,
+					MediaType.TEXT_PLAIN_VALUE })
 	public HttpEntity update(@RequestBody T entity, @PathVariable ID id, HttpServletRequest request) {
 		if (!getRepository().exists(id)) throw new ResourceNotFoundException();
 		T updated = getRepository().update(entity);

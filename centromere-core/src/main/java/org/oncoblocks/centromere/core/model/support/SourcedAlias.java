@@ -50,4 +50,7 @@ public class SourcedAlias {
 		this.name = name;
 	}
 
+	@Override public String toString() {
+		return source + ":" + name;
+	}
 }
