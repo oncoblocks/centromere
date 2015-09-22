@@ -16,11 +16,17 @@
 
 package org.oncoblocks.centromere.core.dataimport.reader;
 
+import org.oncoblocks.centromere.core.model.Model;
+
+import java.io.Serializable;
+
 /**
  * @author woemler
  */
-public interface EntityRecordReader<T> {
+public interface EntityRecordReader<T extends Model<ID>, ID extends Serializable> {
 	void open(String filePath);
 	void close();
 	T readRecord();
+	void setDataSetId(ID dataSetId);
+	void setDataFileId(ID dataFileId);
 }

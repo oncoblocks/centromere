@@ -16,6 +16,7 @@
 
 package org.oncoblocks.centromere.core.dataimport.writer;
 
+import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.repository.RepositoryOperations;
 
 import java.io.Serializable;
@@ -23,7 +24,8 @@ import java.io.Serializable;
 /**
  * @author woemler
  */
-public class RepositoryRecordWriter<T, ID extends Serializable> implements EntityRecordWriter<T> {
+public class RepositoryRecordWriter<T extends Model<ID>, ID extends Serializable> 
+		implements EntityRecordWriter<T, ID> {
 	
 	RepositoryOperations<T, ID> repository;
 

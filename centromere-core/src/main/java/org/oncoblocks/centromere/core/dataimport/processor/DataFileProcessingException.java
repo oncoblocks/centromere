@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.writer;
-
-import org.oncoblocks.centromere.core.model.Model;
-
-import java.io.Serializable;
+package org.oncoblocks.centromere.core.dataimport.processor;
 
 /**
+ * Generic exception for data file parsing issues.
+ * 
  * @author woemler
  */
-public interface EntityRecordWriter<T extends Model<ID>, ID extends Serializable> {
-	void open(String filePath);
-	void close();
-	void writeRecord(T entity);
+public class DataFileProcessingException extends RuntimeException {
+	public DataFileProcessingException(String message) {
+		super(message);
+	}
 }

@@ -16,7 +16,7 @@
 
 package org.oncoblocks.centromere.core.dataimport.config;
 
-import org.oncoblocks.centromere.core.dataimport.job.DataFileProcessor;
+import org.oncoblocks.centromere.core.dataimport.processor.GeneralFileProcessor;
 import org.oncoblocks.centromere.core.model.support.DataFileMetadata;
 import org.oncoblocks.centromere.core.model.support.DataSetMetadata;
 import org.springframework.util.Assert;
@@ -26,50 +26,50 @@ import org.springframework.util.Assert;
  */
 public class QueuedFile {
 	
-	private DataFileMetadata dataFileMetadata;
-	private DataSetMetadata dataSetMetadata;
-	private DataFileProcessor dataFileProcessor;
+	private DataFileMetadata dataFile;
+	private DataSetMetadata dataSet;
+	private GeneralFileProcessor processor;
 
 	public QueuedFile() { }
 
-	public QueuedFile(DataFileMetadata dataFileMetadata,
-			DataSetMetadata dataSetMetadata,
-			DataFileProcessor dataFileProcessor) {
-		Assert.notNull(dataFileMetadata);
-		Assert.notNull(dataSetMetadata);
-		Assert.notNull(dataFileProcessor);
-		this.dataFileMetadata = dataFileMetadata;
-		this.dataSetMetadata = dataSetMetadata;
-		this.dataFileProcessor = dataFileProcessor;
+	public QueuedFile(DataFileMetadata dataFile,
+			DataSetMetadata dataSet,
+			GeneralFileProcessor processor) {
+		Assert.notNull(dataFile);
+		Assert.notNull(dataSet);
+		Assert.notNull(processor);
+		this.dataFile = dataFile;
+		this.dataSet = dataSet;
+		this.processor = processor;
 	}
 
-	public DataFileMetadata getDataFileMetadata() {
-		return dataFileMetadata;
+	public DataFileMetadata getDataFile() {
+		return dataFile;
 	}
 
-	public QueuedFile setDataFileMetadata(
-			DataFileMetadata dataFileMetadata) {
-		this.dataFileMetadata = dataFileMetadata;
+	public QueuedFile setDataFile(
+			DataFileMetadata dataFile) {
+		this.dataFile = dataFile;
 		return this;
 	}
 
-	public DataSetMetadata getDataSetMetadata() {
-		return dataSetMetadata;
+	public DataSetMetadata getDataSet() {
+		return dataSet;
 	}
 
-	public QueuedFile setDataSetMetadata(
-			DataSetMetadata dataSetMetadata) {
-		this.dataSetMetadata = dataSetMetadata;
+	public QueuedFile setDataSet(
+			DataSetMetadata dataSet) {
+		this.dataSet = dataSet;
 		return this;
 	}
 
-	public DataFileProcessor getDataFileProcessor() {
-		return dataFileProcessor;
+	public GeneralFileProcessor getProcessor() {
+		return processor;
 	}
 
-	public QueuedFile setDataFileProcessor(
-			DataFileProcessor dataFileProcessor) {
-		this.dataFileProcessor = dataFileProcessor;
+	public QueuedFile setProcessor(
+			GeneralFileProcessor processor) {
+		this.processor = processor;
 		return this;
 	}
 }

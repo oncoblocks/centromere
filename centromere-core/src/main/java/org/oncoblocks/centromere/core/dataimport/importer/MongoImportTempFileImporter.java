@@ -16,7 +16,7 @@
 
 package org.oncoblocks.centromere.core.dataimport.importer;
 
-import org.oncoblocks.centromere.core.dataimport.job.DataImportException;
+import org.oncoblocks.centromere.core.dataimport.config.DataImportException;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

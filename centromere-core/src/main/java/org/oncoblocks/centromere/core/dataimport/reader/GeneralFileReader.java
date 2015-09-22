@@ -16,20 +16,25 @@
 
 package org.oncoblocks.centromere.core.dataimport.reader;
 
+import org.oncoblocks.centromere.core.model.Model;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
- * Reads data files and emits a specific entity type.
- * 
-* @author woemler
-*/
-public abstract class DataFileReader<T> implements EntityRecordReader<T> {
-	
+ * @author woemler
+ */
+public abstract class GeneralFileReader<T extends Model<ID>, ID extends Serializable>
+		implements EntityRecordReader<T, ID> {
+
 	private BufferedReader reader;
-	
-	public DataFileReader(){ }
+	private ID dataSetId;
+	private ID dataFileId;
+	private boolean failOnUnknownSample = true;
+
+	public GeneralFileReader(){ }
 
 	@Override
 	public void open(String inputFilePath){
@@ -52,10 +57,34 @@ public abstract class DataFileReader<T> implements EntityRecordReader<T> {
 			}
 		}
 	}
-	
+
 	public BufferedReader getReader(){
 		return this.reader;
 	}
-	
-	
+
+	public void setDataSetId(ID dataSetId) {
+		this.dataSetId = dataSetId;
+	}
+
+	public void setDataFileId(ID dataFileId) {
+		this.dataFileId = dataFileId;
+	}
+
+	public ID getDataSetId() {
+		return dataSetId;
+	}
+
+	public ID getDataFileId() {
+		return dataFileId;
+	}
+
+	public boolean isFailOnUnknownSample() {
+		return failOnUnknownSample;
+	}
+
+	public GeneralFileReader setFailOnUnknownSample(boolean failOnUnknownSample) {
+		this.failOnUnknownSample = failOnUnknownSample;
+		return this;
+	}
+
 }

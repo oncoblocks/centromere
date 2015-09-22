@@ -16,7 +16,6 @@
 
 package org.oncoblocks.centromere.core.dataimport.config;
 
-import org.oncoblocks.centromere.core.dataimport.job.DataImportJob;
 import org.oncoblocks.centromere.core.repository.support.DataFileRepositoryOperations;
 import org.oncoblocks.centromere.core.repository.support.DataSetRepositoryOperations;
 import org.springframework.beans.factory.annotation.Autowired;

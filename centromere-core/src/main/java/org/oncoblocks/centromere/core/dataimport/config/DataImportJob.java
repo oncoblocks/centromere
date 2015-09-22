@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.job;
+package org.oncoblocks.centromere.core.dataimport.config;
 
-import org.oncoblocks.centromere.core.dataimport.config.DataFileQueue;
-import org.oncoblocks.centromere.core.dataimport.config.DataImportOptions;
-import org.oncoblocks.centromere.core.dataimport.config.QueuedFile;
+import org.oncoblocks.centromere.core.dataimport.processor.GeneralFileProcessor;
 import org.oncoblocks.centromere.core.model.support.DataFileMetadata;
 import org.oncoblocks.centromere.core.model.support.DataSetMetadata;
 import org.oncoblocks.centromere.core.repository.support.DataFileRepositoryOperations;
@@ -58,7 +56,7 @@ public class DataImportJob {
 		while (dataFileQueue.hasNext()) {
 			
 			QueuedFile queuedFile = dataFileQueue.next();
-			DataSetMetadata dataSetMetadata = queuedFile.getDataSetMetadata();
+			DataSetMetadata dataSetMetadata = queuedFile.getDataSet();
 
 			System.out.println("CENTROMERE: Creating new data set record: " + dataSetMetadata.getName());
 			if (dataSetMetadata.getId() == null || !dataSetRepository.exists(dataSetMetadata.getId())) {
@@ -67,7 +65,7 @@ public class DataImportJob {
 				System.out.println("CENTROMERE: Data set already exists.");
 			}
 
-			DataFileMetadata dataFileMetadata = queuedFile.getDataFileMetadata();
+			DataFileMetadata dataFileMetadata = queuedFile.getDataFile();
 			dataFileMetadata.setDataSetId(dataSetMetadata.getId());
 
 			System.out.println("CENTROMERE: Creating new data file record: " + dataFileMetadata.getFilePath());
@@ -79,7 +77,7 @@ public class DataImportJob {
 			} else {
 				
 				dataFileMetadata = (DataFileMetadata) dataFileRepository.insert(dataFileMetadata);
-				DataFileProcessor processor = queuedFile.getDataFileProcessor();
+				GeneralFileProcessor processor = queuedFile.getProcessor();
 				
 				File inputFile = new File(dataFileMetadata.getFilePath());
 				String tempFileName = inputFile.getName() + ".tmp";
@@ -88,7 +86,7 @@ public class DataImportJob {
 				System.out.println("CENTROMERE: Processing file " + dataFileMetadata.getFilePath());
 				Date fileStart = new Date();
 				long count = processor.run(dataFileMetadata.getFilePath(), tempFile.getAbsolutePath(), 
-						dataFileMetadata.getId()); 
+						dataSetMetadata.getId(), dataFileMetadata.getId()); 
 				Date fileEnd = new Date();
 				System.out.println("CENTROMERE: Done.  Created " + count + " records.  Elapsed time: "
 						+ (fileEnd.getTime() - fileStart.getTime()) + " ms");

@@ -88,7 +88,7 @@ public class DataImportTests {
 	@Test
 	public void tempGeneFileTest() throws Exception{
 		GeneInfoReader geneInfoReader = new GeneInfoReader();
-		MongoImportTempFileWriter<EntrezGene> geneWriter = new MongoImportTempFileWriter<>(mongoTemplate);
+		MongoImportTempFileWriter<EntrezGene, Long> geneWriter = new MongoImportTempFileWriter<>(mongoTemplate);
 		try {
 			geneWriter.open(tempFile.getAbsolutePath());
 			geneInfoReader.open(geneInfoPath);
@@ -162,7 +162,7 @@ public class DataImportTests {
 		repository.deleteAll();
 		
 		GeneInfoReader geneInfoReader = new GeneInfoReader();
-		MongoImportTempFileWriter<EntrezGene> geneWriter = new MongoImportTempFileWriter<>(mongoTemplate);
+		MongoImportTempFileWriter<EntrezGene, Long> geneWriter = new MongoImportTempFileWriter<>(mongoTemplate);
 		try {
 			geneWriter.open(tempFile.getAbsolutePath());
 			geneInfoReader.open(geneInfoPath);

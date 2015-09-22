@@ -16,17 +16,20 @@
 
 package org.oncoblocks.centromere.core.test.dataimport;
 
-import org.oncoblocks.centromere.core.dataimport.job.DataFileProcessingException;
-import org.oncoblocks.centromere.core.dataimport.reader.DataFileReader;
+import org.oncoblocks.centromere.core.dataimport.processor.DataFileProcessingException;
+import org.oncoblocks.centromere.core.dataimport.reader.GeneralFileReader;
 import org.oncoblocks.centromere.core.test.models.EntrezGene;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 /**
  * @author woemler
  */
-public class GeneInfoReader extends DataFileReader<EntrezGene> {
+public class GeneInfoReader extends GeneralFileReader<EntrezGene, Long> {
 
 	public GeneInfoReader() { }
 

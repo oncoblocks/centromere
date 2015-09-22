@@ -14,29 +14,33 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.job;
+package org.oncoblocks.centromere.core.dataimport.processor;
 
 import org.oncoblocks.centromere.core.dataimport.importer.EntityRecordImporter;
 import org.oncoblocks.centromere.core.dataimport.reader.EntityRecordReader;
 import org.oncoblocks.centromere.core.dataimport.validator.EntityValidator;
 import org.oncoblocks.centromere.core.dataimport.writer.EntityRecordWriter;
+import org.oncoblocks.centromere.core.model.Model;
 import org.springframework.util.Assert;
+
+import java.io.Serializable;
 
 /**
  * @author woemler
  */
-public class DataFileProcessor<T> {
+public class GeneralFileProcessor<T extends Model<ID>, ID extends Serializable> 
+		implements EntityRecordProcessor<T, ID> {
 
-	private EntityRecordReader<T> reader;
+	private EntityRecordReader<T, ID> reader;
 	private EntityValidator<T> validator;
-	private EntityRecordWriter<T> writer;
+	private EntityRecordWriter<T, ID> writer;
 	private EntityRecordImporter importer;
 	
-	public DataFileProcessor(){ }
+	public GeneralFileProcessor(){ }
 
-	public DataFileProcessor(
-			EntityRecordReader<T> reader,
-			EntityRecordWriter<T> writer,
+	public GeneralFileProcessor(
+			EntityRecordReader<T, ID> reader,
+			EntityRecordWriter<T, ID> writer,
 			EntityValidator<T> validator,
 			EntityRecordImporter importer) {
 		Assert.notNull(reader);
@@ -47,7 +51,10 @@ public class DataFileProcessor<T> {
 		this.importer = importer;
 	}
 
-	public long run(String inputFilePath, String tempFilePath, Object dataFileId){
+	@Override
+	public long run(String inputFilePath, String tempFilePath, ID dataSetId, ID dataFileId){
+		reader.setDataFileId(dataFileId);
+		reader.setDataSetId(dataSetId);
 		long counter = 0;
 		try {
 			reader.open(inputFilePath);
@@ -78,27 +85,39 @@ public class DataFileProcessor<T> {
 		return counter;
 	}
 
-	public DataFileProcessor setReader(
-			EntityRecordReader<T> reader) {
-		this.reader = reader;
-		return this;
+	public EntityRecordReader<T, ID> getReader() {
+		return reader;
 	}
 
-	public DataFileProcessor setValidator(
+	public void setReader(
+			EntityRecordReader<T, ID> reader) {
+		this.reader = reader;
+	}
+
+	public EntityValidator<T> getValidator() {
+		return validator;
+	}
+
+	public void setValidator(
 			EntityValidator<T> validator) {
 		this.validator = validator;
-		return this;
 	}
 
-	public DataFileProcessor setWriter(
-			EntityRecordWriter<T> writer) {
+	public EntityRecordWriter<T, ID> getWriter() {
+		return writer;
+	}
+
+	public void setWriter(
+			EntityRecordWriter<T, ID> writer) {
 		this.writer = writer;
-		return this;
 	}
 
-	public DataFileProcessor setImporter(
+	public EntityRecordImporter getImporter() {
+		return importer;
+	}
+
+	public void setImporter(
 			EntityRecordImporter importer) {
 		this.importer = importer;
-		return this;
 	}
 }

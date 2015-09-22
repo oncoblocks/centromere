@@ -19,7 +19,7 @@ package org.oncoblocks.centromere.core.test.config;
 import org.oncoblocks.centromere.core.dataimport.config.DataFileQueue;
 import org.oncoblocks.centromere.core.dataimport.config.DataImportJobConfigurer;
 import org.oncoblocks.centromere.core.dataimport.config.QueuedFile;
-import org.oncoblocks.centromere.core.dataimport.job.DataFileProcessor;
+import org.oncoblocks.centromere.core.dataimport.processor.GeneralFileProcessor;
 import org.oncoblocks.centromere.core.dataimport.writer.RepositoryRecordWriter;
 import org.oncoblocks.centromere.core.repository.support.DataFileRepositoryOperations;
 import org.oncoblocks.centromere.core.repository.support.DataSetRepositoryOperations;
@@ -57,7 +57,7 @@ public class TestGeneInfoImportJobConfig extends DataImportJobConfigurer {
 	@Override 
 	public DataFileQueue configureDataFileQueue(DataFileQueue dataFileQueue) {
 		
-		DataFileProcessor<EntrezGene> geneInfoProcessor = new DataFileProcessor<>(new GeneInfoReader(), 
+		GeneralFileProcessor<EntrezGene, Long> geneInfoProcessor = new GeneralFileProcessor<>(new GeneInfoReader(), 
 				new RepositoryRecordWriter<>(geneRepository), new EntrezGeneValidator(), null);
 		DataSet geneInfoDataSet = new DataSet(null, "NCBI", "Entrez gene metadata", null);
 		DataFile geneInfoDataFile = new DataFile(null, null, ClassLoader.getSystemResource(env.getRequiredProperty("datafiles.geneinfo")).getPath(),

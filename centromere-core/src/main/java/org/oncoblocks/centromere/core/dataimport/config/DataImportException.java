@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.job;
+package org.oncoblocks.centromere.core.dataimport.config;
 
 /**
- * Generic exception for data file parsing issues.
- * 
  * @author woemler
  */
-public class DataFileProcessingException extends RuntimeException {
-	public DataFileProcessingException(String message) {
+public class DataImportException extends RuntimeException {
+	public DataImportException(String message) {
 		super(message);
 	}
 }

@@ -16,15 +16,19 @@
 
 package org.oncoblocks.centromere.core.dataimport.writer;
 
+import org.oncoblocks.centromere.core.model.Model;
+
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * Writes specific entity type records to temp files.
  * 
 * @author woemler
 */
-public abstract class TempFileWriter<T> implements EntityRecordWriter<T> {
+public abstract class TempFileWriter<T extends Model<ID>, ID extends Serializable> 
+		implements EntityRecordWriter<T, ID> {
 	
 	private FileWriter writer;
 

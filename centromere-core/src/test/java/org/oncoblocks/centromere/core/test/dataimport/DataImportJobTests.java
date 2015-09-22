@@ -22,7 +22,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
-import org.oncoblocks.centromere.core.dataimport.job.DataImportJob;
+import org.oncoblocks.centromere.core.dataimport.config.DataImportJob;
 import org.oncoblocks.centromere.core.test.config.TestGeneInfoImportJobConfig;
 import org.oncoblocks.centromere.core.test.config.TestMongoConfig;
 import org.oncoblocks.centromere.core.test.repository.mongo.DataFileRepository;

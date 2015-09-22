@@ -17,17 +17,20 @@
 package org.oncoblocks.centromere.core.dataimport.writer;
 
 import org.oncoblocks.centromere.core.dataimport.support.MongoDbUtils;
+import org.oncoblocks.centromere.core.model.Model;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * Writes JSON-formatted entity records to a temp file to be imported via MongoImport.
  * 
  * @author woemler
  */
-public class MongoImportTempFileWriter<T> extends TempFileWriter<T> {
+public class MongoImportTempFileWriter<T extends Model<ID>, ID extends Serializable> 
+		extends TempFileWriter<T, ID> {
 
 	private MongoDbUtils mongoUtils;
 	

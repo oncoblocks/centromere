@@ -206,6 +206,20 @@ public class GenericMongoRepository<T extends Model<ID>, ID extends Serializable
 	}
 
 	/**
+	 * Drops the entity model collection.
+	 */
+	public void dropCollection(){
+		mongoOperations.dropCollection(model);
+	}
+
+	/**
+	 * Creates a collections for the entity model.
+	 */
+	public void createCollection(){
+		mongoOperations.createCollection(model);
+	}
+
+	/**
 	 * Converts a collection of {@link org.oncoblocks.centromere.core.repository.QueryCriteria}
 	 *  objects into Spring Data MongoDB {@link org.springframework.data.mongodb.core.query.Criteria}
 	 *  objects, used to build a {@link org.springframework.data.mongodb.core.query.Query}.

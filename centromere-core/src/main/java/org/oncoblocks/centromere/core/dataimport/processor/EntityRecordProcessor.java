@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.job;
+package org.oncoblocks.centromere.core.dataimport.processor;
+
+import org.oncoblocks.centromere.core.model.Model;
+
+import java.io.Serializable;
 
 /**
  * @author woemler
  */
-public class DataImportException extends RuntimeException {
-	public DataImportException(String message) {
-		super(message);
-	}
+public interface EntityRecordProcessor<T extends Model<ID>, ID extends Serializable> {
+	long run(String inputFilePath, String tempFilePath, ID dataSetId, ID dataFileId);
 }
