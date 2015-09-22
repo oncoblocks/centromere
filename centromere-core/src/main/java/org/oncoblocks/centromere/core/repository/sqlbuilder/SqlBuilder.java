@@ -17,6 +17,8 @@
 package org.oncoblocks.centromere.core.repository.sqlbuilder;
 
 import org.oncoblocks.centromere.core.repository.Evaluation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
@@ -80,6 +82,8 @@ public class SqlBuilder {
 	private List<String> idColumns;
 	private LinkedHashMap<String, SortOrder> sorts;
 	private List<Object> queryParameterValues;
+
+	final static Logger logger = LoggerFactory.getLogger(SqlBuilder.class);
 	
 	public SqlBuilder(ComplexTableDescription tableDescription){
 		
@@ -373,7 +377,7 @@ public class SqlBuilder {
 			default:
 				sql = getSelectClause() + getFromClause() + getWhereClause() + getGroupByClause() + getOrderByClause() + getLimitClause();
 		}
-		System.out.println(sql);
+		logger.debug(sql);
 		return sql;
 	}
 	

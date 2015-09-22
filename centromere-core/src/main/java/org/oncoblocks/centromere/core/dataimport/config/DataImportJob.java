@@ -21,6 +21,8 @@ import org.oncoblocks.centromere.core.model.support.DataFileMetadata;
 import org.oncoblocks.centromere.core.model.support.DataSetMetadata;
 import org.oncoblocks.centromere.core.repository.support.DataFileRepositoryOperations;
 import org.oncoblocks.centromere.core.repository.support.DataSetRepositoryOperations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -36,6 +38,8 @@ public class DataImportJob {
 	private DataFileQueue dataFileQueue;
 	private DataFileRepositoryOperations dataFileRepository;
 	private DataSetRepositoryOperations dataSetRepository;
+	
+	final static Logger logger = LoggerFactory.getLogger(DataImportJob.class);
 
 	public DataImportJob(DataImportOptions options,
 			DataFileQueue dataFileQueue,
@@ -51,24 +55,24 @@ public class DataImportJob {
 
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date startDate = new Date();
-		System.out.println("CENTROMERE: Beginning Data Import @ " + dateFormat.format(new Date()));
+		logger.debug("CENTROMERE: Beginning Data Import @ " + dateFormat.format(new Date()));
 		
 		while (dataFileQueue.hasNext()) {
 			
 			QueuedFile queuedFile = dataFileQueue.next();
 			DataSetMetadata dataSetMetadata = queuedFile.getDataSet();
 
-			System.out.println("CENTROMERE: Creating new data set record: " + dataSetMetadata.getName());
+			logger.debug("CENTROMERE: Creating new data set record: " + dataSetMetadata.getName());
 			if (dataSetMetadata.getId() == null || !dataSetRepository.exists(dataSetMetadata.getId())) {
 				dataSetMetadata = (DataSetMetadata) dataSetRepository.insert(dataSetMetadata);
 			} else {
-				System.out.println("CENTROMERE: Data set already exists.");
+				logger.debug("CENTROMERE: Data set already exists.");
 			}
 
 			DataFileMetadata dataFileMetadata = queuedFile.getDataFile();
 			dataFileMetadata.setDataSetId(dataSetMetadata.getId());
 
-			System.out.println("CENTROMERE: Creating new data file record: " + dataFileMetadata.getFilePath());
+			logger.debug("CENTROMERE: Creating new data file record: " + dataFileMetadata.getFilePath());
 			if ((dataFileMetadata.getId() != null && dataFileRepository.exists(dataFileMetadata.getId()))
 					|| dataFileRepository.getByFilePath(dataFileMetadata.getFilePath()) != null){
 				if (options.isFailOnExistingFile()){
@@ -83,12 +87,12 @@ public class DataImportJob {
 				String tempFileName = inputFile.getName() + ".tmp";
 				File tempFile = new File(options.getTempFileDirectory(), tempFileName);
 				
-				System.out.println("CENTROMERE: Processing file " + dataFileMetadata.getFilePath());
+				logger.debug("CENTROMERE: Processing file " + dataFileMetadata.getFilePath());
 				Date fileStart = new Date();
 				long count = processor.run(dataFileMetadata.getFilePath(), tempFile.getAbsolutePath(), 
 						dataSetMetadata.getId(), dataFileMetadata.getId()); 
 				Date fileEnd = new Date();
-				System.out.println("CENTROMERE: Done.  Created " + count + " records.  Elapsed time: "
+				logger.debug("CENTROMERE: Done.  Created " + count + " records.  Elapsed time: "
 						+ (fileEnd.getTime() - fileStart.getTime()) + " ms");
 				
 			}
@@ -96,7 +100,7 @@ public class DataImportJob {
 		}
 
 		Date endDate = new Date();
-		System.out.println("CENTROMERE: Data Import Complete @ " + dateFormat.format(new Date())
+		logger.debug("CENTROMERE: Data Import Complete @ " + dateFormat.format(new Date())
 				+ "  Elapsed time:  " + (endDate.getTime() - startDate.getTime()) + " ms");
 
 	}

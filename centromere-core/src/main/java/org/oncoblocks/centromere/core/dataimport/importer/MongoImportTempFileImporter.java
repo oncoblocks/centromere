@@ -17,6 +17,8 @@
 package org.oncoblocks.centromere.core.dataimport.importer;
 
 import org.oncoblocks.centromere.core.dataimport.config.DataImportException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -31,6 +33,8 @@ public class MongoImportTempFileImporter implements EntityRecordImporter {
 	private boolean stopOnError = true;
 	private boolean upsertRecords = false;
 	private boolean dropCollection = false;
+
+	final static Logger logger = LoggerFactory.getLogger(MongoImportTempFileImporter.class);
 
 	public MongoImportTempFileImporter(MongoImportCredentials credentials, String collection) {
 		this.credentials = credentials;
@@ -62,7 +66,7 @@ public class MongoImportTempFileImporter implements EntityRecordImporter {
 		String[] commands = new String[]{ "/bin/bash", "-c", sb.toString() }; // TODO: Support for Windows and other shells
 		try {
 			
-			System.out.println(String.format("CENTROMERE: Importing file to MongoDB: %s", filePath));
+			logger.debug(String.format("CENTROMERE: Importing file to MongoDB: %s", filePath));
 			process = Runtime.getRuntime().exec(commands);
 			
 			
@@ -70,7 +74,7 @@ public class MongoImportTempFileImporter implements EntityRecordImporter {
 			StringBuilder outputBuilder = new StringBuilder();
 			String line = stdIn.readLine();
 			while (line != null){
-				System.out.println(line);
+				logger.debug(line);
 				outputBuilder.append(line);
 				line = stdIn.readLine();
 			}
@@ -79,7 +83,7 @@ public class MongoImportTempFileImporter implements EntityRecordImporter {
 			StringBuilder errorBuilder = new StringBuilder();
 			line = stdErr.readLine();
 			while (line != null){
-				System.out.println(line);
+				logger.debug(line);
 				errorBuilder.append(line);
 				line = stdErr.readLine();
 			}
@@ -96,7 +100,7 @@ public class MongoImportTempFileImporter implements EntityRecordImporter {
 			e.printStackTrace();
 			throw new TempFileImportException(String.format("Unable to import temp file: %s", filePath));
 		}
-		System.out.println(String.format("CENTROMERE: MongoImport complete: %s", filePath));
+		logger.debug(String.format("CENTROMERE: MongoImport complete: %s", filePath));
 	}
 	
 	public MongoImportTempFileImporter setStopOnError(boolean stopOnError) {
