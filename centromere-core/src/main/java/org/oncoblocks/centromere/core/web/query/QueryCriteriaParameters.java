@@ -23,9 +23,16 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Implementation of {@link QueryParameters} that assumes that subclass implementations will manually
+ *   create {@link QueryCriteria} based on setter methods and will manually remap parameters based
+ *   upon a predefined mapping set.  This implementation can be useful by taking advantage of Spring's 
+ *   default controller model attribute parameter mapping, whereby a web service query parameter can 
+ *   be defined as one type using a setter method, and the user input can be directly mapped to a 
+ *   {@link QueryCriteria} instance, allowing for greater flexibility in query parameter definitions.
+ * 
  * @author woemler
  */
-public abstract class QueryCriteriaParams implements QueryParams {
+public abstract class QueryCriteriaParameters implements QueryParameters {
 
 	private List<QueryCriteria> queryCriterias = new ArrayList<>();
 	private Map<String,String> parameterMap;

@@ -21,6 +21,9 @@ import org.springframework.context.annotation.Import;
 import java.lang.annotation.*;
 
 /**
+ * Enables default configuration of many of the required web application components, including the
+ *   dispatcher servlet, web request handling, CORS support, Swagger, and property mapping.
+ * 
  * @author woemler
  */
 @Retention(RetentionPolicy.RUNTIME)

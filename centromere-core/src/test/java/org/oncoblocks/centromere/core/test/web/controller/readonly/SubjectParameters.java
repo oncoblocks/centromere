@@ -25,7 +25,7 @@ import org.oncoblocks.centromere.core.web.query.*;
 /**
  * @author woemler
  */
-public class SubjectParameters extends QueryParameters
+public class SubjectParameters extends AnnotatedQueryParameters
 		implements SourcedAliases, Attributes {
 
 	@QueryParameter("subjects.subject_id") private Long subjectId;

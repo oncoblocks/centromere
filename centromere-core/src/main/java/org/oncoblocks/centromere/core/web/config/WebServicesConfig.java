@@ -67,10 +67,10 @@ public class WebServicesConfig extends WebMvcConfigurerAdapter {
 		xmlConverter.setUnmarshaller(xStreamMarshaller);
 		converters.add(xmlConverter);
 		
-		TextMessageConverter textMessageConverter = 
-				new TextMessageConverter(new MediaType("text", "plain", Charset.forName("utf-8")));
-		textMessageConverter.setDelimiter("\t");
-		converters.add(textMessageConverter);
+		FilteringTextMessageConverter filteringTextMessageConverter = 
+				new FilteringTextMessageConverter(new MediaType("text", "plain", Charset.forName("utf-8")));
+		filteringTextMessageConverter.setDelimiter("\t");
+		converters.add(filteringTextMessageConverter);
 		
 	}
 

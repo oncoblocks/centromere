@@ -24,6 +24,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Annotation used for modifying {@link org.oncoblocks.centromere.core.repository.QueryCriteria} creation
+ *   in classes that extend {@link QueryParameters}.  Allows remapping of query parameter names with
+ *   the {@code value} attribute, and alternate {@link Evaluation} values, which define repository
+ *   query operators.
+ * 
  * @author woemler
  */
 

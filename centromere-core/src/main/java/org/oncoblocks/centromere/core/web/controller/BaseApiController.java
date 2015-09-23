@@ -23,8 +23,10 @@ import org.oncoblocks.centromere.core.web.exceptions.ResourceNotFoundException;
 import org.oncoblocks.centromere.core.web.query.QueryParameters;
 import org.oncoblocks.centromere.core.web.util.HalMediaType;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedResources;
@@ -38,15 +40,17 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 /**
  * Base implementation of web API controller operations for GET, HEAD, and OPTIONS requests.  
- *   Supports dynamic queries of repository resources using {@link org.oncoblocks.centromere.core.web.query.QueryParameters},
- *   field filtering, pagination, and HAL support.
+ *   Supports dynamic queries of repository resources using {@link QueryParameters} implementations,
+ *   field filtering, pagination, and hypermedia support.
  * 
  * @author woemler
  */
@@ -98,7 +102,8 @@ public abstract class BaseApiController<
 
 	/**
 	 * Queries the repository using inputted query string paramters, defined within a custom 
-	 *   {@link QueryParameters}.  Supports pagination, sorting, field filtering, and field exclusion.
+	 *   {@link QueryParameters} implementation.  Supports hypermedia, pagination, sorting, field 
+	 *   filtering, and field exclusion.
 	 * 
 	 * @param params
 	 * @param pagedResourcesAssembler
@@ -110,30 +115,34 @@ public abstract class BaseApiController<
 					HalMediaType.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE,
 					MediaType.TEXT_PLAIN_VALUE})
 	public HttpEntity find(
-			@ModelAttribute Q params, 
+			@ModelAttribute Q params,
+			@RequestParam(required = false) Set<String> fields,
+			@RequestParam(required = false) Set<String> exclude,
+			@PageableDefault(size = 1000) Pageable pageable,
 			PagedResourcesAssembler<T> pagedResourcesAssembler, 
 			HttpServletRequest request)
 	{
-		ResponseEnvelope envelope = null;
-		List<QueryCriteria> criterias = QueryParameters.toQueryCriteria(params);
+		ResponseEnvelope envelope;
+		pageable = this.remapPageable(pageable, params);
+		Map<String,String[]> parameterMap = request.getParameterMap();
+		List<QueryCriteria> criterias = params.getQueryCriteria();
 		String mediaType = request.getHeader("Accept");
 		Link selfLink = new Link(linkTo(this.getClass()).slash("").toString() +
 				(request.getQueryString() != null ? "?" + request.getQueryString() : ""), "self");
-		if (params.isPaged()){
-			Pageable pageable = QueryParameters.remapPageable(params);
+		if (parameterMap.containsKey("page") || parameterMap.containsKey("size")){
 			Page<T> page = repository.find(criterias, pageable);
 			if (HalMediaType.isHalMediaType(mediaType)){
 				PagedResources<FilterableResource> pagedResources
 						= pagedResourcesAssembler.toResource(page, assembler, selfLink);
-				envelope = new ResponseEnvelope(pagedResources, params.getIncludedFields(), params.getExcludedFields());
+				envelope = new ResponseEnvelope(pagedResources, fields, exclude);
 			} else {
-				envelope = new ResponseEnvelope(page, params.getIncludedFields(), params.getExcludedFields());
+				envelope = new ResponseEnvelope(page, fields, exclude);
 			}
 		} else {
-			Sort sort = params.getSort();
+			Sort sort = pageable.getSort();
 			List<T> entities = null;
 			if (sort != null){
-				entities = (List<T>) repository.find(criterias, QueryParameters.remapSort(params));
+				entities = (List<T>) repository.find(criterias, sort);
 			} else {
 				entities = (List<T>) repository.find(criterias);
 			}
@@ -141,9 +150,9 @@ public abstract class BaseApiController<
 				List<FilterableResource> resourceList = assembler.toResources(entities);
 				Resources<FilterableResource> resources = new Resources<>(resourceList);
 				resources.add(selfLink);
-				envelope = new ResponseEnvelope(resources, params.getIncludedFields(), params.getExcludedFields());
+				envelope = new ResponseEnvelope(resources, fields, exclude);
 			} else {
-				envelope = new ResponseEnvelope(entities, params.getIncludedFields(), params.getExcludedFields());
+				envelope = new ResponseEnvelope(entities, fields, exclude);
 			}
 		}
 		return new ResponseEntity<>(envelope, HttpStatus.OK);
@@ -179,6 +188,26 @@ public abstract class BaseApiController<
 //		optionsResponse.setEndpoints(descriptors);
 //		return optionsResponse;
 //	}
+
+	/**
+	 * Uses {@link QueryParameters#remapParameterName(String)} to remap any request attribute names in a 
+	 *   {@link Pageable} so that they match repository attribute names.
+	 *
+	 * @param pageable {@link Pageable}
+	 * @param params {@link QueryParameters}
+	 * @return
+	 */
+	private Pageable remapPageable(Pageable pageable, QueryParameters params){
+		Sort sort = null;
+		if (pageable.getSort() != null){
+			List<Sort.Order> orders = new ArrayList<>();
+			for (Sort.Order order: pageable.getSort()){
+				orders.add(new Sort.Order(order.getDirection(), params.remapParameterName(order.getProperty())));
+			}
+			sort = new Sort(orders);
+		}
+		return new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), sort);
+	}
 	
 	public RepositoryOperations<T, ID> getRepository() {
 		return repository;

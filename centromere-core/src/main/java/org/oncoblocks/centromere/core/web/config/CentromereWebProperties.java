@@ -17,6 +17,8 @@
 package org.oncoblocks.centromere.core.web.config;
 
 /**
+ * Bean for managing basic application parameters.
+ * 
  * @author woemler
  */
 public class CentromereWebProperties {

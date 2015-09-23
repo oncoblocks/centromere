@@ -16,216 +16,34 @@
 
 package org.oncoblocks.centromere.core.web.query;
 
-import org.oncoblocks.centromere.core.repository.Evaluation;
 import org.oncoblocks.centromere.core.repository.QueryCriteria;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
-import java.lang.reflect.Field;
-import java.util.*;
+import java.util.List;
 
 /**
- * Base class for capturing web service query string parameters.  Allows for simple and strict query
- *   parameter definitions, and simpler API documentation via Swagger inspection.
+ * Interface for {@link org.springframework.web.bind.annotation.ModelAttribute} objects to be used
+ *   to define web service query parameters.  Query parameters can be mapped in any way, so long as
+ *   they are convertable to {@link QueryCriteria} for repository queries.  The {@code QueryParams}
+ *   object should also be able to remap any query string parameters whose names differ from their
+ *   repository representation.
  * 
  * @author woemler
  */
-public class QueryParameters {
+public interface QueryParameters {
+
+	/**
+	 * Returns a list of {@link QueryCriteria} that are created based on request parameters. 
+	 * 
+	 * @return {@link QueryCriteria}
+	 */
+	List<QueryCriteria> getQueryCriteria();
 	
-	private Integer page;
-	private Integer size;
-	private Set<String> sort;
-	private Set<String> fields;
-	private Set<String> exclude;
-
-	public Integer getPageNumber() {
-		return page;
-	}
-
-	public void setPage(Integer page) {
-		this.page = page;
-	}
-
-	public Integer getPageSize() {
-		return size;
-	}
-
 	/**
-	 * Returns {@link Sort} object if the request includes sorting parameters.
+	 * Remaps an input parameter name so that it matches the corresponding repository attribute name.
+	 *   Useful for converting input parameters from page or sort requests.
 	 * 
+	 * @param name
 	 * @return
 	 */
-	public Sort getSort() {
-		Sort pageSort = null;
-		List<Sort.Order> orders = new ArrayList<>();
-		if (sort != null && !sort.isEmpty()){
-			for (String s: sort){
-				String[] bits = s.split("\\+");
-				orders.add(new Sort.Order(
-					bits.length > 1 ? Sort.Direction.fromString(bits[1]) : Sort.Direction.ASC,
-					bits[0]
-				));
-			}
-			pageSort = new Sort(orders);
-		}
-		return pageSort;
-	}
-
-	public void setSort(Set<String> sort) {
-		this.sort = sort;
-	}
-
-	public void setSize(Integer size) {
-		this.size = size;
-	}
-
-	public Set<String> getIncludedFields() {
-		return fields;
-	}
-
-	public void setFields(Set<String> fields) {
-		this.fields = fields;
-	}
-
-	public Set<String> getExcludedFields() {
-		return exclude;
-	}
-
-	public void setExclude(Set<String> exclude) {
-		this.exclude = exclude;
-	}
-
-	/**
-	 * Creates a {@link Pageable} implementation instance from the request parameters.
-	 * 
-	 * @return
-	 */
-	public Pageable getPageRequest(){
-		PageRequest pageRequest = null;
-		if (page != null || size != null){
-			pageRequest = new PageRequest(
-					page != null ? page : 0,
-					size != null ? size : 1000,
-					this.getSort()
-			);
-		}
-		return pageRequest;
-	}
-
-	/**
-	 * Returns true if result pagination is requested.
-	 * 
-	 * @return
-	 */
-	public boolean isPaged(){
-		return page != null || size != null;
-	}
-
-	/**
-	 * Returns true if result sorting is requested.
-	 * 
-	 * @return
-	 */
-	public boolean isSorted(){
-		return sort != null && !sort.isEmpty();
-	}
-
-	/**
-	 * Returns a list of parameter names to be ignored by {@link QueryParameters#toQueryCriteria(QueryParameters)}
-	 * 
-	 * @return
-	 */
-	public List<String> getIgnoredParameters(){
-		return Arrays.asList("page", "size", "exclude", "fields");
-	}
-
-	/**
-	 * Converts a {@link QueryParameters} object into
-	 *   a list of {@link org.oncoblocks.centromere.core.repository.QueryCriteria}, to be passed to 
-	 *   the repository layer as query parameters.
-	 *
-	 * @param queryParameters mapped query object from the servlet request.
-	 * @return
-	 */
-	public static List<QueryCriteria> toQueryCriteria(QueryParameters queryParameters){
-		
-		List<QueryCriteria> criterias = new ArrayList<>();
-		for (Field field: queryParameters.getClass().getDeclaredFields()){
-			try {
-				field.setAccessible(true);
-				if (field.get(queryParameters) != null 
-						&& !queryParameters.getIgnoredParameters().contains(field.getName())){
-					String name = field.getName();
-					Evaluation evaluation = Evaluation.EQUALS;
-					if (field.isAnnotationPresent(QueryParameter.class)){
-						QueryParameter queryParameter = field.getAnnotation(QueryParameter.class);
-						if (!queryParameter.value().equals("")) name = queryParameter.value();
-						evaluation = queryParameter.evalutation();
-					}
-					criterias.add(new QueryCriteria(name, field.get(queryParameters), evaluation));
-				}
-			} catch (IllegalAccessException e){
-				e.printStackTrace();
-			}
-		}
-		return criterias;
-	}
-
-	/**
-	 * Remaps sort field names in {@link org.springframework.data.domain.Pageable} objects.
-	 * 
-	 * @param queryParameters
-	 * @return
-	 */
-	public static Pageable remapPageable(QueryParameters queryParameters){
-		Pageable pageable = queryParameters.getPageRequest();
-		if (pageable.getSort() != null) {
-			Map<String, String> mappings = new HashMap<>();
-			for (Field field : queryParameters.getClass().getDeclaredFields()) {
-				if (field.isAnnotationPresent(QueryParameter.class)) {
-					QueryParameter queryParameter = field.getAnnotation(QueryParameter.class);
-					if (!queryParameter.value().equals(""))
-						mappings.put(field.getName(), queryParameter.value());
-				}
-			}
-			List<Sort.Order> orders = new ArrayList<>();
-			for (Sort.Order order : pageable.getSort()) {
-				if (mappings.containsKey(order.getProperty())) {
-					order = new Sort.Order(order.getDirection(), mappings.get(order.getProperty()));
-				}
-				orders.add(order);
-			}
-			pageable =
-					new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), new Sort(orders));
-		}
-		return pageable;
-	}
-
-	/**
-	 * Remaps the field names in {@link Sort} objects
-	 * 
-	 * @param queryParameters
-	 * @return
-	 */
-	public static Sort remapSort(QueryParameters queryParameters){
-		Sort sort = queryParameters.getSort();
-		Map<String, String> mappings = new HashMap<>();
-		for (Field field : queryParameters.getClass().getDeclaredFields()) {
-			if (field.isAnnotationPresent(QueryParameter.class)) {
-				QueryParameter queryParameter = field.getAnnotation(QueryParameter.class);
-				if (!queryParameter.value().equals(""))
-					mappings.put(field.getName(), queryParameter.value());
-			}
-		}
-		List<Sort.Order> orders = new ArrayList<>();
-		for (Sort.Order order : sort) {
-			if (mappings.containsKey(order.getProperty())) {
-				order = new Sort.Order(order.getDirection(), mappings.get(order.getProperty()));
-			}
-			orders.add(order);
-		}
-		return new Sort(orders);
-	}
-	
+	String remapParameterName(String name);
 }

@@ -16,7 +16,7 @@
 
 package org.oncoblocks.centromere.core.web.controller;
 
-import org.oncoblocks.centromere.core.web.query.QueryParameters;
+import org.oncoblocks.centromere.core.web.query.AnnotatedQueryParameters;
 import org.oncoblocks.centromere.core.web.util.HalMediaType;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.hateoas.PagedResources;
@@ -38,7 +38,7 @@ public class OptionsDefaults {
 	}
 	
 	public static List<OptionsEndpointDescriptor> getDefaultGetDescriptors(
-			Class<?> model, Class<? extends QueryParameters> queryParametersClass) 
+			Class<?> model, Class<? extends AnnotatedQueryParameters> queryParametersClass) 
 			throws InstantiationException, IllegalAccessException {
 		List<OptionsEndpointDescriptor> descriptors = new ArrayList<>();
 		descriptors.add(new OptionsEndpointDescriptor(
@@ -46,7 +46,7 @@ public class OptionsDefaults {
 				"/{id}",
 				Arrays.asList(new String[]{ MediaType.APPLICATION_JSON_VALUE }),
 				OptionsDefaults.getDefaultHeaders(),
-				new QueryParameters(),
+				new AnnotatedQueryParameters(),
 				model.newInstance(),
 				Arrays.asList(new HttpStatus[] {HttpStatus.OK, HttpStatus.NOT_FOUND})
 		));
@@ -55,7 +55,7 @@ public class OptionsDefaults {
 				"/{id}",
 				Arrays.asList(new String[]{ HalMediaType.APPLICATION_HAL_JSON_VALUE}),
 				OptionsDefaults.getDefaultHeaders(),
-				new QueryParameters(),
+				new AnnotatedQueryParameters(),
 				new FilterableResource<>(model.newInstance()),
 				Arrays.asList(new HttpStatus[] {HttpStatus.OK, HttpStatus.NOT_FOUND})
 		));
@@ -64,7 +64,7 @@ public class OptionsDefaults {
 				"",
 				Arrays.asList(new String[]{ MediaType.APPLICATION_JSON_VALUE }),
 				OptionsDefaults.getDefaultHeaders(),
-				new QueryParameters(),
+				new AnnotatedQueryParameters(),
 				Arrays.asList(new Object[] {model.newInstance()}),
 				Arrays.asList(new HttpStatus[] {HttpStatus.OK})
 		));
@@ -73,7 +73,7 @@ public class OptionsDefaults {
 				"",
 				Arrays.asList(new String[]{ HalMediaType.APPLICATION_HAL_JSON_VALUE}),
 				OptionsDefaults.getDefaultHeaders(),
-				new QueryParameters(),
+				new AnnotatedQueryParameters(),
 				Arrays.asList(new FilterableResource[]{ new FilterableResource<>(model.newInstance())}),
 				Arrays.asList(new HttpStatus[] {HttpStatus.OK})
 		));
@@ -82,7 +82,7 @@ public class OptionsDefaults {
 				"?page={int}&size={int}&sort={string,[asc,desc]}",
 				Arrays.asList(new String[]{ MediaType.APPLICATION_JSON_VALUE }),
 				OptionsDefaults.getDefaultHeaders(),
-				new QueryParameters(),
+				new AnnotatedQueryParameters(),
 				new PageImpl(Arrays.asList(new Object[]{ model.newInstance() })),
 				Arrays.asList(new HttpStatus[] {HttpStatus.OK})
 		));
@@ -91,7 +91,7 @@ public class OptionsDefaults {
 				"?page={int}&size={int}&sort={string,[asc,desc]}",
 				Arrays.asList(new String[]{ HalMediaType.APPLICATION_HAL_JSON_VALUE}),
 				OptionsDefaults.getDefaultHeaders(),
-				new QueryParameters(),
+				new AnnotatedQueryParameters(),
 				new PagedResources(
 						Arrays.asList(new FilterableResource[]{ new FilterableResource<>(model.newInstance())}),
 						new PagedResources.PageMetadata(0,0,0)

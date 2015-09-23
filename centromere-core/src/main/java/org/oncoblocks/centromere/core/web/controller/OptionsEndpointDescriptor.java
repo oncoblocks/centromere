@@ -16,7 +16,7 @@
 
 package org.oncoblocks.centromere.core.web.controller;
 
-import org.oncoblocks.centromere.core.web.query.QueryParameters;
+import org.oncoblocks.centromere.core.web.query.AnnotatedQueryParameters;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
@@ -36,7 +36,7 @@ public class OptionsEndpointDescriptor {
 	private String url;
 	private List<String> mediaTypes;
 	private Map<String, String[]> headers;
-	private QueryParameters parameters;
+	private AnnotatedQueryParameters parameters;
 	private Object response;
 	private List<HttpStatus> statuses;
 
@@ -44,7 +44,7 @@ public class OptionsEndpointDescriptor {
 
 	public OptionsEndpointDescriptor(HttpMethod method, String url,
 			List<String> mediaTypes, Map<String, String[]> headers,
-			QueryParameters parameters, Object response, List<HttpStatus> statuses) {
+			AnnotatedQueryParameters parameters, Object response, List<HttpStatus> statuses) {
 		this.method = method;
 		this.url = url;
 		this.mediaTypes = mediaTypes;
@@ -86,11 +86,11 @@ public class OptionsEndpointDescriptor {
 		this.headers = headers;
 	}
 
-	public QueryParameters getParameters() {
+	public AnnotatedQueryParameters getParameters() {
 		return parameters;
 	}
 
-	public void setParameters(QueryParameters parameters) {
+	public void setParameters(AnnotatedQueryParameters parameters) {
 		this.parameters = parameters;
 	}
 

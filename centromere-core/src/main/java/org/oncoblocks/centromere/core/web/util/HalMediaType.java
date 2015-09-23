@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Support class for defining and identifying HAL-supporting {@link MediaType} values, which will
+ *   trigger Spring HATEOAS hypermedia annotation.
+ * 
  * @author woemler
  */
 public class HalMediaType {

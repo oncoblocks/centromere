@@ -243,7 +243,7 @@ public class CrudControllerTests {
 
 	@Test
 	public void findSorted() throws Exception {
-		mockMvc.perform(get("/genes?sort=primaryGeneSymbol+desc").accept(
+		mockMvc.perform(get("/genes?sort=geneSymbol,desc").accept(
 				HalMediaType.APPLICATION_HAL_JSON_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))

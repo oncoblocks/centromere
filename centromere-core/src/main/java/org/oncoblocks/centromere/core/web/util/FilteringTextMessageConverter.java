@@ -42,20 +42,23 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * Message converter that takes web service response data and converts it to delimited-text in a
+ *   tabular format.  Supports field filtering using {@link ResponseEnvelope} attributes.
+ * 
  * @author woemler
  */
-public class TextMessageConverter extends AbstractHttpMessageConverter<Object> {
+public class FilteringTextMessageConverter extends AbstractHttpMessageConverter<Object> {
 	
 	private String delimiter = "\t";
 	private MediaType mediaType;
 
-	public TextMessageConverter(MediaType supportedMediaType, String delimiter) {
+	public FilteringTextMessageConverter(MediaType supportedMediaType, String delimiter) {
 		super(supportedMediaType);
 		this.delimiter = delimiter;
 		this.mediaType = supportedMediaType;
 	}
 
-	public TextMessageConverter(MediaType supportedMediaType) {
+	public FilteringTextMessageConverter(MediaType supportedMediaType) {
 		super(supportedMediaType);
 		this.mediaType = supportedMediaType;
 	}

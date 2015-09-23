@@ -24,7 +24,7 @@ import org.oncoblocks.centromere.core.web.query.*;
 /**
  * @author woemler
  */
-public class EntrezGeneParameters extends QueryParameters implements SimpleAliases, Attributes {
+public class EntrezGeneParameters extends AnnotatedQueryParameters implements SimpleAliases, Attributes {
 	
 	private Long entrezGeneId;
 	@QueryParameter("primaryGeneSymbol") private String geneSymbol;
