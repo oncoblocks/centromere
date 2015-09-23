@@ -16,7 +16,6 @@
 
 package org.oncoblocks.centromere.core.test.models;
 
-import org.oncoblocks.centromere.core.model.Filterable;
 import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.model.support.Attribute;
 import org.springframework.data.annotation.Id;
@@ -28,7 +27,6 @@ import java.util.*;
  * @author woemler
  */
 
-@Filterable
 @Document(collection = "genes")
 public class EntrezGene implements Model<Long> {
 

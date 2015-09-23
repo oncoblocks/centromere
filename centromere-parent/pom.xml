@@ -13,6 +13,8 @@
     
     <modules>
         <module>../centromere-core</module>
+        <module>../centromere-data-import</module>
+        <module>../centromere-web</module>
     </modules>
 
     <licenses>

@@ -17,7 +17,6 @@
 package org.oncoblocks.centromere.core.test.models;
 
 import org.oncoblocks.centromere.core.model.support.DataSetMetadata;
-import org.oncoblocks.centromere.core.model.Filterable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -25,7 +24,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author woemler
  */
 
-@Filterable
 @Document(collection = "data_sets")
 public class DataSet implements DataSetMetadata<String> {
 

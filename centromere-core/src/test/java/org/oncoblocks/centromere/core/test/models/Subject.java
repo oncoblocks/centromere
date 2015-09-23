@@ -16,11 +16,10 @@
 
 package org.oncoblocks.centromere.core.test.models;
 
-import org.oncoblocks.centromere.core.model.Filterable;
 import org.oncoblocks.centromere.core.model.Model;
-import org.oncoblocks.centromere.core.repository.sqlbuilder.ComplexTableDescription;
 import org.oncoblocks.centromere.core.model.support.Attribute;
 import org.oncoblocks.centromere.core.model.support.SourcedAlias;
+import org.oncoblocks.centromere.core.repository.sqlbuilder.ComplexTableDescription;
 import org.springframework.data.annotation.Id;
 
 import java.util.ArrayList;
@@ -31,7 +30,6 @@ import java.util.List;
  * @author woemler
  */
 
-@Filterable
 public class Subject implements Model<Long> {
 
 	@Id private Long id;

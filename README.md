@@ -17,6 +17,20 @@ What Centromere is _**not**_:
 - An analysis platform.
 - An end-user GUI application.
 
+## Modules
+
+#### Centromere Core
+
+The core module, containing common dependencies, support classes for data model creation, and repository classes.
+
+#### Centromere Data Import
+
+Tools for creating pipeline jobs for processing and ingesting data into the data warehouse.
+
+#### Centromere Web
+
+The web module contains all components of the REST web services, including security and API documentation tools.
+
 ## Contact
 
 For questions about the Oncoblocks projects or if you would like to contribute to Centromere, please contact:
