@@ -36,7 +36,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author woemler
@@ -86,56 +89,68 @@ public class TextMessageConverter extends AbstractHttpMessageConverter<Object> {
 		OutputStream out = httpOutputMessage.getBody();
 		PrintWriter writer = new PrintWriter(out);
 		boolean showHeader = true;
+		Set<String> includedFields = new HashSet<>();
+		Set<String> excludedFields = new HashSet<>();
 		
 		if (o.getClass().equals(ResponseEnvelope.class)){
+			includedFields = ((ResponseEnvelope) o).getFieldSet();
+			excludedFields = ((ResponseEnvelope) o).getExclude();
 			o = ((ResponseEnvelope) o).getEntity();
 		}
 		if (o.getClass().equals(PageImpl.class)){
 			o = ((Page) o).getContent();
 		}
 		
-		if (o instanceof Collection<?>){
-			for (Object entity: (Collection<?>) o){
-				String entityString;
-				try {
-					entityString = printEntityRecord(entity, this.delimiter, showHeader);
-				} catch (IllegalAccessException e){
-					e.printStackTrace();
-					entityString = "# Invalid record.";
-				}
-				writer.write(entityString);
-				showHeader = false;
-			}
-		} else {
+		if (!(o instanceof Collection<?>)) {
+			o = Arrays.asList(o);
+		}
+		for (Object entity: (Collection<?>) o){
 			String entityString;
 			try {
-				entityString = printEntityRecord(o, this.delimiter, true);
+				StringBuilder buffer = new StringBuilder();
+				if (showHeader){
+					for (Field field: entity.getClass().getDeclaredFields()){
+						if (includedFields != null && !includedFields.isEmpty()){
+							if (includedFields.contains(field.getName())){
+								buffer.append(field.getName()).append(delimiter);
+							}
+						} else if (excludedFields != null && !excludedFields.isEmpty()){
+							if (!excludedFields.contains(field.getName())){
+								buffer.append(field.getName()).append(delimiter);
+							}
+						} else {
+							buffer.append(field.getName()).append(delimiter);
+						}
+					}
+					buffer.append("\n");
+				}
+				for (Field field: entity.getClass().getDeclaredFields()){
+					field.setAccessible(true);
+					if (includedFields != null && !includedFields.isEmpty()){
+						if (includedFields.contains(field.getName())){
+							buffer.append(field.get(entity)).append(delimiter);
+						}
+					} else if (excludedFields != null && !excludedFields.isEmpty()){
+						if (!excludedFields.contains(field.getName())){
+							buffer.append(field.get(entity)).append(delimiter);
+						}
+					} else {
+						buffer.append(field.get(entity)).append(delimiter);
+					}
+				}
+				buffer.append("\n");
+				entityString = buffer.toString();
 			} catch (IllegalAccessException e){
 				e.printStackTrace();
 				entityString = "# Invalid record.";
 			}
 			writer.write(entityString);
+			showHeader = false;
 		}
+		
 		
 		writer.close();
 		
 	}
 
-	private String printEntityRecord(Object entity, String delimiter, boolean showHeader) 
-			throws IllegalAccessException{
-		StringBuffer buffer = new StringBuffer();
-		if (showHeader){
-			for (Field field: entity.getClass().getDeclaredFields()){
-				buffer.append(field.getName() + delimiter);
-			}
-			buffer.append("\n");
-		}
-		for (Field field: entity.getClass().getDeclaredFields()){
-			field.setAccessible(true);
-			buffer.append(field.get(entity) + delimiter);
-		}
-		buffer.append("\n");
-		return buffer.toString();
-	}
-	
 }
