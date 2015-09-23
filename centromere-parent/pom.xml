@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    
+    <groupId>org.oncoblocks.centromere</groupId>
+    <artifactId>centromere-parent</artifactId>
+    <version>0.2.2-SNAPSHOT</version>
+    <name>Oncoblocks: Centromere Parent</name>
+    <packaging>pom</packaging>
+    
+    <modules>
+        <module>../centromere-core</module>
+    </modules>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Will Oemler</name>
+            <email>woemler@blueprintmedicines.com</email>
+            <organization>Blueprint Medicines</organization>
+            <organizationUrl>http://www.blueprintmedicines.com</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git@github.com:oncoblocks/centromere.git</connection>
+        <developerConnection>scm:git:git@github.com:oncoblocks/centromere.git</developerConnection>
+        <url>git@github.com:oncoblocks/centromere.git</url>
+    </scm>
+
+    <properties>
+        <spring.platform.version>1.1.2.RELEASE</spring.platform.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.spring.platform</groupId>
+                <artifactId>platform-bom</artifactId>
+                <version>${spring.platform.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+
+
+    </dependencies>
+
+    <build>
+        <finalName>centromere-parent</finalName>
+        <plugins>
+            
+        </plugins>
+    </build>
+
+</project>
