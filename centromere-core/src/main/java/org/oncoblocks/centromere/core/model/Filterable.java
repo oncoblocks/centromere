@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.web.controller;
+package org.oncoblocks.centromere.core.model;
 
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.annotation.JsonFilter;

@@ -16,12 +16,14 @@
 
 package org.oncoblocks.centromere.dataimport.processor;
 
+import org.oncoblocks.centromere.dataimport.config.DataImportException;
+
 /**
  * Generic exception for data file parsing issues.
  * 
  * @author woemler
  */
-public class DataFileProcessingException extends RuntimeException {
+public class DataFileProcessingException extends DataImportException {
 	public DataFileProcessingException(String message) {
 		super(message);
 	}

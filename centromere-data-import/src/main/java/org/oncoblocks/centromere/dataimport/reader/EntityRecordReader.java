@@ -17,6 +17,7 @@
 package org.oncoblocks.centromere.dataimport.reader;
 
 import org.oncoblocks.centromere.core.model.Model;
+import org.oncoblocks.centromere.dataimport.config.DataImportException;
 
 import java.io.Serializable;
 
@@ -24,9 +25,9 @@ import java.io.Serializable;
  * @author woemler
  */
 public interface EntityRecordReader<T extends Model<ID>, ID extends Serializable> {
-	void open(String filePath);
+	void open(String filePath) throws DataImportException;
 	void close();
-	T readRecord();
+	T readRecord() throws DataImportException;
 	void setDataSetId(ID dataSetId);
 	void setDataFileId(ID dataFileId);
 }

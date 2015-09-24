@@ -16,10 +16,12 @@
 
 package org.oncoblocks.centromere.dataimport.reader;
 
+import org.oncoblocks.centromere.dataimport.config.DataImportException;
+
 /**
  * @author woemler
  */
-public class DataFileReaderException extends RuntimeException {
+public class DataFileReaderException extends DataImportException {
 	public DataFileReaderException(String message) {
 		super(message);
 	}

@@ -17,6 +17,7 @@
 package org.oncoblocks.centromere.dataimport.writer;
 
 import org.oncoblocks.centromere.core.model.Model;
+import org.oncoblocks.centromere.dataimport.config.DataImportException;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -35,7 +36,7 @@ public abstract class TempFileWriter<T extends Model<ID>, ID extends Serializabl
 	public TempFileWriter() { }
 
 	@Override
-	public void open(String tempFilePath){
+	public void open(String tempFilePath) throws DataImportException{
 		this.close();
 		try {
 			writer = new FileWriter(tempFilePath);
@@ -50,6 +51,7 @@ public abstract class TempFileWriter<T extends Model<ID>, ID extends Serializabl
 	public void close(){
 		if (writer != null){
 			try{
+				writer.flush();
 				writer.close();
 			} catch (IOException e){
 				e.printStackTrace();

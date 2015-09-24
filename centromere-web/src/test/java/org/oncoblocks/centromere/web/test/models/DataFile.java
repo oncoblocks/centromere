@@ -16,7 +16,7 @@
 
 package org.oncoblocks.centromere.web.test.models;
 
-import org.oncoblocks.centromere.web.controller.Filterable;
+import org.oncoblocks.centromere.core.model.Filterable;
 import org.oncoblocks.centromere.core.model.support.DataFileMetadata;
 import org.springframework.data.mongodb.core.mapping.Document;
 

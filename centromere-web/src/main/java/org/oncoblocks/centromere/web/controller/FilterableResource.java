@@ -16,6 +16,7 @@
 
 package org.oncoblocks.centromere.web.controller;
 
+import org.oncoblocks.centromere.core.model.Filterable;
 import org.oncoblocks.centromere.web.util.FilteringJackson2HttpMessageConverter;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;

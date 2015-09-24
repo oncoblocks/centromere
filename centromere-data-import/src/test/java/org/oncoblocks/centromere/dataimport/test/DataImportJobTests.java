@@ -67,7 +67,7 @@ public class DataImportJobTests {
 	}
 	
 	@Test
-	public void dataImportTest(){
+	public void dataImportTest() throws Exception{
 		Assert.isTrue(dataFileRepository.count() == 0);
 		Assert.isTrue(dataSetRepository.count() == 0);
 		Assert.isTrue(entrezGeneRepository.count() == 0);

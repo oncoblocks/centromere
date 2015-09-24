@@ -42,7 +42,7 @@ public class MongoImportTempFileImporter implements EntityRecordImporter {
 	}
 
 	@Override 
-	public void importFile(String filePath) {
+	public void importFile(String filePath) throws DataImportException {
 		
 		Process process;
 		
@@ -78,6 +78,7 @@ public class MongoImportTempFileImporter implements EntityRecordImporter {
 				outputBuilder.append(line);
 				line = stdIn.readLine();
 			}
+			stdIn.close();
 
 			BufferedReader stdErr = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 			StringBuilder errorBuilder = new StringBuilder();
@@ -87,6 +88,7 @@ public class MongoImportTempFileImporter implements EntityRecordImporter {
 				errorBuilder.append(line);
 				line = stdErr.readLine();
 			}
+			stdErr.close();
 
 			process.waitFor();
 			

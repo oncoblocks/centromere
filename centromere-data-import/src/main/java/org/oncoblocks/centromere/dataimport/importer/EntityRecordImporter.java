@@ -16,9 +16,11 @@
 
 package org.oncoblocks.centromere.dataimport.importer;
 
+import org.oncoblocks.centromere.dataimport.config.DataImportException;
+
 /**
  * @author woemler
  */
 public interface EntityRecordImporter {
-	void importFile(String filePath);
+	void importFile(String filePath) throws DataImportException;
 }

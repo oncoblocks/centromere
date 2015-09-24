@@ -16,9 +16,11 @@
 
 package org.oncoblocks.centromere.dataimport.validator;
 
+import org.oncoblocks.centromere.dataimport.config.DataImportException;
+
 /**
  * @author woemler
  */
 public interface EntityValidator<T> {
-	boolean validate(T entity);
+	boolean validate(T entity) throws DataImportException;
 }

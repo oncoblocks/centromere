@@ -132,7 +132,7 @@ public class DataImportTests {
 	}
 	
 	@Test
-	public void entityValidationTest(){
+	public void entityValidationTest() throws Exception{
 		EntrezGeneValidator validator = new EntrezGeneValidator();
 		EntrezGene gene = new EntrezGene();
 		gene.setEntrezGeneId(0L);

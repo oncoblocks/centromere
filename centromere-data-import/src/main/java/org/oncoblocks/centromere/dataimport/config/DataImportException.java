@@ -19,7 +19,7 @@ package org.oncoblocks.centromere.dataimport.config;
 /**
  * @author woemler
  */
-public class DataImportException extends RuntimeException {
+public class DataImportException extends Exception {
 	public DataImportException(String message) {
 		super(message);
 	}

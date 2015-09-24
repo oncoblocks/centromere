@@ -16,10 +16,12 @@
 
 package org.oncoblocks.centromere.dataimport.writer;
 
+import org.oncoblocks.centromere.dataimport.config.DataImportException;
+
 /**
  * @author woemler
  */
-public class TempFileWriterException extends RuntimeException {
+public class TempFileWriterException extends DataImportException {
 	public TempFileWriterException(String message) {
 		super(message);
 	}

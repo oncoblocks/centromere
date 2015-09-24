@@ -51,57 +51,67 @@ public class DataImportJob {
 		this.dataSetRepository = dataSetRepository;
 	}
 
-	public void run() {
+	public void run() throws DataImportException {
 
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date startDate = new Date();
 		logger.debug("CENTROMERE: Beginning Data Import @ " + dateFormat.format(new Date()));
 		
-		while (dataFileQueue.hasNext()) {
-			
-			QueuedFile queuedFile = dataFileQueue.next();
-			DataSetMetadata dataSetMetadata = queuedFile.getDataSet();
+		try {
 
-			logger.debug("CENTROMERE: Creating new data set record: " + dataSetMetadata.getName());
-			if (dataSetMetadata.getId() == null || !dataSetRepository.exists(dataSetMetadata.getId())) {
-				dataSetMetadata = (DataSetMetadata) dataSetRepository.insert(dataSetMetadata);
-			} else {
-				logger.debug("CENTROMERE: Data set already exists.");
-			}
+			while (dataFileQueue.hasNext()) {
 
-			DataFileMetadata dataFileMetadata = queuedFile.getDataFile();
-			dataFileMetadata.setDataSetId(dataSetMetadata.getId());
+				QueuedFile queuedFile = dataFileQueue.next();
+				DataSetMetadata dataSetMetadata = queuedFile.getDataSet();
 
-			logger.debug("CENTROMERE: Creating new data file record: " + dataFileMetadata.getFilePath());
-			if ((dataFileMetadata.getId() != null && dataFileRepository.exists(dataFileMetadata.getId()))
-					|| dataFileRepository.getByFilePath(dataFileMetadata.getFilePath()) != null){
-				if (options.isFailOnExistingFile()){
-					throw new DataImportException("Data file already exists: " + dataFileMetadata.getFilePath());
+				logger.debug("CENTROMERE: Creating new data set record: " + dataSetMetadata.getName());
+				if (dataSetMetadata.getId() == null || !dataSetRepository.exists(dataSetMetadata.getId())) {
+					dataSetMetadata = (DataSetMetadata) dataSetRepository.insert(dataSetMetadata);
+				} else {
+					logger.debug("CENTROMERE: Data set already exists.");
 				}
-			} else {
-				
-				dataFileMetadata = (DataFileMetadata) dataFileRepository.insert(dataFileMetadata);
-				GeneralFileProcessor processor = queuedFile.getProcessor();
-				
-				File inputFile = new File(dataFileMetadata.getFilePath());
-				String tempFileName = inputFile.getName() + ".tmp";
-				File tempFile = new File(options.getTempFileDirectory(), tempFileName);
-				
-				logger.debug("CENTROMERE: Processing file " + dataFileMetadata.getFilePath());
-				Date fileStart = new Date();
-				long count = processor.run(dataFileMetadata.getFilePath(), tempFile.getAbsolutePath(), 
-						dataSetMetadata.getId(), dataFileMetadata.getId()); 
-				Date fileEnd = new Date();
-				logger.debug("CENTROMERE: Done.  Created " + count + " records.  Elapsed time: "
-						+ (fileEnd.getTime() - fileStart.getTime()) + " ms");
-				
-			}
-				
-		}
 
-		Date endDate = new Date();
-		logger.debug("CENTROMERE: Data Import Complete @ " + dateFormat.format(new Date())
-				+ "  Elapsed time:  " + (endDate.getTime() - startDate.getTime()) + " ms");
+				DataFileMetadata dataFileMetadata = queuedFile.getDataFile();
+				dataFileMetadata.setDataSetId(dataSetMetadata.getId());
+
+				logger
+						.debug("CENTROMERE: Creating new data file record: " + dataFileMetadata.getFilePath());
+				if ((dataFileMetadata.getId() != null && dataFileRepository
+						.exists(dataFileMetadata.getId()))
+						|| dataFileRepository.getByFilePath(dataFileMetadata.getFilePath()) != null) {
+					if (options.isFailOnExistingFile()) {
+						throw new DataImportException(
+								"Data file already exists: " + dataFileMetadata.getFilePath());
+					}
+				} else {
+
+					dataFileMetadata = (DataFileMetadata) dataFileRepository.insert(dataFileMetadata);
+					GeneralFileProcessor processor = queuedFile.getProcessor();
+
+					File inputFile = new File(dataFileMetadata.getFilePath());
+					String tempFileName = inputFile.getName() + ".tmp";
+					File tempFile = new File(options.getTempFileDirectory(), tempFileName);
+
+					logger.debug("CENTROMERE: Processing file " + dataFileMetadata.getFilePath());
+					Date fileStart = new Date();
+					long count = processor.run(dataFileMetadata.getFilePath(), tempFile.getAbsolutePath(),
+							dataSetMetadata.getId(), dataFileMetadata.getId());
+					Date fileEnd = new Date();
+					logger.debug("CENTROMERE: Done.  Processed " + count + " records.  Elapsed time: "
+							+ (fileEnd.getTime() - fileStart.getTime()) + " ms");
+
+				}
+
+			}
+
+		} catch (DataImportException e){
+			logger.error("CENTROMERE: There was an error running the data import job.  Aborting...");
+			throw e;
+		} finally {
+			Date endDate = new Date();
+			logger.debug("CENTROMERE: Data Import Ended @ " + dateFormat.format(new Date())
+					+ "  Elapsed time:  " + (endDate.getTime() - startDate.getTime()) + " ms");
+		}
 
 	}
 

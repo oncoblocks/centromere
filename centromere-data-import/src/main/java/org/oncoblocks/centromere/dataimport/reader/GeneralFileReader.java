@@ -17,6 +17,7 @@
 package org.oncoblocks.centromere.dataimport.reader;
 
 import org.oncoblocks.centromere.core.model.Model;
+import org.oncoblocks.centromere.dataimport.config.DataImportException;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -33,11 +34,12 @@ public abstract class GeneralFileReader<T extends Model<ID>, ID extends Serializ
 	private ID dataSetId;
 	private ID dataFileId;
 	private boolean failOnUnknownSample = true;
+	private boolean failOnUnknownGene = true;
 
 	public GeneralFileReader(){ }
 
 	@Override
-	public void open(String inputFilePath){
+	public void open(String inputFilePath) throws DataImportException{
 		this.close();
 		try {
 			reader = new BufferedReader(new java.io.FileReader(new File(inputFilePath)));
@@ -82,9 +84,17 @@ public abstract class GeneralFileReader<T extends Model<ID>, ID extends Serializ
 		return failOnUnknownSample;
 	}
 
-	public GeneralFileReader setFailOnUnknownSample(boolean failOnUnknownSample) {
+	public GeneralFileReader failOnUnknownSample(boolean failOnUnknownSample) {
 		this.failOnUnknownSample = failOnUnknownSample;
 		return this;
 	}
 
+	public boolean isFailOnUnknownGene() {
+		return failOnUnknownGene;
+	}
+
+	public GeneralFileReader failOnUnknownGene(boolean failOnUnknownGene) {
+		this.failOnUnknownGene = failOnUnknownGene;
+		return this;
+	}
 }

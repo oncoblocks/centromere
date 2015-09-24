@@ -17,10 +17,13 @@
 package org.oncoblocks.centromere.dataimport.processor;
 
 import org.oncoblocks.centromere.core.model.Model;
+import org.oncoblocks.centromere.dataimport.config.DataImportException;
 import org.oncoblocks.centromere.dataimport.importer.EntityRecordImporter;
 import org.oncoblocks.centromere.dataimport.reader.EntityRecordReader;
 import org.oncoblocks.centromere.dataimport.validator.EntityValidator;
 import org.oncoblocks.centromere.dataimport.writer.EntityRecordWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import java.io.Serializable;
@@ -35,6 +38,8 @@ public class GeneralFileProcessor<T extends Model<ID>, ID extends Serializable>
 	private EntityValidator<T> validator;
 	private EntityRecordWriter<T, ID> writer;
 	private EntityRecordImporter importer;
+	
+	private static final Logger logger = LoggerFactory.getLogger(GeneralFileProcessor.class);
 	
 	public GeneralFileProcessor(){ }
 
@@ -52,36 +57,44 @@ public class GeneralFileProcessor<T extends Model<ID>, ID extends Serializable>
 	}
 
 	@Override
-	public long run(String inputFilePath, String tempFilePath, ID dataSetId, ID dataFileId){
+	public long run(String inputFilePath, String tempFilePath, ID dataSetId, ID dataFileId) 
+			throws DataImportException{
 		reader.setDataFileId(dataFileId);
 		reader.setDataSetId(dataSetId);
 		long counter = 0;
 		try {
+			logger.debug(String.format("CENTROMERE: Preparing input file reader: %s", inputFilePath));
 			reader.open(inputFilePath);
+			logger.debug(String.format("CENTROMERE: Preparing temp file writer: %s", tempFilePath));
 			writer.open(tempFilePath);
+			if (validator == null) logger.debug(String.format("CENTROMERE: Skipping entity validation for input file: %s", inputFilePath));
 			T record = reader.readRecord();
 			while (record != null) {
 				if (validator != null) {
 					if (validator.validate(record)) {
 						writer.writeRecord(record);
-						
+						counter++;
 					}
 				} else {
 					writer.writeRecord(record);
+					counter++;
 				}
 				record = reader.readRecord();
-				counter++;
 			}
 		} catch (Exception e){
 			e.printStackTrace();
-			throw new DataFileProcessingException(e.getMessage());
+			throw new DataImportException(e.getMessage());
 		} finally {
 			reader.close();
+			logger.debug(String.format("CENTROMERE: Input file reader complete: %s", inputFilePath));
 			writer.close();
+			logger.debug(String.format("CENTROMERE: Temp file writer complete: %s", tempFilePath));
 		}
 		if (importer != null) {
+			logger.debug(String.format("CENTROMERE: Preparing to import temp file: %s", tempFilePath));
 			importer.importFile(tempFilePath);
-		}
+			logger.debug(String.format("CENTROMERE: Temp file import complete: %s", tempFilePath));
+		} 
 		return counter;
 	}
 

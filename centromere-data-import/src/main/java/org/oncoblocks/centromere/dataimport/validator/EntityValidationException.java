@@ -16,10 +16,12 @@
 
 package org.oncoblocks.centromere.dataimport.validator;
 
+import org.oncoblocks.centromere.dataimport.config.DataImportException;
+
 /**
  * @author woemler
  */
-public class EntityValidationException extends RuntimeException {
+public class EntityValidationException extends DataImportException {
 	public EntityValidationException(String message) {
 		super(message);
 	}

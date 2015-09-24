@@ -16,6 +16,7 @@
 
 package org.oncoblocks.centromere.dataimport.test;
 
+import org.oncoblocks.centromere.dataimport.config.DataImportException;
 import org.oncoblocks.centromere.dataimport.test.models.EntrezGene;
 import org.oncoblocks.centromere.dataimport.validator.EntityValidationException;
 import org.oncoblocks.centromere.dataimport.validator.EntityValidator;
@@ -27,7 +28,7 @@ import org.springframework.util.Assert;
 public class EntrezGeneValidator implements EntityValidator<EntrezGene> {
 
 	@Override 
-	public boolean validate(EntrezGene entity) {
+	public boolean validate(EntrezGene entity) throws DataImportException{
 		try {
 			Assert.notNull(entity.getEntrezGeneId(), "Entrez gene ID must not be null");
 			Assert.isTrue(entity.getEntrezGeneId() > 0, "Entrez Gene ID must be greater than 0");
