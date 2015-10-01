@@ -25,6 +25,8 @@ import java.io.Serializable;
  * @author woemler
  */
 public interface EntityRecordProcessor<T extends Model<ID>, ID extends Serializable> {
+	void doBefore();
+	void doAfter();
 	long run(String inputFilePath, String tempFilePath, ID dataSetId, ID dataFileId) throws
 			DataImportException;
 }

@@ -56,6 +56,16 @@ public class GeneralFileProcessor<T extends Model<ID>, ID extends Serializable>
 		this.importer = importer;
 	}
 
+	@Override 
+	public void doBefore() {
+		// Do nothing
+	}
+
+	@Override 
+	public void doAfter() {
+		// Do nothing
+	}
+
 	@Override
 	public long run(String inputFilePath, String tempFilePath, ID dataSetId, ID dataFileId) 
 			throws DataImportException{

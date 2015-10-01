@@ -22,6 +22,7 @@ import org.oncoblocks.centromere.core.repository.RepositoryOperations;
 import org.oncoblocks.centromere.web.exceptions.ResourceNotFoundException;
 import org.oncoblocks.centromere.web.query.QueryParameters;
 import org.oncoblocks.centromere.web.util.HalMediaType;
+import org.slf4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -40,10 +41,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
@@ -69,6 +67,8 @@ public abstract class BaseApiController<
 		this.assembler = assembler;
 	}
 
+	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(BaseApiController.class);
+	
 	/**
 	 * {@code GET /{id}}
 	 * Fetches a single record by its primary ID and returns it, or a {@code Not Found} exception if not.
@@ -122,6 +122,8 @@ public abstract class BaseApiController<
 			PagedResourcesAssembler<T> pagedResourcesAssembler, 
 			HttpServletRequest request)
 	{
+		Date start = new Date();
+		Date end;
 		ResponseEnvelope envelope;
 		pageable = this.remapPageable(pageable, params);
 		Map<String,String[]> parameterMap = request.getParameterMap();
@@ -131,6 +133,7 @@ public abstract class BaseApiController<
 				(request.getQueryString() != null ? "?" + request.getQueryString() : ""), "self");
 		if (parameterMap.containsKey("page") || parameterMap.containsKey("size")){
 			Page<T> page = repository.find(criterias, pageable);
+			end = new Date();
 			if (HalMediaType.isHalMediaType(mediaType)){
 				PagedResources<FilterableResource> pagedResources
 						= pagedResourcesAssembler.toResource(page, assembler, selfLink);
@@ -146,6 +149,7 @@ public abstract class BaseApiController<
 			} else {
 				entities = (List<T>) repository.find(criterias);
 			}
+			end = new Date();
 			if (HalMediaType.isHalMediaType(mediaType)){
 				List<FilterableResource> resourceList = assembler.toResources(entities);
 				Resources<FilterableResource> resources = new Resources<>(resourceList);
@@ -155,6 +159,7 @@ public abstract class BaseApiController<
 				envelope = new ResponseEnvelope(entities, fields, exclude);
 			}
 		}
+		logger.debug("BENCHMARK: Total request time: " + (end.getTime() - start.getTime()) + " ms");
 		return new ResponseEntity<>(envelope, HttpStatus.OK);
 	}
 

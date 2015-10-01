@@ -23,6 +23,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.Assert;
@@ -141,12 +142,15 @@ public class GenericMongoRepository<T extends Model<ID>, ID extends Serializable
 	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#insert}
 	 */
 	public <S extends T> List<S> insert(Iterable<S> entities) {
-		List<S> inserted = new ArrayList<>();
-		for (S entity: entities){
-			entity = this.insert(entity);
-			if (entity != null) inserted.add(entity);
-		}
-		return inserted;
+//		List<S> inserted = new ArrayList<>();
+//		for (S entity: entities){
+//			entity = this.insert(entity);
+//			if (entity != null) inserted.add(entity);
+//		}
+//		return inserted;
+		List<S> entityList = iterableToList(entities);
+		mongoOperations.insertAll(entityList);
+		return entityList;
 	}
 
 	/**
@@ -220,6 +224,33 @@ public class GenericMongoRepository<T extends Model<ID>, ID extends Serializable
 	}
 
 	/**
+	 * Creates an index on the desired field in the target collection.
+	 * 
+	 * @param field
+	 * @param direction
+	 * @param isUnique
+	 * @param isSparse
+	 */
+	public void createIndex(String field, Sort.Direction direction, boolean isUnique, boolean isSparse){
+		Index index = new Index(field, direction);
+		if (isSparse) index.sparse();
+		if (isUnique) index.unique();
+		mongoOperations.indexOps(model).ensureIndex(index);
+	}
+	
+	public void createIndex(String field, Sort.Direction direction, boolean isUnique){
+		this.createIndex(field, direction, isUnique, false);
+	}
+	
+	public void createIndex(String field, Sort.Direction direction){
+		this.createIndex(field, direction, false, false);
+	}
+	
+	public void createIndex(String field){
+		this.createIndex(field, Sort.Direction.ASC, false, false);
+	}
+
+	/**
 	 * Converts a collection of {@link org.oncoblocks.centromere.core.repository.QueryCriteria}
 	 *  objects into Spring Data MongoDB {@link org.springframework.data.mongodb.core.query.Criteria}
 	 *  objects, used to build a {@link org.springframework.data.mongodb.core.query.Query}.
@@ -233,9 +264,15 @@ public class GenericMongoRepository<T extends Model<ID>, ID extends Serializable
 		for (QueryCriteria queryCriteria: queryCriterias){
 			if (queryCriteria != null) {
 				if (flag) {
-					criteria = criteria.and(queryCriteria.getKey());
+					if (!queryCriteria.getEvaluation().equals(Evaluation.BETWEEN)){
+						criteria = criteria.and(queryCriteria.getKey());
+					} 
 				} else {
-					criteria = Criteria.where(queryCriteria.getKey());
+					if (!queryCriteria.getEvaluation().equals(Evaluation.BETWEEN)){
+						criteria = Criteria.where(queryCriteria.getKey());
+					} else {
+						criteria = new Criteria();
+					}
 				}
 				flag = true;
 				switch (queryCriteria.getEvaluation()) {
@@ -269,6 +306,12 @@ public class GenericMongoRepository<T extends Model<ID>, ID extends Serializable
 					case LESS_THAN_EQUALS:
 						criteria.lte(queryCriteria.getValue());
 						break;
+					case BETWEEN:
+						criteria.gt(((List) queryCriteria.getValue()).get(0)).and(queryCriteria.getKey()).lt(((List) queryCriteria.getValue()).get(1));
+						break;
+					case OUTSIDE:
+						criteria.orOperator(Criteria.where(queryCriteria.getKey()).lt(((List) queryCriteria.getValue()).get(0)),
+								Criteria.where(queryCriteria.getKey()).gt(((List) queryCriteria.getValue()).get(1)));
 					default:
 						criteria.is(queryCriteria.getValue());
 				}
@@ -276,6 +319,21 @@ public class GenericMongoRepository<T extends Model<ID>, ID extends Serializable
 		}
 
 		return criteria;
+	}
+
+	/**
+	 * Converts a generic {@link Iterable} to a {@link List}.
+	 * 
+	 * @param iterable
+	 * @param <S>
+	 * @return
+	 */
+	private <S extends T> List<S> iterableToList(Iterable<S> iterable){
+		List<S> list = new ArrayList<>();
+		for (S entity: iterable){
+			list.add(entity);
+		}
+		return list;
 	}
 
 	public MongoOperations getMongoOperations() {

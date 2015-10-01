@@ -84,7 +84,7 @@ public abstract class GeneralFileReader<T extends Model<ID>, ID extends Serializ
 		return failOnUnknownSample;
 	}
 
-	public GeneralFileReader failOnUnknownSample(boolean failOnUnknownSample) {
+	public GeneralFileReader<T, ID> failOnUnknownSample(boolean failOnUnknownSample) {
 		this.failOnUnknownSample = failOnUnknownSample;
 		return this;
 	}
@@ -93,7 +93,7 @@ public abstract class GeneralFileReader<T extends Model<ID>, ID extends Serializ
 		return failOnUnknownGene;
 	}
 
-	public GeneralFileReader failOnUnknownGene(boolean failOnUnknownGene) {
+	public GeneralFileReader<T, ID> failOnUnknownGene(boolean failOnUnknownGene) {
 		this.failOnUnknownGene = failOnUnknownGene;
 		return this;
 	}

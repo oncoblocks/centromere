@@ -21,13 +21,11 @@ import org.oncoblocks.centromere.core.repository.support.DataSetRepositoryOperat
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * @author woemler
  */
 
-@Configuration
 public abstract class DataImportJobConfigurer {
 	
 	@Autowired ApplicationContext applicationContext;
