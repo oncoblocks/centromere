@@ -17,13 +17,15 @@
 package org.oncoblocks.centromere.core.repository;
 
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
 import org.oncoblocks.centromere.core.model.Model;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.Assert;
@@ -232,10 +234,13 @@ public class GenericMongoRepository<T extends Model<ID>, ID extends Serializable
 	 * @param isSparse
 	 */
 	public void createIndex(String field, Sort.Direction direction, boolean isUnique, boolean isSparse){
-		Index index = new Index(field, direction);
-		if (isSparse) index.sparse();
-		if (isUnique) index.unique();
-		mongoOperations.indexOps(model).ensureIndex(index);
+		Integer dir = direction.equals(Sort.Direction.ASC) ? 1 : -1;
+		DBObject index = new BasicDBObject(field, dir);
+		DBObject options = new BasicDBObject();
+		if (isSparse) options.put("sparse", true);
+		if (isUnique) options.put("unique", true);
+		DBCollection collection = mongoOperations.getCollection(mongoOperations.getCollectionName(model));
+		collection.createIndex(index, options);
 	}
 	
 	public void createIndex(String field, Sort.Direction direction, boolean isUnique){

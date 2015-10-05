@@ -40,7 +40,6 @@ public abstract class GeneralFileReader<T extends Model<ID>, ID extends Serializ
 
 	@Override
 	public void open(String inputFilePath) throws DataImportException{
-		this.close();
 		try {
 			reader = new BufferedReader(new java.io.FileReader(new File(inputFilePath)));
 		} catch (IOException e){

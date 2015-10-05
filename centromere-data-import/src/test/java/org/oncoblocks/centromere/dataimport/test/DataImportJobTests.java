@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.oncoblocks.centromere.dataimport.config.DataImportJob;
+import org.oncoblocks.centromere.dataimport.config.DataImportOptions;
 import org.oncoblocks.centromere.dataimport.test.config.DataImportConfig;
 import org.oncoblocks.centromere.dataimport.test.config.MongoRepositoryConfig;
 import org.oncoblocks.centromere.dataimport.test.config.TestGeneInfoImportJobConfig;
@@ -34,6 +35,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.Assert;
+
+import java.io.IOException;
 
 /**
  * @author woemler
@@ -55,12 +58,15 @@ public class DataImportJobTests {
 	public static boolean isConfigured = false;
 	
 	@Before
-	public void setup(){
+	public void setup() throws IOException{
 		
 		if (!isConfigured){
 			dataSetRepository.deleteAll();
 			dataFileRepository.deleteAll();
 			entrezGeneRepository.deleteAll();
+			DataImportOptions options = dataImportJob.getOptions();
+			options.setTempFileDirectory(temporaryFolder.newFolder().getAbsolutePath());
+			dataImportJob.setOptions(options);
 		}
 		isConfigured = true;
 		

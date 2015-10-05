@@ -16,25 +16,18 @@
 
 package org.oncoblocks.centromere.dataimport.test.config;
 
-import org.oncoblocks.centromere.core.repository.support.DataFileRepositoryOperations;
-import org.oncoblocks.centromere.core.repository.support.DataSetRepositoryOperations;
 import org.oncoblocks.centromere.dataimport.config.DataFileQueue;
-import org.oncoblocks.centromere.dataimport.config.DataImportJobConfigurer;
+import org.oncoblocks.centromere.dataimport.config.DataImportJob;
+import org.oncoblocks.centromere.dataimport.config.DataImportOptions;
 import org.oncoblocks.centromere.dataimport.config.QueuedFile;
-import org.oncoblocks.centromere.dataimport.processor.GeneralFileProcessor;
-import org.oncoblocks.centromere.dataimport.test.EntrezGeneValidator;
-import org.oncoblocks.centromere.dataimport.test.GeneInfoReader;
+import org.oncoblocks.centromere.dataimport.test.GeneInfoProcessor;
 import org.oncoblocks.centromere.dataimport.test.models.DataFile;
 import org.oncoblocks.centromere.dataimport.test.models.DataSet;
-import org.oncoblocks.centromere.dataimport.test.models.EntrezGene;
 import org.oncoblocks.centromere.dataimport.test.repositories.DataFileRepository;
 import org.oncoblocks.centromere.dataimport.test.repositories.DataSetRepository;
 import org.oncoblocks.centromere.dataimport.test.repositories.EntrezGeneRepository;
-import org.oncoblocks.centromere.dataimport.writer.RepositoryRecordWriter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 
 import java.util.Date;
@@ -45,19 +38,19 @@ import java.util.Date;
 
 @Configuration
 @PropertySource({"classpath:test-data-files.properties"})
+@ComponentScan(basePackages = { "org.oncoblocks.centromere.dataimport.test" })
 @Import({MongoRepositoryConfig.class})
-public class TestGeneInfoImportJobConfig extends DataImportJobConfigurer {
+public class TestGeneInfoImportJobConfig {
 	
 	@Autowired EntrezGeneRepository geneRepository;
 	@Autowired DataSetRepository dataSetRepository;
 	@Autowired DataFileRepository dataFileRepository;
+	@Autowired private GeneInfoProcessor geneInfoProcessor;
 	@Autowired Environment env;
 
-	@Override 
-	public DataFileQueue configureDataFileQueue(DataFileQueue dataFileQueue) {
+	private DataFileQueue dataFileQueue() {
 		
-		GeneralFileProcessor<EntrezGene, Long> geneInfoProcessor = new GeneralFileProcessor<>(new GeneInfoReader(), 
-				new RepositoryRecordWriter<EntrezGene, Long>(geneRepository), new EntrezGeneValidator(), null);
+		DataFileQueue dataFileQueue = new DataFileQueue();
 		DataSet geneInfoDataSet = new DataSet(null, "NCBI", "Entrez gene metadata", null);
 		DataFile geneInfoDataFile = new DataFile(null, null, ClassLoader.getSystemResource(env.getRequiredProperty("datafiles.geneinfo")).getPath(),
 				"gene_info", new Date(), null);
@@ -66,16 +59,17 @@ public class TestGeneInfoImportJobConfig extends DataImportJobConfigurer {
 		return dataFileQueue;
 	}
 
-	@Override 
-	public DataSetRepositoryOperations configureDataSetRepository() {
-		return dataSetRepository;
-	}
-
-	@Override 
-	public DataFileRepositoryOperations configureDataFileRepository() {
-		return dataFileRepository;
+	private DataImportOptions dataImportOptions() {
+		DataImportOptions options = new DataImportOptions();
+		options.setFailOnExistingFile(true)
+				.setFailOnMissingFile(true);
+		return options;
 	}
 	
+	@Bean
+	public DataImportJob geneInfoImportJob(){
+		return new DataImportJob(dataImportOptions(), dataFileQueue(), dataFileRepository, dataSetRepository);
+	}
 	
 	
 }

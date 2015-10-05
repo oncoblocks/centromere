@@ -38,17 +38,32 @@ public class DataImportJob {
 	private DataFileQueue dataFileQueue;
 	private DataFileRepositoryOperations dataFileRepository;
 	private DataSetRepositoryOperations dataSetRepository;
+	private JobProcess beforeProcess;
+	private JobProcess afterProcess;
 	
 	final static Logger logger = LoggerFactory.getLogger(DataImportJob.class);
+	
+	public DataImportJob(){ }
+
+	public DataImportJob(DataImportOptions options,
+			DataFileQueue dataFileQueue,
+			DataFileRepositoryOperations dataFileRepository,
+			DataSetRepositoryOperations dataSetRepository,
+			JobProcess beforeProcess,
+			JobProcess afterProcess) {
+		this.options = options;
+		this.dataFileQueue = dataFileQueue;
+		this.dataFileRepository = dataFileRepository;
+		this.dataSetRepository = dataSetRepository;
+		this.beforeProcess = beforeProcess;
+		this.afterProcess = afterProcess;
+	}
 
 	public DataImportJob(DataImportOptions options,
 			DataFileQueue dataFileQueue,
 			DataFileRepositoryOperations dataFileRepository,
 			DataSetRepositoryOperations dataSetRepository) {
-		this.options = options;
-		this.dataFileQueue = dataFileQueue;
-		this.dataFileRepository = dataFileRepository;
-		this.dataSetRepository = dataSetRepository;
+		this(options, dataFileQueue, dataFileRepository, dataSetRepository, null, null);
 	}
 
 	public void run() throws DataImportException {
@@ -58,6 +73,8 @@ public class DataImportJob {
 		logger.debug("CENTROMERE: Beginning Data Import @ " + dateFormat.format(new Date()));
 		
 		try {
+			
+			if (beforeProcess != null) beforeProcess.run();
 
 			while (dataFileQueue.hasNext()) {
 
@@ -94,8 +111,10 @@ public class DataImportJob {
 
 					logger.debug("CENTROMERE: Processing file " + dataFileMetadata.getFilePath());
 					Date fileStart = new Date();
+					processor.doBefore();
 					long count = processor.run(dataFileMetadata.getFilePath(), tempFile.getAbsolutePath(),
 							dataSetMetadata.getId(), dataFileMetadata.getId());
+					processor.doAfter();
 					Date fileEnd = new Date();
 					logger.debug("CENTROMERE: Done.  Processed " + count + " records.  Elapsed time: "
 							+ (fileEnd.getTime() - fileStart.getTime()) + " ms");
@@ -103,6 +122,8 @@ public class DataImportJob {
 				}
 
 			}
+			
+			if (afterProcess != null) afterProcess.run();
 
 		} catch (DataImportException e){
 			logger.error("CENTROMERE: There was an error running the data import job.  Aborting...");
@@ -115,4 +136,63 @@ public class DataImportJob {
 
 	}
 
+	public DataImportOptions getOptions() {
+		return options;
+	}
+
+	public DataImportJob setOptions(
+			DataImportOptions options) {
+		this.options = options;
+		return this;
+	}
+
+	public DataFileQueue getDataFileQueue() {
+		return dataFileQueue;
+	}
+
+	public DataImportJob setDataFileQueue(
+			DataFileQueue dataFileQueue) {
+		this.dataFileQueue = dataFileQueue;
+		return this;
+	}
+
+	public DataFileRepositoryOperations getDataFileRepository() {
+		return dataFileRepository;
+	}
+
+	public DataImportJob setDataFileRepository(
+			DataFileRepositoryOperations dataFileRepository) {
+		this.dataFileRepository = dataFileRepository;
+		return this;
+	}
+
+	public DataSetRepositoryOperations getDataSetRepository() {
+		return dataSetRepository;
+	}
+
+	public DataImportJob setDataSetRepository(
+			DataSetRepositoryOperations dataSetRepository) {
+		this.dataSetRepository = dataSetRepository;
+		return this;
+	}
+
+	public JobProcess getDoBeforeProcess() {
+		return beforeProcess;
+	}
+
+	public DataImportJob doBefore(
+			JobProcess beforeProcess) {
+		this.beforeProcess = beforeProcess;
+		return this;
+	}
+
+	public JobProcess getDoAfterProcess() {
+		return afterProcess;
+	}
+
+	public DataImportJob doAfter(
+			JobProcess afterProcess) {
+		this.afterProcess = afterProcess;
+		return this;
+	}
 }
