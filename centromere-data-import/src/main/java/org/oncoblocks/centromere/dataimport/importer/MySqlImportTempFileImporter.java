@@ -26,19 +26,22 @@ import java.io.InputStreamReader;
 /**
  * @author woemler
  */
-public class MongoImportTempFileImporter implements EntityRecordImporter {
+public class MySqlImportTempFileImporter implements EntityRecordImporter {
 	
 	private DatabaseCredentials credentials;
-	private String collection;
 	private boolean stopOnError = true;
-	private boolean upsertRecords = false;
 	private boolean dropCollection = false;
+	private String columns;
 
-	final static Logger logger = LoggerFactory.getLogger(MongoImportTempFileImporter.class);
+	final static Logger logger = LoggerFactory.getLogger(MySqlImportTempFileImporter.class);
 
-	public MongoImportTempFileImporter(DatabaseCredentials credentials, String collection) {
+	public MySqlImportTempFileImporter(DatabaseCredentials credentials, String columns){
 		this.credentials = credentials;
-		this.collection = collection;
+		this.columns = columns;
+	}
+	
+	public MySqlImportTempFileImporter(DatabaseCredentials credentials) {
+		this(credentials, null);
 	}
 
 	@Override 
@@ -46,27 +49,21 @@ public class MongoImportTempFileImporter implements EntityRecordImporter {
 		
 		Process process;
 		
-		StringBuilder sb = new StringBuilder("mongoimport ");
-		if (stopOnError) sb.append(" --stopOnError ");
-		if (dropCollection) sb.append(" --drop ");
-		if (upsertRecords) sb.append(" --upsert ");
-		sb.append(String.format(" --username %s ", credentials.getUsername()));
-		sb.append(String.format(" --password %s ", credentials.getPassword()));
-		if (credentials.getHost().contains(":")){
-			sb.append(String.format(" --host %s ", credentials.getHost()));
-		} else if (credentials.getPort() != null){
-			sb.append(String.format(" --host %s:%s ", credentials.getHost(), credentials.getPort()));
-		} else {
-			sb.append(String.format(" --host %s:27017 ", credentials.getHost()));
-		}
-		sb.append(String.format(" --db %s ", credentials.getDatabase()));
-		sb.append(String.format(" --collection %s ", collection));
-		sb.append(String.format(" --file %s ", filePath));
+		StringBuilder sb = new StringBuilder("mysqlimport --local ");
+		if (!stopOnError) sb.append(" --force ");
+		if (dropCollection) sb.append(" --delete ");
+		if (columns != null) sb.append(String.format(" -c %s ", columns));
+		sb.append(String.format(" -u %s ", credentials.getUsername()));
+		sb.append(String.format(" -p%s ", credentials.getPassword()));
+		sb.append(String.format(" -h %s ", credentials.getHost()));
+		sb.append(String.format(" %s %s ", credentials.getDatabase(), filePath));
+		String command = sb.toString();
+		logger.debug(String.format("CENTROMERE: Executing mysqlimport with command: %s", command));
 		
-		String[] commands = new String[]{ "/bin/bash", "-c", sb.toString() }; // TODO: Support for Windows and other shells
+		String[] commands = new String[]{ "/bin/bash", "-c", command }; // TODO: Support for Windows and other shells
 		try {
 			
-			logger.debug(String.format("CENTROMERE: Importing file to MongoDB: %s", filePath));
+			logger.debug(String.format("CENTROMERE: Importing file to MySQL: %s", filePath));
 			process = Runtime.getRuntime().exec(commands);
 			
 			
@@ -105,19 +102,15 @@ public class MongoImportTempFileImporter implements EntityRecordImporter {
 		logger.debug(String.format("CENTROMERE: MongoImport complete: %s", filePath));
 	}
 	
-	public MongoImportTempFileImporter setStopOnError(boolean stopOnError) {
+	public MySqlImportTempFileImporter setStopOnError(boolean stopOnError) {
 		this.stopOnError = stopOnError;
 		return this;
 	}
 
-	public MongoImportTempFileImporter setUpsertRecords(boolean upsertRecords) {
-		this.upsertRecords = upsertRecords;
-		return this;
-	}
-
-	public MongoImportTempFileImporter setDropCollection(boolean dropCollection) {
+	public MySqlImportTempFileImporter setDropCollection(boolean dropCollection) {
 		this.dropCollection = dropCollection;
 		return this;
 	}
+
 
 }

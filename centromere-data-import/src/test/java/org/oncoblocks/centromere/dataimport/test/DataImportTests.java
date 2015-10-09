@@ -22,6 +22,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
+import org.oncoblocks.centromere.dataimport.importer.DatabaseCredentials;
 import org.oncoblocks.centromere.dataimport.importer.MongoImportTempFileImporter;
 import org.oncoblocks.centromere.dataimport.test.config.DataImportConfig;
 import org.oncoblocks.centromere.dataimport.test.config.MongoRepositoryConfig;
@@ -203,8 +204,8 @@ public class DataImportTests {
 		Assert.notNull(content);
 		System.out.print(content);
 
-		MongoImportTempFileImporter.MongoImportCredentials credentials = 
-				new MongoImportTempFileImporter.MongoImportCredentials(
+		DatabaseCredentials credentials = 
+				new DatabaseCredentials(
 						environment.getRequiredProperty("mongo.username"),
 						environment.getRequiredProperty("mongo.password"),
 						environment.getRequiredProperty("mongo.host"),

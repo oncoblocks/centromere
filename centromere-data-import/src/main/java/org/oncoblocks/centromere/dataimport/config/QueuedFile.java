@@ -29,6 +29,8 @@ public class QueuedFile {
 	private DataFileMetadata dataFile;
 	private DataSetMetadata dataSet;
 	private GeneralFileProcessor processor;
+	
+	private String tempFileName;
 
 	public QueuedFile() { }
 
@@ -70,6 +72,15 @@ public class QueuedFile {
 	public QueuedFile setProcessor(
 			GeneralFileProcessor processor) {
 		this.processor = processor;
+		return this;
+	}
+
+	public String getTempFileName() {
+		return tempFileName;
+	}
+
+	public QueuedFile setTempFileName(String tempFileName) {
+		this.tempFileName = tempFileName;
 		return this;
 	}
 }

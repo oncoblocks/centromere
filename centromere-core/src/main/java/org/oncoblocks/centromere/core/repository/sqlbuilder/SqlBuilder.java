@@ -377,7 +377,7 @@ public class SqlBuilder {
 			default:
 				sql = getSelectClause() + getFromClause() + getWhereClause() + getGroupByClause() + getOrderByClause() + getLimitClause();
 		}
-		logger.debug(sql);
+		//logger.debug(sql);
 		return sql;
 	}
 	

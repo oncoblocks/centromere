@@ -39,6 +39,8 @@ public class GeneralFileProcessor<T extends Model<ID>, ID extends Serializable>
 	private EntityRecordWriter<T, ID> writer;
 	private EntityRecordImporter importer;
 	
+	private boolean failOnInvalidRecord = true;
+	
 	private static final Logger logger = LoggerFactory.getLogger(GeneralFileProcessor.class);
 	
 	public GeneralFileProcessor(){ }
@@ -72,18 +74,27 @@ public class GeneralFileProcessor<T extends Model<ID>, ID extends Serializable>
 		reader.setDataFileId(dataFileId);
 		reader.setDataSetId(dataSetId);
 		long counter = 0;
+		T record = null;
 		try {
 			logger.debug(String.format("CENTROMERE: Preparing input file reader: %s", inputFilePath));
 			reader.open(inputFilePath);
 			logger.debug(String.format("CENTROMERE: Preparing temp file writer: %s", tempFilePath));
 			writer.open(tempFilePath);
 			if (validator == null) logger.debug(String.format("CENTROMERE: Skipping entity validation for input file: %s", inputFilePath));
-			T record = reader.readRecord();
+			record = reader.readRecord();
 			while (record != null) {
 				if (validator != null) {
-					if (validator.validate(record)) {
-						writer.writeRecord(record);
-						counter++;
+					try {
+						if (validator.validate(record)) {
+							writer.writeRecord(record);
+							counter++;
+						}
+					} catch (Exception e){
+						if (failOnInvalidRecord){
+							throw e;
+						} else {
+							logger.warn(String.format("CENTROMERE: Skipping invalid record: %s ", record.toString()));
+						}
 					}
 				} else {
 					writer.writeRecord(record);
@@ -93,6 +104,7 @@ public class GeneralFileProcessor<T extends Model<ID>, ID extends Serializable>
 			}
 		} catch (Exception e){
 			e.printStackTrace();
+			if (record != null) logger.warn(String.format("CENTROMERE: Current record: %s", record.toString()));
 			throw new DataImportException(e.getMessage());
 		} finally {
 			reader.close();
@@ -142,5 +154,14 @@ public class GeneralFileProcessor<T extends Model<ID>, ID extends Serializable>
 	public void setImporter(
 			EntityRecordImporter importer) {
 		this.importer = importer;
+	}
+
+	public boolean isFailOnInvalidRecord() {
+		return failOnInvalidRecord;
+	}
+
+	public GeneralFileProcessor setFailOnInvalidRecord(boolean failOnInvalidRecord) {
+		this.failOnInvalidRecord = failOnInvalidRecord;
+		return this;
 	}
 }

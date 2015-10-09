@@ -83,7 +83,11 @@ public class DataImportJob {
 
 				logger.debug("CENTROMERE: Creating new data set record: " + dataSetMetadata.getName());
 				if (dataSetMetadata.getId() == null || !dataSetRepository.exists(dataSetMetadata.getId())) {
-					dataSetMetadata = (DataSetMetadata) dataSetRepository.insert(dataSetMetadata);
+					if (dataSetRepository.getByName(dataSetMetadata.getName()) != null){
+						dataSetMetadata = dataSetRepository.getByName(dataSetMetadata.getName());
+					} else {
+						dataSetMetadata = (DataSetMetadata) dataSetRepository.insert(dataSetMetadata);
+					}
 				} else {
 					logger.debug("CENTROMERE: Data set already exists.");
 				}
@@ -106,7 +110,8 @@ public class DataImportJob {
 					GeneralFileProcessor processor = queuedFile.getProcessor();
 
 					File inputFile = new File(dataFileMetadata.getFilePath());
-					String tempFileName = inputFile.getName() + ".tmp";
+					String tempFileName = queuedFile.getTempFileName() != null ? 
+							queuedFile.getTempFileName() : inputFile.getName() + ".tmp";
 					File tempFile = new File(options.getTempFileDirectory(), tempFileName);
 
 					logger.debug("CENTROMERE: Processing file " + dataFileMetadata.getFilePath());
