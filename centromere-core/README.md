@@ -30,6 +30,8 @@ public class Gene implements Model<String> {
 
 	public Gene() { };
 
+	@Override public String getId(){ return id; }
+
 	/* Getters and Setters */
 }
 
@@ -42,16 +44,18 @@ public class Subject implements Model<Integer> {
 	private String gender;
 	private Integer age;
 	private List<Attributes> attributes;
-	
+
 	public Subject() { };
-	
+
+	@Override public Integer getId(){ return id; }
+
 	/* Getters and Setters */
 
 }
 
 ```
 
-The `Model` interface ensures that the entity has a defined primary ID, of the specified type (in this case, a `String` representation of a MongoDB `ObjectID`, and an `Integer` representation of an auto-incremented SQL table ID).  The `@Filterable` annotation identifies the entity class as being a candidate for field-filtering operations in the web services layer.  The `Attributes` class is a helper class for creating additional sparse key-value pair attributes for the class. 
+The `Model` interface ensures that the entity has a defined primary ID, of the specified type (in this case, a `String` representation of a MongoDB `ObjectID`, and an `Integer` representation of an auto-incremented SQL table ID).  It is possible to use tables/collections with composite primary key ids.  To do this, the `ID` generic type in the `Model` implementation should be an array or collection.  The `@Filterable` annotation identifies the entity class as being a candidate for field-filtering operations in the web services layer.  The `Attributes` class is a helper class for creating additional sparse key-value pair attributes for the class.
 
 For MongoDB databases, you can customize how the model classes are persisted by using [Spring Data annotations](http://docs.spring.io/spring-data/data-document/docs/current/reference/html/#mapping-usage-annotations) in your model class.  By default, persisted models will be created in a collection with the same name as your class, and with the document ID assigned to an attribute with the name `id`, if one exists.
 
@@ -70,40 +74,43 @@ By far the simplest repository implementation to configure is the MongoDB implem
 ```java
 @Repository
 public class GeneRepository extends GenericMongoRepository<Gene, String> {
-	
+
 	@Autowired
 	public GeneRepository(MongoTemplate mongoTemplate) {
 		super(mongoTemplate, Gene.class);
 	}
-	
+
 	public List<Gene> findByEntrezGeneId(Long entrezGeneId){
 	    return this.getMongoOperations()
 	        .find(new Query(Criteria.where("entrezGeneId").is(entrezGeneId));
 	}
-	
+
 }
 ```
 
 #### SQL Databases
 
 Repository implementations for SQL databases are more complex, but still allow the same flexibility and query power that that the MongoDB repositories allow.  The `GenericJdbcRepository` is based on the class, `com.nurkiewicz.jdbcrepository.JdbcRepository`, but uses a more complex version of the `TableDescription` class, and a custom SQL generation class, `SqlBuilder`.  Much like with `JdbcRepository`, you define a `GenericJdbcRepository` using a `ComplexTableDescription`, `RowMapper`, and optional `RowUnmapper`.  The following repository class implementation supposes that the `Subject` class defined above is persisted in a signle table:
- 
+
 ```java
 /* Subject data stored in a single table */
 @Repository
 public SubjectRepository extends GenericJdbcRepository<Subject, Integer> {
-	
+
 	@Autowired
 	public SubjectRepository(DataSource dataSource){
 	    super(dataSource, new SubjectTableDescription(), new SubjectMapper(), new SubjectUnmapper());
 	}
-	
+
 	public static class SubjectTableDescription extends ComplexTableDescription {
 		public SubjectTableDescription(){
-			super("subjects", Arrays.asList("subject_id"));
+			super(
+				"subjects", // table name
+				Arrays.asList("subject_id") // primary key ID columns
+			);
 		}
 	}
-	
+
 	public static class SubjectMapper implements RowMapper<Subject> {
 		@Override
 		public Subject mapRow(ResultSet rs, int i){
@@ -123,7 +130,7 @@ public SubjectRepository extends GenericJdbcRepository<Subject, Integer> {
 			return subject;
 		}
 	}
-	
+
 	public static class SubjectUnmapper implements RowUnmapper<Subject> {
 		@Override
 		public Map<String,Object> mapColumns(Subject subject){
@@ -145,7 +152,7 @@ public SubjectRepository extends GenericJdbcRepository<Subject, Integer> {
 			return map;
 		}
 	}
-	
+
 }
 ```
 
@@ -157,15 +164,15 @@ Storing `Subject` records with their `Attributes` in a single table is simple en
 /* Subject data stored in two MySQL tables */
 @Repository
 public SubjectRepository extends GenericJdbcRepository<Subject, Integer> {
-	
+
 	@Autowired
 	public SubjectRepository(DataSource dataSource){
 	    super(dataSource, new SubjectTableDescription(), new SubjectMapper());
 	}
-	
+
 	@Override
 	public <S extends Subject> S insert(S entity) {
-    
+
     		KeyHolder keyHolder = new GeneratedKeyHolder();
     		this.getJdbcTemplate().update(
     				new PreparedStatementCreator() {
@@ -187,7 +194,7 @@ public SubjectRepository extends GenericJdbcRepository<Subject, Integer> {
     		);
     		Integer subjectId = keyHolder.getKey().intValue();
     		entity.setId(Integer.toString(geneId));
-    		
+
     		if (entity.getAttributes() != null) {
     			for (Attribute attribute : entity.getAttributes()) {
     				this.getJdbcTemplate().update(
@@ -195,20 +202,23 @@ public SubjectRepository extends GenericJdbcRepository<Subject, Integer> {
     						subjectId, attribute.getName(), attribute.getValue());
     			}
     		}
-    
+
     		return entity;
-    
-    	} 
-	
+
+    	}
+
 	public static class SubjectTableDescription extends ComplexTableDescription {
 		public SubjectTableDescription(){
-			super("subjects", Arrays.asList("s.subject_id"), 
-			"s.*, GROUP_CONCAT(CONCAT(a.name, '::', a.value) SEPARATOR ':::') as attributes",
-			"subjects s left join subject_attributes a on s.subject_id = a.subject_id",
-			"s.subject_id");
+			super(
+				"subjects", // table name
+				Arrays.asList("s.subject_id"), // primary key IDs
+				"s.*, GROUP_CONCAT(CONCAT(a.name, '::', a.value) SEPARATOR ':::') as attributes", // SELECT statement
+				"subjects s left join subject_attributes a on s.subject_id = a.subject_id", // FROM statement
+				"s.subject_id" // GROUP BY statement
+			);
 		}
 	}
-	
+
 	public static class SubjectMapper implements RowMapper<Subject> {
 		@Override
 		public Subject mapRow(ResultSet rs, int i){
@@ -228,7 +238,7 @@ public SubjectRepository extends GenericJdbcRepository<Subject, Integer> {
 			return subject;
 		}
 	}
-	
+
 }
 ```
 

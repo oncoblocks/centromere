@@ -21,9 +21,9 @@ public class ApplicationConfig {
 }
 ```
 
-### Web Services
+### Web Service Controllers
 
-The web services (controller) layer handles HTTP requests and routes them to the appropriate repository implementation.  Web service controllers support standard CRUD operations via `GET`, `POST`, `PUT`, and `DELETE`. `HEAD` and `OPTIONS` methods are also supported for the purpose of exposing additional resource end-point information.
+The web services controller layer handles HTTP requests and routes them to the appropriate repository implementation.  Web service controllers support standard CRUD operations via `GET`, `POST`, `PUT`, and `DELETE`. `HEAD` and `OPTIONS` methods are also supported for the purpose of exposing additional resource endpoint information.
 
 ```java
 @Controller
@@ -51,7 +51,8 @@ public class GeneController extends CrudApiController<Gene, String, GeneParamete
     		super(GeneController.class, FilterableResource.class);
     	}
 
-    	@Override public FilterableResource toResource(Gene gene) {
+    	@Override
+		public FilterableResource toResource(Gene gene) {
     		FilterableResource<Gene> resource = new FilterableResource<Gene>(gene);
     		resource.add(linkTo(GeneController.class).slash(gene.getId()).withSelfRel());
     		return resource;
@@ -83,10 +84,12 @@ By default, Centromere uses the `application/json` media type for all requests. 
 
 #### Searching
 
-You can perform queries using one or more entity attributes:
+Centromere supports dynamic query operations using query string parameters.  These parameters are configures in the controller class implementations. You can perform queries using one or more entity attributes in the standard way:
 
 ```
-GET /genes?alias=akt&geneType=protein-coding
+GET /genes?alias=akt,mtor,braf
+GET /cnv?valueBetween=-0.5,0.5
+GET /samples?tissue=lung&type=cellLine
 ```
 
 #### Paging and Sorting

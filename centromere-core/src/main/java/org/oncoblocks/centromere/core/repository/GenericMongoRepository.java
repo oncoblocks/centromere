@@ -264,66 +264,60 @@ public class GenericMongoRepository<T extends Model<ID>, ID extends Serializable
 	 * @return {@link org.springframework.data.mongodb.core.query.Criteria} representation of the input.
 	 */
 	protected Criteria getQueryFromQueryCriteria(Iterable<QueryCriteria> queryCriterias){
-		boolean flag = false;
-		Criteria criteria = null;
+		List<Criteria> criteriaList = new ArrayList<>();
 		for (QueryCriteria queryCriteria: queryCriterias){
+			Criteria criteria = null;
 			if (queryCriteria != null) {
-				if (flag) {
-					if (!queryCriteria.getEvaluation().equals(Evaluation.BETWEEN)){
-						criteria = criteria.and(queryCriteria.getKey());
-					} 
-				} else {
-					if (!queryCriteria.getEvaluation().equals(Evaluation.BETWEEN)){
-						criteria = Criteria.where(queryCriteria.getKey());
-					} else {
-						criteria = new Criteria();
-					}
-				}
-				flag = true;
 				switch (queryCriteria.getEvaluation()) {
 					case EQUALS:
-						criteria.is(queryCriteria.getValue());
+						criteria = new Criteria(queryCriteria.getKey()).is(queryCriteria.getValue());
 						break;
 					case NOT_EQUALS:
-						criteria.not().is(queryCriteria.getValue());
+						criteria = new Criteria(queryCriteria.getKey()).not().is(queryCriteria.getValue());
 						break;
 					case IN:
-						criteria.in((Object[]) queryCriteria.getValue());
+						criteria = new Criteria(queryCriteria.getKey()).in((Object[]) queryCriteria.getValue());
 						break;
 					case NOT_IN:
-						criteria.nin((Object[]) queryCriteria.getValue());
+						criteria = new Criteria(queryCriteria.getKey()).nin((Object[]) queryCriteria.getValue());
 						break;
 					case IS_NULL:
-						criteria.is(null);
+						criteria = new Criteria(queryCriteria.getKey()).is(null);
 						break;
 					case NOT_NULL:
-						criteria.not().is(null);
+						criteria = new Criteria(queryCriteria.getKey()).not().is(null);
 						break;
 					case GREATER_THAN:
-						criteria.gt(queryCriteria.getValue());
+						criteria = new Criteria(queryCriteria.getKey()).gt(queryCriteria.getValue());
 						break;
 					case GREATER_THAN_EQUALS:
-						criteria.gte(queryCriteria.getValue());
+						criteria = new Criteria(queryCriteria.getKey()).gte(queryCriteria.getValue());
 						break;
 					case LESS_THAN:
-						criteria.lt(queryCriteria.getValue());
+						criteria = new Criteria(queryCriteria.getKey()).lt(queryCriteria.getValue());
 						break;
 					case LESS_THAN_EQUALS:
-						criteria.lte(queryCriteria.getValue());
+						criteria = new Criteria(queryCriteria.getKey()).lte(queryCriteria.getValue());
 						break;
 					case BETWEEN:
-						criteria.gt(((List) queryCriteria.getValue()).get(0)).and(queryCriteria.getKey()).lt(((List) queryCriteria.getValue()).get(1));
+						criteria = new Criteria().andOperator(
+								Criteria.where(queryCriteria.getKey()).gt(((List) queryCriteria.getValue()).get(0)),
+								Criteria.where(queryCriteria.getKey()).lt(((List) queryCriteria.getValue()).get(1)));
 						break;
 					case OUTSIDE:
-						criteria.orOperator(Criteria.where(queryCriteria.getKey()).lt(((List) queryCriteria.getValue()).get(0)),
+						criteria = new Criteria().orOperator(
+								Criteria.where(queryCriteria.getKey()).lt(((List) queryCriteria.getValue()).get(0)),
 								Criteria.where(queryCriteria.getKey()).gt(((List) queryCriteria.getValue()).get(1)));
+						break;
 					default:
-						criteria.is(queryCriteria.getValue());
+						criteria = new Criteria(queryCriteria.getKey()).is(queryCriteria.getValue());
 				}
+				criteriaList.add(criteria);
 			}
 		}
 
-		return criteria;
+		return criteriaList.size() > 0 ? 
+				new Criteria().andOperator(criteriaList.toArray(new Criteria[]{})) : null;
 	}
 
 	/**

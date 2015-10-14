@@ -154,6 +154,22 @@ public class EntrezGene implements Model<Long> {
 		this.aliases = aliases;
 	}
 
+	@Override public String toString() {
+		return "EntrezGene{" +
+				"entrezGeneId=" + entrezGeneId +
+				", primaryGeneSymbol='" + primaryGeneSymbol + '\'' +
+				", taxId=" + taxId +
+				", locusTag='" + locusTag + '\'' +
+				", chromosome='" + chromosome + '\'' +
+				", chromosomeLocation='" + chromosomeLocation + '\'' +
+				", description='" + description + '\'' +
+				", geneType='" + geneType + '\'' +
+				", attributes=" + attributes +
+				", dbXrefs=" + dbXrefs +
+				", aliases=" + aliases +
+				'}';
+	}
+
 	public static List<EntrezGene> createDummyData(){
 		
 		List<EntrezGene> genes = new ArrayList<>();

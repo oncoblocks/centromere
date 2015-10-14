@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.oncoblocks.centromere.core.repository.Evaluation;
 import org.oncoblocks.centromere.core.repository.QueryCriteria;
 import org.oncoblocks.centromere.core.test.config.TestMongoConfig;
 import org.oncoblocks.centromere.core.test.models.EntrezGene;
@@ -32,6 +33,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -318,6 +320,60 @@ public class GenericMongoRepositoryTests {
 		genes = geneRepository.guessGene("XYZ");
 		Assert.isNull(genes);
 		
+	}
+	
+	@Test
+	public void findByBetweenTest() throws Exception {
+		List<QueryCriteria> criterias = new ArrayList<>();
+		criterias.add(new QueryCriteria("entrezGeneId", new ArrayList<Long>(Arrays.asList(new Long[]{2L, 4L})),
+				Evaluation.BETWEEN));
+		List<EntrezGene> genes = geneRepository.find(criterias);
+		Assert.notNull(genes);
+		Assert.notEmpty(genes);
+		Assert.isTrue(genes.size() == 1);
+		Assert.isTrue(genes.get(0).getEntrezGeneId().equals(3L));
+	}
+
+	@Test
+	public void findByTypeAndBetweenTest() throws Exception {
+
+		List<QueryCriteria> criterias = new ArrayList<>();
+		criterias.add(new QueryCriteria("geneType", "pseudo"));
+		criterias.add(new QueryCriteria("entrezGeneId", new ArrayList<Long>(Arrays.asList(new Long[]{2L, 5L})),
+				Evaluation.BETWEEN));
+		List<EntrezGene> genes = geneRepository.find(criterias);
+
+		Assert.notNull(genes);
+		Assert.notEmpty(genes);
+		Assert.isTrue(genes.size() == 1);
+		Assert.isTrue(genes.get(0).getEntrezGeneId().equals(3L));
+	}
+
+	@Test
+	public void findByOutsideTest() throws Exception {
+		List<QueryCriteria> criterias = new ArrayList<>();
+		criterias.add(new QueryCriteria("entrezGeneId", new ArrayList<Long>(Arrays.asList(new Long[]{2L, 4L})),
+				Evaluation.OUTSIDE));
+		List<EntrezGene> genes = geneRepository.find(criterias);
+		Assert.notNull(genes);
+		Assert.notEmpty(genes);
+		Assert.isTrue(genes.size() == 2);
+		Assert.isTrue(genes.get(1).getEntrezGeneId().equals(5L));
+	}
+
+	@Test
+	public void findByTypeAndOutsideTest() throws Exception {
+		
+		List<QueryCriteria> criterias = new ArrayList<>();
+		criterias.add(new QueryCriteria("geneType", "protein-coding"));
+		criterias.add(new QueryCriteria("entrezGeneId", new ArrayList<Long>(Arrays.asList(new Long[]{2L, 3L})),
+				Evaluation.OUTSIDE));
+		List<EntrezGene> genes = geneRepository.find(criterias);
+		
+		Assert.notNull(genes);
+		Assert.notEmpty(genes);
+		Assert.isTrue(genes.size() == 2);
+		Assert.isTrue(genes.get(1).getEntrezGeneId().equals(4L));
 	}
 	
 }
