@@ -25,7 +25,8 @@ import org.springframework.core.convert.converter.Converter;
  * @author woemler
  */
 public class StringToAttributeConverter implements Converter<String, Attribute> {
-	@Override public Attribute convert(String s) {
+	@Override 
+	public Attribute convert(String s) {
 		String[] bits = s.split(":");
 		Attribute attribute = new Attribute();
 		attribute.setName(bits[0]);

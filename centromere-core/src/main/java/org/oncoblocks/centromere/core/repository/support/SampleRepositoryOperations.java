@@ -33,4 +33,5 @@ public interface SampleRepositoryOperations<T extends Model<ID>, ID extends Seri
 	List<T> findByDataSetId(ID dataSetId);
 	List<T> findByName(String name);
 	List<T> findByStudyId(ID studyId);
+	T findByNameAndDataSet(String name, ID dataSetId);
 }

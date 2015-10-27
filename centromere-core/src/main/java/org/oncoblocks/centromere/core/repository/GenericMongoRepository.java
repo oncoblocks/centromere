@@ -309,6 +309,16 @@ public class GenericMongoRepository<T extends Model<ID>, ID extends Serializable
 								Criteria.where(queryCriteria.getKey()).lt(((List) queryCriteria.getValue()).get(0)),
 								Criteria.where(queryCriteria.getKey()).gt(((List) queryCriteria.getValue()).get(1)));
 						break;
+					case BETWEEN_INCLUSIVE:
+						criteria = new Criteria().andOperator(
+								Criteria.where(queryCriteria.getKey()).gte(((List) queryCriteria.getValue()).get(0)),
+								Criteria.where(queryCriteria.getKey()).lte(((List) queryCriteria.getValue()).get(1)));
+						break;
+					case OUTSIDE_INCLUSIVE:
+						criteria = new Criteria().orOperator(
+								Criteria.where(queryCriteria.getKey()).lte(((List) queryCriteria.getValue()).get(0)),
+								Criteria.where(queryCriteria.getKey()).gte(((List) queryCriteria.getValue()).get(1)));
+						break;
 					default:
 						criteria = new Criteria(queryCriteria.getKey()).is(queryCriteria.getValue());
 				}

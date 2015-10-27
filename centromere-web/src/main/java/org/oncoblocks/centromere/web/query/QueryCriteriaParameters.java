@@ -16,6 +16,7 @@
 
 package org.oncoblocks.centromere.web.query;
 
+import org.oncoblocks.centromere.core.repository.Evaluation;
 import org.oncoblocks.centromere.core.repository.QueryCriteria;
 
 import java.util.ArrayList;
@@ -53,6 +54,14 @@ public abstract class QueryCriteriaParameters implements
 	
 	public void addQueryCriteria(QueryCriteria criteria){
 		this.queryCriterias.add(criteria);
+	}
+	
+	public void addQueryCriteria(String name, Object value, Evaluation evaluation){
+		this.addQueryCriteria(new QueryCriteria(name, value, evaluation));
+	}
+	
+	public void addQueryCriteria(String name, Object value){
+		this.addQueryCriteria(new QueryCriteria(name, value, Evaluation.EQUALS));
 	}
 	
 	public abstract Map<String,String> getParameterMap();

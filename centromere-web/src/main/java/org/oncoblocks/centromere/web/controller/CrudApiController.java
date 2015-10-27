@@ -18,6 +18,7 @@ package org.oncoblocks.centromere.web.controller;
 
 import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.repository.RepositoryOperations;
+import org.oncoblocks.centromere.web.query.QueryParameters;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -37,11 +38,8 @@ import java.io.Serializable;
  * 
  * @author woemler
  */
-public class CrudApiController<
-		T extends Model<ID>,
-		ID extends Serializable,
-		Q extends org.oncoblocks.centromere.web.query.AnnotatedQueryParameters> 
-		extends org.oncoblocks.centromere.web.controller.BaseApiController<T, ID, Q> {
+public class CrudApiController<T extends Model<ID>, ID extends Serializable, Q extends QueryParameters> 
+		extends BaseApiController<T, ID, Q> {
 	
 	public CrudApiController(RepositoryOperations<T, ID> service,
 			ResourceAssemblerSupport<T, org.oncoblocks.centromere.web.controller.FilterableResource> assembler) {
