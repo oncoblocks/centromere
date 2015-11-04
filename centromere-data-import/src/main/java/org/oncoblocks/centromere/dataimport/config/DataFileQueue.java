@@ -48,7 +48,7 @@ public class DataFileQueue {
 	}
 	
 	public boolean hasNext(){
-		return queuedFiles.size() > 0;
+		return queuedFiles != null && queuedFiles.size() > 0;
 	}
 	
 }

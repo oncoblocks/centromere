@@ -323,6 +323,17 @@ public class GenericMongoRepositoryTests {
 	}
 	
 	@Test
+	public void findInTest() throws Exception {
+		List<QueryCriteria> criterias = new ArrayList<>();
+		criterias.add(new QueryCriteria("primaryGeneSymbol", Arrays.asList(new String[]{ "GeneA", "GeneB" }), Evaluation.IN));
+		List<EntrezGene> genes = geneRepository.find(criterias);
+		System.out.println(genes);
+		Assert.notNull(genes);
+		Assert.isTrue(genes.size() == 2);
+		Assert.isTrue(genes.get(1).getPrimaryGeneSymbol().equals("GeneB"));
+	}
+	
+	@Test
 	public void findByBetweenTest() throws Exception {
 		List<QueryCriteria> criterias = new ArrayList<>();
 		criterias.add(new QueryCriteria("entrezGeneId", new ArrayList<Long>(Arrays.asList(new Long[]{2L, 4L})),

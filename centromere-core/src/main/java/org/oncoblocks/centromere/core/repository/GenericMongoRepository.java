@@ -32,6 +32,7 @@ import org.springframework.util.Assert;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -276,10 +277,10 @@ public class GenericMongoRepository<T extends Model<ID>, ID extends Serializable
 						criteria = new Criteria(queryCriteria.getKey()).not().is(queryCriteria.getValue());
 						break;
 					case IN:
-						criteria = new Criteria(queryCriteria.getKey()).in((Object[]) queryCriteria.getValue());
+						criteria = new Criteria(queryCriteria.getKey()).in((Collection) queryCriteria.getValue());
 						break;
 					case NOT_IN:
-						criteria = new Criteria(queryCriteria.getKey()).nin((Object[]) queryCriteria.getValue());
+						criteria = new Criteria(queryCriteria.getKey()).nin((Collection) queryCriteria.getValue());
 						break;
 					case IS_NULL:
 						criteria = new Criteria(queryCriteria.getKey()).is(null);
