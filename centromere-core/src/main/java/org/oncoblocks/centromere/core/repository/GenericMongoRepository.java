@@ -132,6 +132,21 @@ public class GenericMongoRepository<T extends Model<ID>, ID extends Serializable
 		long count = count(queryCriterias);
 		return new PageImpl<T>(entities, pageable, count);
 	}
+	
+	
+	public List<Object> findDistinct(String field){
+		return mongoOperations.getCollection(mongoOperations.getCollectionName(model)).distinct(field);
+	}
+
+	public List<Object> findDistinct(String field, Iterable<QueryCriteria> queryCriterias){
+		Criteria criteria = getQueryFromQueryCriteria(queryCriterias);
+		Query query = new Query();
+		if (criteria != null){
+			query.addCriteria(criteria);
+		}
+		return mongoOperations.getCollection(mongoOperations.getCollectionName(model))
+				.distinct(field, query.getQueryObject());
+	}
 
 	/**
 	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#insert}

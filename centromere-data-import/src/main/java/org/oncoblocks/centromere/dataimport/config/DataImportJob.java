@@ -112,7 +112,7 @@ public class DataImportJob {
 					File inputFile = new File(dataFileMetadata.getFilePath());
 					String tempFileName = queuedFile.getTempFileName() != null ? 
 							queuedFile.getTempFileName() : inputFile.getName() + ".tmp";
-					File tempFile = new File(options.getTempFileDirectory(), tempFileName);
+					File tempFile = new File(options.getTempFileDirectory(), tempFileName.replaceAll("\\s+", "_"));
 
 					logger.debug("CENTROMERE: Processing file " + dataFileMetadata.getFilePath());
 					Date fileStart = new Date();
