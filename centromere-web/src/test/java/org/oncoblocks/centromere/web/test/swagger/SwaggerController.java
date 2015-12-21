@@ -17,19 +17,10 @@
 package org.oncoblocks.centromere.web.test.swagger;
 
 import org.oncoblocks.centromere.web.test.models.EntrezGene;
-import org.oncoblocks.centromere.web.util.HalMediaType;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.oncoblocks.centromere.web.test.repository.mongo.EntrezGeneRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author woemler
@@ -37,52 +28,10 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/swagger")
-public class SwaggerController  {
+public class SwaggerController extends TestApiController<EntrezGene> {
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET,
-			produces = { HalMediaType.APPLICATION_HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE })
-	public HttpEntity findById(@PathVariable Long id){
-		EntrezGene gene = new EntrezGene();
-		gene.setEntrezGeneId(id);
-		gene.setPrimaryGeneSymbol("TEST");
-		return new ResponseEntity<EntrezGene>(gene, HttpStatus.OK);
+	@Autowired
+	public SwaggerController(EntrezGeneRepository repository) {
+		super(repository);
 	}
-
-	@RequestMapping(value = "", method = RequestMethod.GET,
-			produces = { MediaType.APPLICATION_JSON_VALUE, HalMediaType.APPLICATION_HAL_JSON_VALUE})
-	public HttpEntity find(@RequestParam(value = "symbol", required = false) String geneSymbol){
-		List<EntrezGene> genes = new ArrayList<>();
-		EntrezGene gene = new EntrezGene();
-		gene.setEntrezGeneId(0L);
-		gene.setPrimaryGeneSymbol(geneSymbol != null ? geneSymbol : "TEST");
-		genes.add(gene);
-		return new ResponseEntity<>(genes, HttpStatus.OK);
-	}
-	
-	@RequestMapping(method = RequestMethod.HEAD)
-	public HttpEntity head(){
-		return new ResponseEntity(HttpStatus.OK);
-	}
-
-	@RequestMapping(value = "", method = RequestMethod.POST,
-			produces = { MediaType.APPLICATION_JSON_VALUE, HalMediaType.APPLICATION_HAL_JSON_VALUE})
-	public HttpEntity post(){
-		return new ResponseEntity(HttpStatus.OK);
-	}
-
-	@RequestMapping(value = "", method = RequestMethod.PUT,
-			produces = { MediaType.APPLICATION_JSON_VALUE, HalMediaType.APPLICATION_HAL_JSON_VALUE})
-	public HttpEntity put(){
-		return new ResponseEntity(HttpStatus.OK);
-	}
-
-	@RequestMapping(value = "", method = RequestMethod.DELETE,
-			produces = { MediaType.APPLICATION_JSON_VALUE, HalMediaType.APPLICATION_HAL_JSON_VALUE})
-	public HttpEntity delete(){
-		return new ResponseEntity(HttpStatus.OK);
-	}
-	
-	
-	
-	
 }

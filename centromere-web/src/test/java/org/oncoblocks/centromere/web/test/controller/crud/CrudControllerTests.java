@@ -251,6 +251,21 @@ public class CrudControllerTests {
 				.andExpect(jsonPath("$.content[0]", hasKey("entrezGeneId")))
 				.andExpect(jsonPath("$.content[0].entrezGeneId", is(5)));
 	}
+	
+	@Test
+	public void findDistinct() throws Exception {
+		mockMvc.perform(get("/genes/distinct?field=geneType"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$", hasSize(2)));
+	}
+
+	@Test
+	public void findDistinctFiltered() throws Exception {
+		mockMvc.perform(get("/genes/distinct?field=primaryGeneSymbol&geneType=protein-coding"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$", hasSize(3)))
+				.andExpect(jsonPath("$[2]", is("GeneD")));
+	}
 
 	@Test
 	public void createTest() throws Exception {

@@ -101,13 +101,47 @@ public abstract class BaseApiController<
 	}
 
 	/**
+	 * {@code GET /distinct}
+	 * Fetches the distinct values of the model attribute, {@code field}, which fulfill the given 
+	 *   query parameters.
+	 * 
+	 * @param field Name of the model attribute to retrieve unique values of.
+	 * @param params {@link QueryParameters}
+	 * @param request {@link HttpServletRequest}
+	 * @return
+	 */
+	@RequestMapping(value = "/distinct", method = RequestMethod.GET,
+			produces = { HalMediaType.APPLICATION_HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE,
+					HalMediaType.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE,
+					MediaType.TEXT_PLAIN_VALUE })
+	public HttpEntity findDistinct(
+			@RequestParam String field, 
+			@ModelAttribute Q params,
+			HttpServletRequest request)
+	{
+		List<QueryCriteria> queryCriterias = params.getQueryCriteria();
+		List<Object> distinct = (List<Object>) repository.distinct(field, queryCriterias);
+		ResponseEnvelope envelope = null;
+		if (HalMediaType.isHalMediaType(request.getHeader("Accept"))){
+			Link selfLink = new Link(linkTo(this.getClass()).slash("distinct").toString() + 
+					(request.getQueryString() != null ? "?" + request.getQueryString() : ""), "self");
+			Resources resources = new Resources(distinct);
+			resources.add(selfLink);
+			envelope = new ResponseEnvelope(resources);
+		} else {
+			envelope = new ResponseEnvelope(distinct);
+		}
+		return new ResponseEntity<>(envelope, HttpStatus.OK);
+	}
+
+	/**
 	 * Queries the repository using inputted query string paramters, defined within a custom 
 	 *   {@link QueryParameters} implementation.  Supports hypermedia, pagination, sorting, field 
 	 *   filtering, and field exclusion.
 	 * 
-	 * @param params
-	 * @param pagedResourcesAssembler
-	 * @param request
+	 * @param params {@link QueryParameters}
+	 * @param pagedResourcesAssembler {@link PagedResourcesAssembler}
+	 * @param request {@link HttpServletRequest}
 	 * @return
 	 */
 	@RequestMapping(value = "", method = RequestMethod.GET,
@@ -122,8 +156,6 @@ public abstract class BaseApiController<
 			PagedResourcesAssembler<T> pagedResourcesAssembler, 
 			HttpServletRequest request)
 	{
-		Date start = new Date();
-		Date end;
 		ResponseEnvelope envelope;
 		pageable = this.remapPageable(pageable, params);
 		Map<String,String[]> parameterMap = request.getParameterMap();
@@ -133,7 +165,6 @@ public abstract class BaseApiController<
 				(request.getQueryString() != null ? "?" + request.getQueryString() : ""), "self");
 		if (parameterMap.containsKey("page") || parameterMap.containsKey("size")){
 			Page<T> page = repository.find(criterias, pageable);
-			end = new Date();
 			if (HalMediaType.isHalMediaType(mediaType)){
 				PagedResources<FilterableResource> pagedResources
 						= pagedResourcesAssembler.toResource(page, assembler, selfLink);
@@ -149,7 +180,6 @@ public abstract class BaseApiController<
 			} else {
 				entities = (List<T>) repository.find(criterias);
 			}
-			end = new Date();
 			if (HalMediaType.isHalMediaType(mediaType)){
 				List<FilterableResource> resourceList = assembler.toResources(entities);
 				Resources<FilterableResource> resources = new Resources<>(resourceList);
@@ -159,7 +189,6 @@ public abstract class BaseApiController<
 				envelope = new ResponseEnvelope(entities, fields, exclude);
 			}
 		}
-		logger.debug("BENCHMARK: Total request time: " + (end.getTime() - start.getTime()) + " ms");
 		return new ResponseEntity<>(envelope, HttpStatus.OK);
 	}
 
