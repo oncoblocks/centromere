@@ -120,6 +120,24 @@ public interface RepositoryOperations<T, ID extends Serializable> {
 	 */
 	long count(Iterable<QueryCriteria> queryCriterias);
 
+	/**
+	 * Returns a unsorted list of distinct values of the requested field.
+	 * 
+	 * @param field Model field name.
+	 * @return Sorted list of distinct values of {@code field}.
+	 */
+	Iterable<Object> distinct(String field);
+
+	/**
+	 * Returns a unsorted list of distinct values of the requested field, filtered using a {@link QueryCriteria}
+	 *   based query.
+	 *
+	 * @param field Model field name.
+   * @param queryCriterias Query criteria to filter the field values by.
+	 * @return Sorted list of distinct values of {@code field}.
+	 */
+	Iterable<Object> distinct(String field, Iterable<QueryCriteria> queryCriterias);
+
 	/* Create records */
 
 	/**

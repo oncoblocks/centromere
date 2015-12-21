@@ -242,6 +242,20 @@ public class GenericJdbcRepository<T extends Model<ID>, ID extends Serializable>
 	}
 
 	/**
+	 * TODO
+	 */
+	public Iterable<Object> distinct(String field) {
+		return null;
+	}
+
+	/**
+	 * TODO
+	 */
+	public Iterable<Object> distinct(String field, Iterable<QueryCriteria> queryCriterias) {
+		return null;
+	}
+
+	/**
 	 * {@link org.oncoblocks.centromere.core.repository.RepositoryOperations#insert}
 	 */
 	public <S extends T> S insert(S entity) {

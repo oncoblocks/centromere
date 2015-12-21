@@ -266,6 +266,35 @@ public class GenericMongoRepositoryTests {
 		Assert.isNull(deleted);
 
 	}
+	
+	@Test
+	public void distinctTest(){
+		
+		List<Object> geneSymbols = geneRepository.distinct("primaryGeneSymbol");
+		Assert.notNull(geneSymbols);
+		Assert.notEmpty(geneSymbols);
+		Assert.isTrue(geneSymbols.size() == 5);
+		String symbol = (String) geneSymbols.get(0);
+		Assert.isTrue(symbol.equals("GeneA"));
+		
+	}
+	
+	@Test
+	public void distinctQueryTest(){
+		
+		List<QueryCriteria> criterias = new ArrayList<>();
+		criterias.add(new QueryCriteria("geneType", "protein-coding"));
+		List<Object> geneSymbols = geneRepository.distinct("primaryGeneSymbol", criterias);
+		Assert.notNull(geneSymbols);
+		Assert.notEmpty(geneSymbols);
+		Assert.isTrue(geneSymbols.size() == 3);
+		String symbol = (String) geneSymbols.get(2);
+		Assert.isTrue(symbol.equals("GeneD"));
+		
+	}
+	
+	
+	/* EntrezGene repository-specific tests */
 
 	@Test
 	public void findByPrimaryIdTest() throws Exception {
@@ -321,6 +350,8 @@ public class GenericMongoRepositoryTests {
 		Assert.isNull(genes);
 		
 	}
+
+	/* Query operation tests */
 	
 	@Test
 	public void findInTest() throws Exception {
