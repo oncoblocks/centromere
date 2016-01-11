@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 William Oemler, Blueprint Medicines
+ * Copyright 2016 William Oemler, Blueprint Medicines
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,6 @@ import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.oncoblocks.centromere.dataimport.importer.DatabaseCredentials;
 import org.oncoblocks.centromere.dataimport.importer.MongoImportTempFileImporter;
-import org.oncoblocks.centromere.dataimport.test.config.DataImportConfig;
-import org.oncoblocks.centromere.dataimport.test.config.MongoRepositoryConfig;
 import org.oncoblocks.centromere.dataimport.test.config.TestMongoConfig;
 import org.oncoblocks.centromere.dataimport.test.models.EntrezGene;
 import org.oncoblocks.centromere.dataimport.test.repositories.EntrezGeneRepository;
@@ -51,8 +49,7 @@ import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @PropertySource({"classpath:test-mongo-data-source.properties"})
-@ContextConfiguration(classes = { DataImportConfig.class, TestMongoConfig.class,
-		MongoRepositoryConfig.class})
+@ContextConfiguration(classes = { TestMongoConfig.class })
 @FixMethodOrder
 public class DataImportTests {
 	

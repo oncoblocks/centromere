@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 William Oemler, Blueprint Medicines
+ * Copyright 2016 William Oemler, Blueprint Medicines
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ public interface RepositoryOperations<T, ID extends Serializable> {
 	 * @param id {@code ID} value for the entity.
 	 * @return the target entity, {@code T}, or {@code null} if not found.
 	 */
-	T findById(ID id);
+	T findOne(ID id);
 
 	/**
 	 * Tests whether or not a record with the given {@code ID} exists in the repository.
@@ -65,7 +65,7 @@ public interface RepositoryOperations<T, ID extends Serializable> {
 	 * @param sort {@link org.springframework.data.domain.Sort}
 	 * @return every instance of {@code T} in the repository.
 	 */
-	Iterable<T> find(Sort sort);
+	Iterable<T> findAll(Sort sort);
 
 	/**
 	 * Retrieves a paged representation of every records in the repository.
@@ -73,7 +73,7 @@ public interface RepositoryOperations<T, ID extends Serializable> {
 	 * @param pageable {@link org.springframework.data.domain.Pageable}
 	 * @return {@link org.springframework.data.domain.Page} containing the desired set of records. 
 	 */
-	Page<T> find(Pageable pageable);
+	Page<T> findAll(Pageable pageable);
 
 	/**
 	 * Returns a count of total records in the repository.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 William Oemler, Blueprint Medicines
+ * Copyright 2016 William Oemler, Blueprint Medicines
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 
 package org.oncoblocks.centromere.dataimport.test.repositories;
 
-import org.oncoblocks.centromere.core.repository.GenericMongoRepository;
 import org.oncoblocks.centromere.core.repository.support.DataSetRepositoryOperations;
 import org.oncoblocks.centromere.dataimport.test.models.DataSet;
+import org.oncoblocks.centromere.mongodb.GenericMongoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;

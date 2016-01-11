@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 William Oemler, Blueprint Medicines
+ * Copyright 2016 William Oemler, Blueprint Medicines
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,9 @@
 
 package org.oncoblocks.centromere.web.test.swagger;
 
+import org.oncoblocks.centromere.web.controller.CrudApiController;
+import org.oncoblocks.centromere.web.test.controller.crud.EntrezGeneParameters;
+import org.oncoblocks.centromere.web.test.controller.crud.GeneAssembler;
 import org.oncoblocks.centromere.web.test.models.EntrezGene;
 import org.oncoblocks.centromere.web.test.repository.mongo.EntrezGeneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +31,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/swagger")
-public class SwaggerController extends TestApiController<EntrezGene> {
+public class SwaggerController extends CrudApiController<EntrezGene, Long, EntrezGeneParameters> {
+@Autowired
+public SwaggerController(EntrezGeneRepository repository, GeneAssembler assembler) {
+		super(repository, assembler);
+		}
 
-	@Autowired
-	public SwaggerController(EntrezGeneRepository repository) {
-		super(repository);
-	}
-}
+		}

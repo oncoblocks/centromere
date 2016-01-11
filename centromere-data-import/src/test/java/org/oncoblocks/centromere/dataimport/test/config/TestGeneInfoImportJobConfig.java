@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 William Oemler, Blueprint Medicines
+ * Copyright 2016 William Oemler, Blueprint Medicines
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import java.util.Date;
 @Configuration
 @PropertySource({"classpath:test-data-files.properties"})
 @ComponentScan(basePackages = { "org.oncoblocks.centromere.dataimport.test" })
-@Import({MongoRepositoryConfig.class})
+@Import({TestMongoConfig.class})
 public class TestGeneInfoImportJobConfig {
 	
 	@Autowired EntrezGeneRepository geneRepository;

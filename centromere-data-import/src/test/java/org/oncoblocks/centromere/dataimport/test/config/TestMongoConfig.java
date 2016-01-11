@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 William Oemler, Blueprint Medicines
+ * Copyright 2016 William Oemler, Blueprint Medicines
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -35,6 +36,7 @@ import java.util.List;
  */
 
 @Configuration
+@ComponentScan(basePackages = { "org.oncoblocks.centromere.dataimport.test.repositories" })
 @PropertySource({ "classpath:test-mongo-data-source.properties" })
 public class TestMongoConfig extends AbstractMongoConfiguration {
 
