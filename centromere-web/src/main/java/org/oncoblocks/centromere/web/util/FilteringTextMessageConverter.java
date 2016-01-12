@@ -17,6 +17,8 @@
 package org.oncoblocks.centromere.web.util;
 
 import org.oncoblocks.centromere.core.model.Model;
+import org.oncoblocks.centromere.web.controller.FilterableResource;
+import org.oncoblocks.centromere.web.controller.ResponseEnvelope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.hateoas.PagedResources;
@@ -68,12 +70,12 @@ public class FilteringTextMessageConverter extends AbstractHttpMessageConverter<
 	@Override 
 	protected boolean supports(Class<?> aClass) {
 		return Resource.class.equals(aClass)
-				|| org.oncoblocks.centromere.web.controller.FilterableResource.class.equals(aClass)
+				|| FilterableResource.class.equals(aClass)
 				|| Resources.class.equals(aClass)
 				|| PagedResources.class.equals(aClass)
 				|| ResourceSupport.class.equals(aClass)
 				|| Model.class.equals(aClass)
-				|| org.oncoblocks.centromere.web.controller.ResponseEnvelope.class.equals(aClass);
+				|| ResponseEnvelope.class.equals(aClass);
 	}
 
 	@Override 
@@ -93,10 +95,10 @@ public class FilteringTextMessageConverter extends AbstractHttpMessageConverter<
 		Set<String> includedFields = new HashSet<>();
 		Set<String> excludedFields = new HashSet<>();
 		
-		if (o.getClass().equals(org.oncoblocks.centromere.web.controller.ResponseEnvelope.class)){
-			includedFields = ((org.oncoblocks.centromere.web.controller.ResponseEnvelope) o).getFieldSet();
-			excludedFields = ((org.oncoblocks.centromere.web.controller.ResponseEnvelope) o).getExclude();
-			o = ((org.oncoblocks.centromere.web.controller.ResponseEnvelope) o).getEntity();
+		if (o.getClass().equals(ResponseEnvelope.class)){
+			includedFields = ((ResponseEnvelope) o).getFieldSet();
+			excludedFields = ((ResponseEnvelope) o).getExclude();
+			o = ((ResponseEnvelope) o).getEntity();
 		}
 		if (o.getClass().equals(PageImpl.class)){
 			o = ((Page) o).getContent();

@@ -21,7 +21,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.oncoblocks.centromere.web.test.config.TestMongoConfig;
-import org.oncoblocks.centromere.web.test.config.TestSwaggerConfig;
 import org.oncoblocks.centromere.web.test.config.TestWebConfig;
 import org.oncoblocks.centromere.web.test.controller.crud.CrudControllerConfig;
 import org.oncoblocks.centromere.web.test.repository.mongo.MongoRepositoryConfig;

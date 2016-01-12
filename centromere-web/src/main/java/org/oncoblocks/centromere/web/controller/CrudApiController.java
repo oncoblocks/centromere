@@ -58,7 +58,7 @@ public class CrudApiController<T extends Model<ID>, ID extends Serializable, Q e
 			produces = { MediaType.APPLICATION_JSON_VALUE, org.oncoblocks.centromere.web.util.HalMediaType.APPLICATION_HAL_JSON_VALUE,
 					org.oncoblocks.centromere.web.util.HalMediaType.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE,
 					MediaType.TEXT_PLAIN_VALUE})
-	public HttpEntity create(@RequestBody T entity, HttpServletRequest request) {
+	public HttpEntity<?> create(@RequestBody T entity, HttpServletRequest request) {
 		T created = getRepository().insert(entity);
 		if (created == null) throw new org.oncoblocks.centromere.web.exceptions.RequestFailureException(40003, "There was a problem creating the record.", "", "");
 		if (org.oncoblocks.centromere.web.util.HalMediaType.isHalMediaType(request.getHeader("Accept"))){
@@ -81,7 +81,7 @@ public class CrudApiController<T extends Model<ID>, ID extends Serializable, Q e
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, 
 			produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE,
 					MediaType.TEXT_PLAIN_VALUE })
-	public HttpEntity update(@RequestBody T entity, @PathVariable ID id, HttpServletRequest request) {
+	public HttpEntity<?> update(@RequestBody T entity, @PathVariable ID id, HttpServletRequest request) {
 		if (!getRepository().exists(id)) throw new org.oncoblocks.centromere.web.exceptions.ResourceNotFoundException();
 		T updated = getRepository().update(entity);
 		if (updated == null) throw new org.oncoblocks.centromere.web.exceptions.RequestFailureException(40004, "There was a problem updating the record.", "", "");
@@ -101,7 +101,7 @@ public class CrudApiController<T extends Model<ID>, ID extends Serializable, Q e
 	 * @return {@link HttpStatus} indicating success or failure.
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-	public HttpEntity delete(@PathVariable ID id) {
+	public HttpEntity<?> delete(@PathVariable ID id) {
 		getRepository().delete(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

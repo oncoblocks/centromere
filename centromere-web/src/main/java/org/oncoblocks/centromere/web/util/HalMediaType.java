@@ -19,6 +19,7 @@ package org.oncoblocks.centromere.web.util;
 import org.springframework.http.MediaType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -54,6 +55,14 @@ public class HalMediaType {
 		mediaTypes.add(APPLICATION_HAL_JSON);
 		mediaTypes.add(APPLICATION_HAL_XML);
 		return mediaTypes;
+	}
+	
+	public static List<MediaType> getJsonMediaTypes(){
+		return Arrays.asList(MediaType.APPLICATION_JSON, APPLICATION_HAL_JSON);
+	}
+	
+	public static List<MediaType> getXmlMediaTypes(){
+		return Arrays.asList(MediaType.APPLICATION_XML, APPLICATION_HAL_XML);
 	}
 	
 }

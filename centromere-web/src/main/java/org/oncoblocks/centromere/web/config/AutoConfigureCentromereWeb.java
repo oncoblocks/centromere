@@ -29,7 +29,11 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Inherited
-@Import({ org.oncoblocks.centromere.web.config.WebServicesConfig.class, SpringBootConfig.class, org.oncoblocks.centromere.web.config.CentromereWebPropertiesConfig.class, 
-		org.oncoblocks.centromere.web.config.SwaggerConfig.class })
+@Import({ 
+		WebServicesConfig.class, 
+		SpringBootConfig.class, 
+		CentromereWebPropertiesConfig.class, 
+		SwaggerConfig.class 
+})
 public @interface AutoConfigureCentromereWeb {
 }

@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import org.oncoblocks.centromere.web.controller.ResponseEnvelope;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.converter.HttpMessageNotWritableException;
@@ -60,10 +61,9 @@ public class FilteringJackson2HttpMessageConverter extends MappingJackson2HttpMe
 				jsonGenerator.writeRaw("{} && ");
 			}
 
-			if (object instanceof org.oncoblocks.centromere.web.controller.ResponseEnvelope) {
+			if (object instanceof ResponseEnvelope) {
 				
-				org.oncoblocks.centromere.web.controller.ResponseEnvelope
-						envelope = (org.oncoblocks.centromere.web.controller.ResponseEnvelope) object;
+				ResponseEnvelope envelope = (ResponseEnvelope) object;
 				Object entity = envelope.getEntity();
 				Set<String> fieldSet = envelope.getFieldSet();
 				Set<String> exclude = envelope.getExclude();

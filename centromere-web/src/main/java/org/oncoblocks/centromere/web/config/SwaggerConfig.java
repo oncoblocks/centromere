@@ -16,11 +16,11 @@
 
 package org.oncoblocks.centromere.web.config;
 
-import com.fasterxml.classmate.TypeResolver;
 import com.google.common.base.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
@@ -39,9 +39,8 @@ import static springfox.documentation.builders.PathSelectors.regex;
 @EnableSwagger2
 public class SwaggerConfig {
 	
-	@Autowired private org.oncoblocks.centromere.web.config.CentromereWebProperties props;
-	@Autowired private TypeResolver typeResolver;
-
+	@Autowired private Environment env;
+	
 	@Bean
 	public Docket api(){
 		return new Docket(DocumentationType.SWAGGER_2)
@@ -55,18 +54,18 @@ public class SwaggerConfig {
 
 	private ApiInfo apiInfo(){
 		return new ApiInfo(
-				"Centromere",
-				"Genomics Data Warehouse API",
-				"0.1.0",
-				"",
-				"woemler@blueprintmedicines.com",
-				"",
-				""
+				env.getRequiredProperty("centromere.api.name"),
+				env.getRequiredProperty("centromere.api.description"),
+				env.getRequiredProperty("centromere.api.version"),
+				env.getRequiredProperty("centromere.api.tos"),
+				env.getRequiredProperty("centromere.api.contactEmail"),
+				env.getRequiredProperty("centromere.api.license"),
+				env.getRequiredProperty("centromere.api.licenseUrl")
 		);
 	}
 
 	private Predicate<String> apiPaths(){
-		return regex(props.getApiUrlRegex());
+		return regex(env.getRequiredProperty("centromere.api.regexUrl"));
 	}
 	
 }

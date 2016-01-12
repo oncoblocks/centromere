@@ -82,13 +82,13 @@ public abstract class BaseApiController<
 			produces = { HalMediaType.APPLICATION_HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE, 
 					HalMediaType.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE, 
 					MediaType.TEXT_PLAIN_VALUE })
-	public HttpEntity findById(
+	public HttpEntity<?> findById(
 			@PathVariable ID id,
 			@RequestParam(required = false) Set<String> fields,
 			@RequestParam(required = false) Set<String> exclude,
 			HttpServletRequest request
 	) {
-		T entity = repository.findById(id);
+		T entity = repository.findOne(id);
 		if (entity == null) throw new ResourceNotFoundException();
 		ResponseEnvelope envelope = null;
 		if (HalMediaType.isHalMediaType(request.getHeader("Accept"))){
@@ -114,7 +114,7 @@ public abstract class BaseApiController<
 			produces = { HalMediaType.APPLICATION_HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE,
 					HalMediaType.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE,
 					MediaType.TEXT_PLAIN_VALUE })
-	public HttpEntity findDistinct(
+	public HttpEntity<?> findDistinct(
 			@RequestParam String field, 
 			@ModelAttribute Q params,
 			HttpServletRequest request)
@@ -148,7 +148,7 @@ public abstract class BaseApiController<
 			produces = { MediaType.APPLICATION_JSON_VALUE, HalMediaType.APPLICATION_HAL_JSON_VALUE,
 					HalMediaType.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE,
 					MediaType.TEXT_PLAIN_VALUE})
-	public HttpEntity find(
+	public HttpEntity<?> find(
 			@ModelAttribute Q params,
 			@RequestParam(required = false) Set<String> fields,
 			@RequestParam(required = false) Set<String> exclude,
@@ -199,7 +199,7 @@ public abstract class BaseApiController<
 	 * @return
 	 */
 	@RequestMapping(value = { "", "/**" }, method = RequestMethod.HEAD)
-	public HttpEntity head(){
+	public HttpEntity<?> head(){
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 

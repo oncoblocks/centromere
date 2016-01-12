@@ -64,7 +64,7 @@ public class TestSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		@Bean
 		public TokenOperations tokenUtils(){
-			return new BasicTokenUtils(env.getRequiredProperty("token.key"));
+			return new BasicTokenUtils(env.getRequiredProperty("test.token.key"));
 		}
 
 		@Bean
@@ -80,15 +80,15 @@ public class TestSecurityConfig extends WebSecurityConfigurerAdapter {
 					.and()
 					.addFilterBefore(authenticationTokenProcessingFilter(),
 							UsernamePasswordAuthenticationFilter.class)
-					.antMatcher(env.getRequiredProperty("api.url"))
+					.antMatcher(env.getRequiredProperty("test.secured.url"))
 						.authorizeRequests()
-							.antMatchers(HttpMethod.GET, env.getRequiredProperty("api.url")).fullyAuthenticated()
-							.antMatchers(HttpMethod.POST, env.getRequiredProperty("api.url")).fullyAuthenticated()
-							.antMatchers(HttpMethod.PUT, env.getRequiredProperty("api.url")).fullyAuthenticated()
-							.antMatchers(HttpMethod.DELETE, env.getRequiredProperty("api.url")).fullyAuthenticated()
-							.antMatchers(HttpMethod.PATCH, env.getRequiredProperty("api.url")).fullyAuthenticated()
-							.antMatchers(HttpMethod.OPTIONS, env.getRequiredProperty("api.url")).permitAll()
-							.antMatchers(HttpMethod.HEAD, env.getRequiredProperty("api.url")).permitAll()
+							.antMatchers(HttpMethod.GET, env.getRequiredProperty("test.secured.url")).fullyAuthenticated()
+							.antMatchers(HttpMethod.POST, env.getRequiredProperty("test.secured.url")).fullyAuthenticated()
+							.antMatchers(HttpMethod.PUT, env.getRequiredProperty("test.secured.url")).fullyAuthenticated()
+							.antMatchers(HttpMethod.DELETE, env.getRequiredProperty("test.secured.url")).fullyAuthenticated()
+							.antMatchers(HttpMethod.PATCH, env.getRequiredProperty("test.secured.url")).fullyAuthenticated()
+							.antMatchers(HttpMethod.OPTIONS, env.getRequiredProperty("test.secured.url")).permitAll()
+							.antMatchers(HttpMethod.HEAD, env.getRequiredProperty("test.secured.url")).permitAll()
 					.and()
 					.csrf().disable();
 		}

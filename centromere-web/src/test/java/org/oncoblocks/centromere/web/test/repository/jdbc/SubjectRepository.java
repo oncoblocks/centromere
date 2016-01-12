@@ -19,7 +19,7 @@ package org.oncoblocks.centromere.web.test.repository.jdbc;
 import com.nurkiewicz.jdbcrepository.RowUnmapper;
 import org.oncoblocks.centromere.core.model.support.Attribute;
 import org.oncoblocks.centromere.core.model.support.SourcedAlias;
-import org.oncoblocks.centromere.core.repository.GenericJdbcRepository;
+import org.oncoblocks.centromere.sql.GenericJdbcRepository;
 import org.oncoblocks.centromere.web.test.models.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
