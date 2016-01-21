@@ -132,5 +132,16 @@ public class User implements UserDetails, Model<String> {
 	public void setRegistrationDate(Date registrationDate) {
 		this.registrationDate = registrationDate;
 	}
-	
+
+	@Override public String toString() {
+		return "User{" +
+				"id='" + id + '\'' +
+				", username='" + username + '\'' +
+				", password='" + password + '\'' +
+				", name='" + name + '\'' +
+				", email='" + email + '\'' +
+				", registrationDate=" + registrationDate +
+				", roles=" + roles +
+				'}';
+	}
 }

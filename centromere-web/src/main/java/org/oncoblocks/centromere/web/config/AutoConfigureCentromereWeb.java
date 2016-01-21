@@ -31,7 +31,6 @@ import java.lang.annotation.*;
 @Inherited
 @Import({ 
 		WebServicesConfig.class, 
-		SpringBootConfig.class, 
 		CentromereWebPropertiesConfig.class, 
 		SwaggerConfig.class 
 })

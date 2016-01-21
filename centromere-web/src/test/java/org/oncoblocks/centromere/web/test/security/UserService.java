@@ -18,6 +18,8 @@ package org.oncoblocks.centromere.web.test.security;
 
 import org.oncoblocks.centromere.core.repository.QueryCriteria;
 import org.oncoblocks.centromere.web.test.repository.mongo.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -36,11 +38,19 @@ public class UserService implements UserDetailsService {
 
 	@Autowired UserRepository userRepository;
 	
+	private static Logger logger = LoggerFactory.getLogger(UserService.class);
+	
 	@Override 
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		logger.debug(String.format("[CENTROMERE] User name: %s", username));
 		List<QueryCriteria> criterias = new ArrayList<>();
 		criterias.add(new QueryCriteria("username", username));
 		List<User> users = userRepository.find(criterias);
-		return users.get(0);
+		if (users != null && users.size() > 0){
+			return users.get(0);
+		} else {
+			return null;
+		}
+		
 	}
 }

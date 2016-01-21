@@ -146,6 +146,7 @@ public class SecurityTests {
 				.andReturn();
 
 		String json = result.getResponse().getContentAsString();
+		System.out.println(json);
 		String token = JsonPath.read(json, "$.token");
 
 		mockMvc.perform(get("/secured/genes")

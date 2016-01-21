@@ -18,29 +18,24 @@ package org.oncoblocks.centromere.web.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 
 /**
- * Enables autoconfiguration of required configuration parameters with a properties file.  Uses 
- *   default values if the file does not exist or cannot be found.
+ * Sets default application parameters, as defined in {@code centromere-defaults.properties}.  These
+ *   parameter values can be overridden in the client application with {@code centromere.properties}.
  * 
  * @author woemler
  */
 
 @Configuration
-@PropertySource(value = { "classpath:centromere-defaults.properties", "classpath:centromere.properties" }, ignoreResourceNotFound = true)
+@PropertySources(value = {
+		@PropertySource("classpath:centromere-defaults.properties"),
+		@PropertySource(value = "classpath:centromere.properties", ignoreResourceNotFound = true)
+})
+//@PropertySource(
+//		value = { "classpath:centromere-defaults.properties", "classpath:centromere.properties" }, 
+//		ignoreResourceNotFound = true
+//)
 public class CentromereWebPropertiesConfig {
-	
-//	@Autowired Environment env;
-//	
-//	@Bean
-//	public CentromereWebProperties properties(){
-//		
-//		CentromereWebProperties properties = new CentromereWebProperties();
-//		String rootUrl = env.getProperty("api.rooturl") != null ?
-//				env.getRequiredProperty("api.rooturl") : "/api";
-//		properties.setApiRootUrl(rootUrl);
-//		return properties;
-//		
-//	}
-	
+
 }

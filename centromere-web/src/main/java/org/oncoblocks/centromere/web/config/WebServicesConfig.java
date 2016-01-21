@@ -16,6 +16,12 @@
 
 package org.oncoblocks.centromere.web.config;
 
+import org.apache.catalina.connector.Connector;
+import org.apache.coyote.http11.AbstractHttp11Protocol;
+import org.oncoblocks.centromere.web.util.CorsFilter;
+import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
+import org.springframework.boot.context.embedded.tomcat.TomcatConnectorCustomizer;
+import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
@@ -39,6 +45,7 @@ import java.util.List;
  *   - Field-filtering via {@link org.oncoblocks.centromere.web.util.FilteringJackson2HttpMessageConverter}.
  *   - Default media type handling
  *   - CORS filter support
+ *   - GZIP compression of request responses using the 'Accept-Encoding: gzip,deflate' header.
  *
  * @author woemler
  */
@@ -71,6 +78,7 @@ public class WebServicesConfig extends WebMvcConfigurerAdapter {
 				new org.oncoblocks.centromere.web.util.FilteringTextMessageConverter(new MediaType("text", "plain", Charset.forName("utf-8")));
 		filteringTextMessageConverter.setDelimiter("\t");
 		converters.add(filteringTextMessageConverter);
+		super.configureMessageConverters(converters);
 		
 	}
 
@@ -80,7 +88,7 @@ public class WebServicesConfig extends WebMvcConfigurerAdapter {
 	}
 
 	@Bean
-	public org.oncoblocks.centromere.web.util.CorsFilter corsFilter(){
+	public CorsFilter corsFilter(){
 		return new org.oncoblocks.centromere.web.util.CorsFilter();
 	}
 
@@ -90,4 +98,23 @@ public class WebServicesConfig extends WebMvcConfigurerAdapter {
 		registry.addConverter(new org.oncoblocks.centromere.web.util.StringToSourcedAliasConverter());
 		super.addFormatters(registry);
 	}
+
+	@Bean
+	public EmbeddedServletContainerCustomizer servletContainerCustomizer(){
+		return configurableEmbeddedServletContainer -> 
+				((TomcatEmbeddedServletContainerFactory) configurableEmbeddedServletContainer).addConnectorCustomizers(
+				new TomcatConnectorCustomizer() {
+					@Override
+					public void customize(Connector connector) {
+						AbstractHttp11Protocol httpProtocol = (AbstractHttp11Protocol) connector.getProtocolHandler();
+						httpProtocol.setCompression("on");
+						httpProtocol.setCompressionMinSize(256);
+						String mimeTypes = httpProtocol.getCompressableMimeTypes();
+						String mimeTypesWithJson = mimeTypes + "," + MediaType.APPLICATION_JSON_VALUE;
+						httpProtocol.setCompressableMimeTypes(mimeTypesWithJson);
+					}
+				}
+		);
+	}
+	
 }

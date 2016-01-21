@@ -17,17 +17,18 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd
+            http://www.w3.org/2001/XMLSchema-instance ">
 
     <modelVersion>4.0.0</modelVersion>
-    
+
     <parent>
         <groupId>org.oncoblocks.centromere</groupId>
         <artifactId>centromere-parent</artifactId>
         <version>0.3.0-SNAPSHOT</version>
         <relativePath>../centromere-parent</relativePath>
     </parent>
-    
+
     <artifactId>centromere-web</artifactId>
     <name>Oncoblocks: Centromere Web</name>
     <packaging>jar</packaging>
@@ -53,14 +54,14 @@
         <developerConnection>scm:git:git@github.com:oncoblocks/centromere.git</developerConnection>
         <url>git@github.com:oncoblocks/centromere.git</url>
     </scm>
-    
+
     <properties>
         <springfox.version>2.3.1</springfox.version>
         <json-path.version>1.2.0</json-path.version>
     </properties>
 
     <dependencies>
-        
+
         <!-- Centromere -->
 
         <dependency>
@@ -68,7 +69,7 @@
             <artifactId>centromere-core</artifactId>
             <version>0.3.0-SNAPSHOT</version>
         </dependency>
-        
+
         <!-- Spring -->
 
         <dependency>
@@ -110,7 +111,7 @@
             <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
-        
+
         <!-- Swagger -->
 
         <dependency>
