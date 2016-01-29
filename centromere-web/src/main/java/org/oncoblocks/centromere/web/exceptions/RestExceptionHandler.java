@@ -36,11 +36,10 @@ public abstract class RestExceptionHandler {
 	 * @param request {@link WebRequest}
 	 * @return {@link org.oncoblocks.centromere.web.exceptions.RestError}
 	 */
-	@ExceptionHandler(value = { org.oncoblocks.centromere.web.exceptions.RestException.class })
-	public ResponseEntity<org.oncoblocks.centromere.web.exceptions.RestError> handleRestException(
-			org.oncoblocks.centromere.web.exceptions.RestException ex, WebRequest request){
-		org.oncoblocks.centromere.web.exceptions.RestError restError = ex.getRestError();
-		return new ResponseEntity<org.oncoblocks.centromere.web.exceptions.RestError>(restError, restError.getStatus());
+	@ExceptionHandler(value = { RestException.class })
+	public ResponseEntity<RestError> handleRestException(RestException ex, WebRequest request){
+		RestError restError = ex.getRestError();
+		return new ResponseEntity<>(restError, restError.getStatus());
 	}
 	
 }

@@ -14,30 +14,15 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.web.config;
+package org.oncoblocks.centromere.web.test.util;
+
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 
 /**
- * Bean for managing basic application parameters.
- * 
  * @author woemler
  */
-public class CentromereWebProperties {
-	
-	private String apiRootUrl;
-
-	public String getApiRootUrl() {
-		return apiRootUrl;
-	}
-	
-	public String getApiUrlRegex() {
-		return apiRootUrl + "/.*";
-	}
-
-	public String getApiUrlAntMatcher() {
-		return apiRootUrl + "/**";
-	}
-
-	public void setApiRootUrl(String apiRootUrl) {
-		this.apiRootUrl = apiRootUrl;
-	}
+@Configuration
+@ComponentScan(basePackages = { "org.oncoblocks.centromere.web.test.util" })
+public class UtilTestConfig {
 }

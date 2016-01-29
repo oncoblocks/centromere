@@ -32,10 +32,6 @@ import org.springframework.context.annotation.PropertySources;
 		@PropertySource("classpath:centromere-defaults.properties"),
 		@PropertySource(value = "classpath:centromere.properties", ignoreResourceNotFound = true)
 })
-//@PropertySource(
-//		value = { "classpath:centromere-defaults.properties", "classpath:centromere.properties" }, 
-//		ignoreResourceNotFound = true
-//)
 public class CentromereWebPropertiesConfig {
 
 }

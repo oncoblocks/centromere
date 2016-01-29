@@ -18,12 +18,14 @@ package org.oncoblocks.centromere.web.config;
 
 import org.apache.catalina.connector.Connector;
 import org.apache.coyote.http11.AbstractHttp11Protocol;
-import org.oncoblocks.centromere.web.util.CorsFilter;
+import org.oncoblocks.centromere.web.util.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.boot.context.embedded.tomcat.TomcatConnectorCustomizer;
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.hateoas.config.EnableEntityLinks;
@@ -37,7 +39,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.nio.charset.Charset;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -56,29 +57,28 @@ import java.util.List;
 @EnableHypermediaSupport(type = { EnableHypermediaSupport.HypermediaType.HAL })
 @EnableEntityLinks
 public class WebServicesConfig extends WebMvcConfigurerAdapter {
+	
+	@Autowired Environment env;
 
 	@Override
 	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-		
-		org.oncoblocks.centromere.web.util.FilteringJackson2HttpMessageConverter
-				jsonConverter = new org.oncoblocks.centromere.web.util.FilteringJackson2HttpMessageConverter();
-		jsonConverter.setPrettyPrint(true);
+
+		FilteringJackson2HttpMessageConverter jsonConverter 
+				= new FilteringJackson2HttpMessageConverter();
+		jsonConverter.setSupportedMediaTypes(HalMediaType.getJsonMediaTypes());
 		converters.add(jsonConverter);
 		
-		List<MediaType> xmlMediaTypes = Arrays.asList(MediaType.APPLICATION_XML,
-				org.oncoblocks.centromere.web.util.HalMediaType.APPLICATION_HAL_XML);
 		MarshallingHttpMessageConverter xmlConverter = new MarshallingHttpMessageConverter();
-		xmlConverter.setSupportedMediaTypes(xmlMediaTypes);
+		xmlConverter.setSupportedMediaTypes(HalMediaType.getXmlMediaTypes());
 		XStreamMarshaller xStreamMarshaller = new XStreamMarshaller();
 		xmlConverter.setMarshaller(xStreamMarshaller);
 		xmlConverter.setUnmarshaller(xStreamMarshaller);
 		converters.add(xmlConverter);
 		
-		org.oncoblocks.centromere.web.util.FilteringTextMessageConverter filteringTextMessageConverter = 
-				new org.oncoblocks.centromere.web.util.FilteringTextMessageConverter(new MediaType("text", "plain", Charset.forName("utf-8")));
+		FilteringTextMessageConverter filteringTextMessageConverter = 
+				new FilteringTextMessageConverter(new MediaType("text", "plain", Charset.forName("utf-8")));
 		filteringTextMessageConverter.setDelimiter("\t");
 		converters.add(filteringTextMessageConverter);
-		super.configureMessageConverters(converters);
 		
 	}
 
@@ -89,13 +89,18 @@ public class WebServicesConfig extends WebMvcConfigurerAdapter {
 
 	@Bean
 	public CorsFilter corsFilter(){
-		return new org.oncoblocks.centromere.web.util.CorsFilter();
+		return new CorsFilter();
 	}
+	
+//	@Override 
+//	public void addCorsMappings(CorsRegistry registry) {
+//		registry.addMapping(env.getRequiredProperty("centromere.api.antMatcherUrl"));
+//	}
 
 	@Override 
 	public void addFormatters(FormatterRegistry registry) {
-		registry.addConverter(new org.oncoblocks.centromere.web.util.StringToAttributeConverter());
-		registry.addConverter(new org.oncoblocks.centromere.web.util.StringToSourcedAliasConverter());
+		registry.addConverter(new StringToAttributeConverter());
+		registry.addConverter(new StringToSourcedAliasConverter());
 		super.addFormatters(registry);
 	}
 

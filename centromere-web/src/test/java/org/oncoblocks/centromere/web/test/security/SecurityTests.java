@@ -54,6 +54,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author woemler
  */
 
+// TODO: User @TestPropertySource(properties= {"readOnly = false", "other = foo"}) for testing different security levels
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {TestMongoConfig.class, TestWebConfig.class, CrudControllerConfig.class,
 		TestSecurityConfig.class, SecurityContextConfig.class, MongoRepositoryConfig.class})

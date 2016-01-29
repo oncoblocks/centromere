@@ -32,7 +32,7 @@ import java.lang.annotation.*;
 @Import({ 
 		WebServicesConfig.class, 
 		CentromereWebPropertiesConfig.class, 
-		SwaggerConfig.class 
+		SwaggerConfig.class
 })
 public @interface AutoConfigureCentromereWeb {
 }
