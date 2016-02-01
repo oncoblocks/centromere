@@ -17,8 +17,8 @@
 package org.oncoblocks.centromere.web.test.security;
 
 import org.oncoblocks.centromere.web.controller.CrudApiController;
-import org.oncoblocks.centromere.web.test.controller.crud.EntrezGeneParameters;
-import org.oncoblocks.centromere.web.test.controller.crud.GeneAssembler;
+import org.oncoblocks.centromere.web.test.controller.EntrezGeneParameters;
+import org.oncoblocks.centromere.web.test.controller.EntrezGeneAssembler;
 import org.oncoblocks.centromere.web.test.models.EntrezGene;
 import org.oncoblocks.centromere.web.test.repository.mongo.EntrezGeneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class SecuredGeneController extends
 		CrudApiController<EntrezGene, Long, EntrezGeneParameters> {
 	@Autowired
-	public SecuredGeneController(EntrezGeneRepository repository, GeneAssembler assembler) {
+	public SecuredGeneController(EntrezGeneRepository repository, EntrezGeneAssembler assembler) {
 		super(repository, assembler);
 	}
 }

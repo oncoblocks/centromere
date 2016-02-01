@@ -14,33 +14,28 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.web.test.controller.readonly;
+package org.oncoblocks.centromere.web.test.controller;
 
+import org.oncoblocks.centromere.web.controller.CrudApiController;
 import org.oncoblocks.centromere.web.controller.FilterableResource;
-import org.oncoblocks.centromere.web.test.models.Subject;
+import org.oncoblocks.centromere.web.test.models.EntrezGene;
+import org.oncoblocks.centromere.web.test.repository.mongo.EntrezGeneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.EntityLinks;
+import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * @author woemler
  */
-
-@Component
-public class SubjectAssembler extends
-		ResourceAssemblerSupport<Subject, FilterableResource> {
-	
-	@Autowired EntityLinks entityLinks;
-
-	public SubjectAssembler() {
-		super(SubjectController.class, FilterableResource.class );
+@Controller
+@RequestMapping(value = "/genes/crud")
+@ExposesResourceFor(EntrezGene.class)
+public class EntrezGeneCrudController extends CrudApiController<EntrezGene, Long, EntrezGeneParameters> {
+	@Autowired
+	public EntrezGeneCrudController(EntrezGeneRepository repository, ResourceAssemblerSupport<EntrezGene, FilterableResource> assembler) {
+		super(repository, assembler);
 	}
 
-	@Override
-	public FilterableResource<Subject> toResource(Subject subject) {
-		FilterableResource<Subject> resource = new FilterableResource<>(subject);
-		resource.add(entityLinks.linkToSingleResource(Subject.class, subject.getId()).withSelfRel());
-		return resource;
-	}
 }

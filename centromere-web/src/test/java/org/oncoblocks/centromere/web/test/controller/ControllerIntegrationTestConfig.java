@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.web.test.controller.crud;
+package org.oncoblocks.centromere.web.test.controller;
 
-import org.oncoblocks.centromere.web.exceptions.RestExceptionHandler;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 
 /**
  * @author woemler
  */
 
 @Configuration
-@ComponentScan(basePackages = { "org.oncoblocks.centromere.web.test.controller.crud" })
-public class CrudControllerConfig {
-	
-	@ControllerAdvice
-	public static class ControllerExceptionHandler extends RestExceptionHandler {}
-	
+@ComponentScan(basePackages = { "org.oncoblocks.centromere.web.test.controller" })
+public class ControllerIntegrationTestConfig {
 }

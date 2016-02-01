@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.web.test.controller.crud;
+package org.oncoblocks.centromere.web.test.controller;
 
 import org.oncoblocks.centromere.web.controller.FilterableResource;
 import org.oncoblocks.centromere.web.test.models.EntrezGene;
@@ -28,15 +28,16 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-public class GeneAssembler extends ResourceAssemblerSupport<EntrezGene, FilterableResource> {
+public class EntrezGeneAssembler extends ResourceAssemblerSupport<EntrezGene, FilterableResource> {
 	
 	@Autowired private EntityLinks entityLinks;
 	
-	public GeneAssembler() {
-		super(GeneController.class, FilterableResource.class);
+	public EntrezGeneAssembler() {
+		super(EntrezGeneCrudController.class, FilterableResource.class);
 	}
 
-	@Override public FilterableResource<EntrezGene> toResource(EntrezGene gene) {
+	@Override 
+	public FilterableResource<EntrezGene> toResource(EntrezGene gene) {
 		FilterableResource<EntrezGene> resource = new FilterableResource<EntrezGene>(gene);
 		resource.add(entityLinks.linkToSingleResource(EntrezGene.class, gene.getId()).withSelfRel());
 		return resource;

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.web.test.controller.crud;
+package org.oncoblocks.centromere.web.test.controller;
 
-import org.oncoblocks.centromere.web.controller.CrudApiController;
+import org.oncoblocks.centromere.web.controller.ReadOnlyApiController;
 import org.oncoblocks.centromere.web.test.models.EntrezGene;
 import org.oncoblocks.centromere.web.test.repository.mongo.EntrezGeneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +28,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author woemler
  */
 @Controller
-@RequestMapping(value = "/genes")
+@RequestMapping(value = "/genes/read")
 @ExposesResourceFor(EntrezGene.class)
-public class GeneController extends CrudApiController<EntrezGene, Long, EntrezGeneParameters> {
+public class EntrezGeneReadOnlyController extends
+		ReadOnlyApiController<EntrezGene, Long, EntrezGeneParameters> {
 	@Autowired
-	public GeneController(EntrezGeneRepository repository, GeneAssembler assembler) {
+	public EntrezGeneReadOnlyController(EntrezGeneRepository repository, EntrezGeneAssembler assembler) {
 		super(repository, assembler);
 	}
 

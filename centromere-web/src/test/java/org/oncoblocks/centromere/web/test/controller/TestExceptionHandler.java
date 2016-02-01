@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.web.test.controller.readonly;
+package org.oncoblocks.centromere.web.test.controller;
 
 import org.oncoblocks.centromere.web.exceptions.RestExceptionHandler;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
 /**
  * @author woemler
  */
 
-@Configuration
-@ComponentScan(basePackages = { "org.oncoblocks.centromere.web.test.controller.readonly" })
-public class TestReadOnlyControllerConfig {
-	@ControllerAdvice
-	public static class ControllerExceptionHandler extends RestExceptionHandler {}
+@ControllerAdvice
+public class TestExceptionHandler extends RestExceptionHandler {
 }

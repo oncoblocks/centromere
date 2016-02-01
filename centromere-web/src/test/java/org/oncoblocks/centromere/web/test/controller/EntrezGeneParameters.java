@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.web.test.controller.crud;
+package org.oncoblocks.centromere.web.test.controller;
 
 import org.oncoblocks.centromere.core.model.support.Attribute;
 import org.oncoblocks.centromere.core.model.support.Attributes;

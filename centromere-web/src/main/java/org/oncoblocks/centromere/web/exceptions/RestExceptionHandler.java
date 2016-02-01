@@ -41,5 +41,5 @@ public abstract class RestExceptionHandler {
 		RestError restError = ex.getRestError();
 		return new ResponseEntity<>(restError, restError.getStatus());
 	}
-	
+
 }

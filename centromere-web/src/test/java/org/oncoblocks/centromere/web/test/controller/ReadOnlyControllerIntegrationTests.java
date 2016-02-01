@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.web.test.controller.crud;
+package org.oncoblocks.centromere.web.test.controller;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -49,68 +45,46 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 
 @RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = {TestMongoConfig.class, MongoRepositoryConfig.class,
+		ControllerIntegrationTestConfig.class, TestWebConfig.class})
 @WebAppConfiguration
-@ContextConfiguration(classes = {
-		TestMongoConfig.class, TestWebConfig.class, MongoRepositoryConfig.class, CrudControllerConfig.class})
 @FixMethodOrder
-public class CrudControllerTests {
+public class ReadOnlyControllerIntegrationTests {
 
-	@Autowired private EntrezGeneRepository geneRepository;
+	@Autowired private EntrezGeneRepository repository;
 	private MockMvc mockMvc;
 	@Autowired private WebApplicationContext webApplicationContext;
 	private static boolean isConfigured = false;
+	
+	private static final String BASE_URL = "/genes/read";
 
 	@Before
 	public void setup(){
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 		if (isConfigured) return;
-		geneRepository.deleteAll();
+		repository.deleteAll();
 		for (EntrezGene gene: EntrezGene.createDummyData()){
-			geneRepository.insert(gene);
+			repository.insert(gene);
 		}
 		isConfigured = true;
 	}
 	
-//	@Test
-//	public void test() throws Exception {
-//		RequestMappingHandlerAdapter adapter = (RequestMappingHandlerAdapter) webApplicationContext.getBean("requestMappingHandlerAdapter");
-//		List<EntrezGene> genes = EntrezGene.createDummyData();
-//		Set<String> exclude = new HashSet<>();
-//		exclude.add("entrezGeneId");
-//		ResponseEnvelope envelope = new ResponseEnvelope(genes, new HashSet<String>(), exclude);
-//		for (HttpMessageConverter converter: adapter.getMessageConverters()){
-//			System.out.println(converter.getClass().getName());
-//			if (converter.canWrite(ResponseEnvelope.class, MediaType.APPLICATION_JSON)){
-//				MockHttpOutputMessage message =  new MockHttpOutputMessage();
-//				converter.write((Object) envelope, MediaType.APPLICATION_JSON, message);	
-//				System.out.println(message.getBodyAsString());
-//			}
-//		}
-//	}
-
-	@Test
-	public void headTest() throws Exception {
-		mockMvc.perform(head("/genes"))
-				.andExpect(status().isOk());
-	}
-
 	@Test
 	public void findById() throws Exception {
 
-		mockMvc.perform(get("/genes/{id}", 1L)
+		mockMvc.perform(get(BASE_URL + "/{id}", 1L)
 				.accept(HalMediaType.APPLICATION_HAL_JSON_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.entrezGeneId", is(1)))
 				.andExpect(jsonPath("$.primaryGeneSymbol", is("GeneA")))
 				.andExpect(jsonPath("$.links", hasSize(1)))
-				.andExpect(jsonPath("$.links[0].rel", is("self")))
-				.andExpect(jsonPath("$.links[0].href", endsWith("/genes/1")));
+				.andExpect(jsonPath("$.links[0].rel", is("self")));
 	}
 
 	@Test
 	public void findByIdNoHal() throws Exception {
 
-		mockMvc.perform(get("/genes/{id}", 1L))
+		mockMvc.perform(get(BASE_URL + "/{id}", 1L))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.entrezGeneId", is(1)))
 				.andExpect(jsonPath("$.primaryGeneSymbol", is("GeneA")))
@@ -119,13 +93,13 @@ public class CrudControllerTests {
 
 	@Test
 	public void findByIdNotFound() throws Exception{
-		mockMvc.perform(get("/genes/{id}", 99L))
+		mockMvc.perform(get(BASE_URL + "/{id}", 99L))
 				.andExpect(status().isNotFound());
 	}
 
 	@Test
 	public void findByIdFiltered() throws Exception {
-		mockMvc.perform(get("/genes/{id}?exclude=links,primaryGeneSymbol", 1L))
+		mockMvc.perform(get(BASE_URL + "/{id}?exclude=links,primaryGeneSymbol", 1L))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.entrezGeneId", is(1)))
 				.andExpect(jsonPath("$", not(hasKey("primaryGeneSymbol"))))
@@ -135,7 +109,7 @@ public class CrudControllerTests {
 	@Test
 	public void findByIdWithoutLinks() throws Exception {
 
-		mockMvc.perform(get("/genes/{id}", 1L))
+		mockMvc.perform(get(BASE_URL + "/{id}", 1L))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.entrezGeneId", is(1)))
 				.andExpect(jsonPath("$.primaryGeneSymbol", is("GeneA")))
@@ -144,7 +118,7 @@ public class CrudControllerTests {
 
 	@Test
 	public void findAll() throws Exception {
-		mockMvc.perform(get("/genes").accept(HalMediaType.APPLICATION_HAL_JSON_VALUE))
+		mockMvc.perform(get(BASE_URL).accept(HalMediaType.APPLICATION_HAL_JSON_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(5)))
@@ -153,13 +127,13 @@ public class CrudControllerTests {
 				.andExpect(jsonPath("$", hasKey("links")))
 				.andExpect(jsonPath("$.links", hasSize(1)))
 				.andExpect(jsonPath("$.links[0].rel", is("self")))
-				.andExpect(jsonPath("$.links[0].href", endsWith("/genes")))
+				.andExpect(jsonPath("$.links[0].href", endsWith(BASE_URL)))
 				.andExpect(jsonPath("$", not(hasKey("pageMetadata"))));
 	}
 
 	@Test
 	public void findAllWithoutLinks() throws Exception {
-		mockMvc.perform(get("/genes"))
+		mockMvc.perform(get(BASE_URL))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasSize(5)))
 				.andExpect(jsonPath("$[0]", hasKey("entrezGeneId")))
@@ -170,7 +144,7 @@ public class CrudControllerTests {
 
 	@Test
 	public void findFiltered() throws Exception {
-		mockMvc.perform(get("/genes?exclude=links,primaryGeneSymbol").accept(
+		mockMvc.perform(get(BASE_URL + "?exclude=links,primaryGeneSymbol").accept(
 				HalMediaType.APPLICATION_HAL_JSON_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
@@ -183,7 +157,7 @@ public class CrudControllerTests {
 
 	@Test
 	public void findFieldFiltered() throws Exception {
-		mockMvc.perform(get("/genes?fields=links,primaryGeneSymbol").accept(
+		mockMvc.perform(get(BASE_URL + "?fields=links,primaryGeneSymbol").accept(
 				HalMediaType.APPLICATION_HAL_JSON_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
@@ -195,7 +169,7 @@ public class CrudControllerTests {
 
 	@Test
 	public void findMultipleByParams() throws Exception {
-		mockMvc.perform(get("/genes?geneType=pseudo").accept(HalMediaType.APPLICATION_HAL_JSON_VALUE))
+		mockMvc.perform(get(BASE_URL + "?geneType=pseudo").accept(HalMediaType.APPLICATION_HAL_JSON_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(2)))
@@ -204,13 +178,13 @@ public class CrudControllerTests {
 				.andExpect(jsonPath("$", hasKey("links")))
 				.andExpect(jsonPath("$.links", hasSize(1)))
 				.andExpect(jsonPath("$.links[0].rel", is("self")))
-				.andExpect(jsonPath("$.links[0].href", endsWith("/genes?geneType=pseudo")))
+				.andExpect(jsonPath("$.links[0].href", endsWith(BASE_URL + "?geneType=pseudo")))
 				.andExpect(jsonPath("$", not(hasKey("pageMetadata"))));
 	}
 
 	@Test
 	public void findByAlias() throws Exception {
-		mockMvc.perform(get("/genes?alias=MNO").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get(BASE_URL + "?alias=MNO").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasSize(1)))
 				.andExpect(jsonPath("$[0]", hasKey("entrezGeneId")))
@@ -220,7 +194,7 @@ public class CrudControllerTests {
 
 	@Test
 	public void findByKeyValueAttributes() throws Exception {
-		mockMvc.perform(get("/genes?attribute=isKinase:Y").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get(BASE_URL + "?attribute=isKinase:Y").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasSize(2)))
 				.andExpect(jsonPath("$[0]", hasKey("entrezGeneId")))
@@ -230,7 +204,7 @@ public class CrudControllerTests {
 
 	@Test
 	public void findPaged() throws Exception {
-		mockMvc.perform(get("/genes?page=1&size=3").accept(HalMediaType.APPLICATION_HAL_JSON_VALUE))
+		mockMvc.perform(get(BASE_URL + "?page=1&size=3").accept(HalMediaType.APPLICATION_HAL_JSON_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(2)))
@@ -248,7 +222,7 @@ public class CrudControllerTests {
 
 	@Test
 	public void findPagedWithoutLinks() throws Exception {
-		mockMvc.perform(get("/genes?page=1&size=3"))
+		mockMvc.perform(get(BASE_URL + "?page=1&size=3"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(2)))
@@ -260,7 +234,7 @@ public class CrudControllerTests {
 
 	@Test
 	public void findSorted() throws Exception {
-		mockMvc.perform(get("/genes?sort=geneSymbol,desc").accept(
+		mockMvc.perform(get(BASE_URL + "?sort=geneSymbol,desc").accept(
 				HalMediaType.APPLICATION_HAL_JSON_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
@@ -268,103 +242,46 @@ public class CrudControllerTests {
 				.andExpect(jsonPath("$.content[0]", hasKey("entrezGeneId")))
 				.andExpect(jsonPath("$.content[0].entrezGeneId", is(5)));
 	}
-	
+
 	@Test
 	public void findDistinct() throws Exception {
-		mockMvc.perform(get("/genes/distinct?field=geneType"))
+		mockMvc.perform(get(BASE_URL + "/distinct?field=geneType"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasSize(2)));
 	}
 
 	@Test
 	public void findDistinctFiltered() throws Exception {
-		mockMvc.perform(get("/genes/distinct?field=primaryGeneSymbol&geneType=protein-coding"))
+		mockMvc.perform(get(BASE_URL + "/distinct?field=primaryGeneSymbol&geneType=protein-coding"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasSize(3)))
 				.andExpect(jsonPath("$[2]", is("GeneD")));
 	}
-
+	
 	@Test
-	public void createTest() throws Exception {
-
-		EntrezGene
-				gene = new EntrezGene(6L, "GeneF", 9606, "", "10", "", "", "protein-coding", null, null, null);
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.setFilters(new SimpleFilterProvider().addFilter("fieldFilter",
-				SimpleBeanPropertyFilter.serializeAllExcept()).setFailOnUnknownId(false));
-		mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-
-		mockMvc.perform(post("/genes")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsBytes(gene)))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$", hasKey("entrezGeneId")))
-				.andExpect(jsonPath("$.entrezGeneId", is(6)));
-		
-		mockMvc.perform(get("/genes/{id}", 6L))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.entrezGeneId", is(6)));
-
-		geneRepository.delete(6L);
-
+	public void postTest() throws Exception {
+		mockMvc.perform(post(BASE_URL))
+				.andExpect(status().isMethodNotAllowed());
 	}
 
 	@Test
-	public void updateTest() throws Exception {
-
-		EntrezGene
-				gene = new EntrezGene(7L, "GeneG", 9606, "", "10", "", "", "protein-coding", null, null, null);
-		ObjectMapper mapper = new ObjectMapper();
-				mapper.setFilters(new SimpleFilterProvider().addFilter("fieldFilter",
-						SimpleBeanPropertyFilter.serializeAllExcept()).setFailOnUnknownId(false));
-		mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-
-		mockMvc.perform(post("/genes")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsBytes(gene)))
-				.andExpect(status().isCreated());
-
-		gene.setPrimaryGeneSymbol("TEST_GENE");
-
-		mockMvc.perform(put("/genes/{id}", 7L)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsBytes(gene)))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$", hasKey("entrezGeneId")))
-				.andExpect(jsonPath("$.entrezGeneId", is(7)))
-				.andExpect(jsonPath("$.primaryGeneSymbol", is("TEST_GENE")));
-
-		mockMvc.perform(get("/genes/{id}", 7L))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.entrezGeneId", is(7)))
-				.andExpect(jsonPath("$.primaryGeneSymbol", is("TEST_GENE")));
-
-		geneRepository.delete(7L);
-
+	public void putTest() throws Exception {
+		mockMvc.perform(put(BASE_URL + "/1"))
+				.andExpect(status().isMethodNotAllowed());
 	}
 
 	@Test
 	public void deleteTest() throws Exception {
-
-		EntrezGene
-				gene = new EntrezGene(8L, "GeneH", 9606, "", "10", "", "", "protein-coding", null, null, null);
-		geneRepository.insert(gene);
-
-		mockMvc.perform(delete("/genes/{id}", 8L))
-				.andExpect(status().isOk());
-
-		mockMvc.perform(get("/genes/{id}", 8L))
-				.andExpect(status().isNotFound());
-
+		mockMvc.perform(delete(BASE_URL + "/1"))
+				.andExpect(status().isMethodNotAllowed());
 	}
-
-//	@Test
-//	public void optionsTest() throws Exception {
-//		MvcResult result = mockMvc.perform(request(HttpMethod.OPTIONS, "/genes").accept(MediaType.APPLICATION_JSON))
-//				.andExpect(status().isOk())
-//				.andExpect(jsonPath("$", hasKey("description")))
-//				.andReturn();
-//		System.out.println("Response: " + result.getResponse().getContentAsString());
-//	}
+	
+	@Test
+	public void headTest() throws Exception {
+		mockMvc.perform(head(BASE_URL))
+				.andExpect(status().isOk());
+		mockMvc.perform(head(BASE_URL + "/1"))
+				.andExpect(status().isOk());
+	}
 	
 }

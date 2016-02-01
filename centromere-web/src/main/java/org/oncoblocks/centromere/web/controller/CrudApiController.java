@@ -18,7 +18,10 @@ package org.oncoblocks.centromere.web.controller;
 
 import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.repository.RepositoryOperations;
+import org.oncoblocks.centromere.web.exceptions.RequestFailureException;
+import org.oncoblocks.centromere.web.exceptions.ResourceNotFoundException;
 import org.oncoblocks.centromere.web.query.QueryParameters;
+import org.oncoblocks.centromere.web.util.HalMediaType;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -42,7 +45,7 @@ public class CrudApiController<T extends Model<ID>, ID extends Serializable, Q e
 		extends BaseApiController<T, ID, Q> {
 	
 	public CrudApiController(RepositoryOperations<T, ID> service,
-			ResourceAssemblerSupport<T, org.oncoblocks.centromere.web.controller.FilterableResource> assembler) {
+			ResourceAssemblerSupport<T, FilterableResource> assembler) {
 		super(service, assembler);
 	}
 
@@ -55,14 +58,14 @@ public class CrudApiController<T extends Model<ID>, ID extends Serializable, Q e
 	 * @return updated representation of the submitted entity
 	 */
 	@RequestMapping(value = "", method = RequestMethod.POST, 
-			produces = { MediaType.APPLICATION_JSON_VALUE, org.oncoblocks.centromere.web.util.HalMediaType.APPLICATION_HAL_JSON_VALUE,
-					org.oncoblocks.centromere.web.util.HalMediaType.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE,
+			produces = { MediaType.APPLICATION_JSON_VALUE, HalMediaType.APPLICATION_HAL_JSON_VALUE,
+					HalMediaType.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE,
 					MediaType.TEXT_PLAIN_VALUE})
 	public HttpEntity<?> create(@RequestBody T entity, HttpServletRequest request) {
 		T created = getRepository().insert(entity);
-		if (created == null) throw new org.oncoblocks.centromere.web.exceptions.RequestFailureException(40003, "There was a problem creating the record.", "", "");
-		if (org.oncoblocks.centromere.web.util.HalMediaType.isHalMediaType(request.getHeader("Accept"))){
-			org.oncoblocks.centromere.web.controller.FilterableResource resource = getAssembler().toResource(created);
+		if (created == null) throw new RequestFailureException(40003, "There was a problem creating the record.", "", "");
+		if (HalMediaType.isHalMediaType(request.getHeader("Accept"))){
+			FilterableResource resource = getAssembler().toResource(created);
 			return new ResponseEntity<>(resource, HttpStatus.CREATED);
 		} else {
 			return new ResponseEntity<>(created, HttpStatus.CREATED);
@@ -82,11 +85,11 @@ public class CrudApiController<T extends Model<ID>, ID extends Serializable, Q e
 			produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE,
 					MediaType.TEXT_PLAIN_VALUE })
 	public HttpEntity<?> update(@RequestBody T entity, @PathVariable ID id, HttpServletRequest request) {
-		if (!getRepository().exists(id)) throw new org.oncoblocks.centromere.web.exceptions.ResourceNotFoundException();
+		if (!getRepository().exists(id)) throw new ResourceNotFoundException();
 		T updated = getRepository().update(entity);
-		if (updated == null) throw new org.oncoblocks.centromere.web.exceptions.RequestFailureException(40004, "There was a problem updating the record.", "", "");
-		if (org.oncoblocks.centromere.web.util.HalMediaType.isHalMediaType(request.getHeader("Accept"))){
-			org.oncoblocks.centromere.web.controller.FilterableResource resource = getAssembler().toResource(updated);
+		if (updated == null) throw new RequestFailureException(40004, "There was a problem updating the record.", "", "");
+		if (HalMediaType.isHalMediaType(request.getHeader("Accept"))){
+			FilterableResource resource = getAssembler().toResource(updated);
 			return new ResponseEntity<>(resource, HttpStatus.CREATED);
 		} else {
 			return new ResponseEntity<>(updated, HttpStatus.CREATED);
