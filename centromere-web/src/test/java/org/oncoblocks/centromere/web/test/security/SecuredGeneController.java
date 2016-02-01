@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class SecuredGeneController extends
 		CrudApiController<EntrezGene, Long, EntrezGeneParameters> {
 	@Autowired
-	public SecuredGeneController(EntrezGeneRepository repository, EntrezGeneAssembler assembler) {
-		super(repository, assembler);
+	public SecuredGeneController(EntrezGeneRepository repository) {
+		super(repository, new EntrezGeneAssembler(SecuredGeneController.class));
 	}
 }

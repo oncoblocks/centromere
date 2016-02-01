@@ -33,8 +33,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class EntrezGeneReadOnlyController extends
 		ReadOnlyApiController<EntrezGene, Long, EntrezGeneParameters> {
 	@Autowired
-	public EntrezGeneReadOnlyController(EntrezGeneRepository repository, EntrezGeneAssembler assembler) {
-		super(repository, assembler);
+	public EntrezGeneReadOnlyController(EntrezGeneRepository repository) {
+		super(repository, new EntrezGeneAssembler(EntrezGeneReadOnlyController.class));
 	}
 
 }

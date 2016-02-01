@@ -35,6 +35,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.xml.MarshallingHttpMessageConverter;
 import org.springframework.oxm.xstream.XStreamMarshaller;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -86,16 +87,16 @@ public class WebServicesConfig extends WebMvcConfigurerAdapter {
 	public void configureContentNegotiation(ContentNegotiationConfigurer configurer){
 		configurer.defaultContentType(MediaType.APPLICATION_JSON);
 	}
-
-	@Bean
-	public CorsFilter corsFilter(){
-		return new CorsFilter();
-	}
-	
-//	@Override 
-//	public void addCorsMappings(CorsRegistry registry) {
-//		registry.addMapping(env.getRequiredProperty("centromere.api.antMatcherUrl"));
+//
+//	@Bean
+//	public CorsFilter corsFilter(){
+//		return new CorsFilter();
 //	}
+	
+	@Override 
+	public void addCorsMappings(CorsRegistry registry) {
+		registry.addMapping(env.getRequiredProperty("centromere.api.antMatcherUrl"));
+	}
 
 	@Override 
 	public void addFormatters(FormatterRegistry registry) {

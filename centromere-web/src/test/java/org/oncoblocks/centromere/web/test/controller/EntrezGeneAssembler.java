@@ -18,28 +18,28 @@ package org.oncoblocks.centromere.web.test.controller;
 
 import org.oncoblocks.centromere.web.controller.FilterableResource;
 import org.oncoblocks.centromere.web.test.models.EntrezGene;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.EntityLinks;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
-import org.springframework.stereotype.Component;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 /**
  * @author woemler
  */
 
-@Component
 public class EntrezGeneAssembler extends ResourceAssemblerSupport<EntrezGene, FilterableResource> {
 	
-	@Autowired private EntityLinks entityLinks;
+	private Class<?> controller;
 	
-	public EntrezGeneAssembler() {
-		super(EntrezGeneCrudController.class, FilterableResource.class);
+	public EntrezGeneAssembler(Class<?> controller) {
+		super(controller, FilterableResource.class);
+		this.controller = controller;
 	}
 
 	@Override 
 	public FilterableResource<EntrezGene> toResource(EntrezGene gene) {
 		FilterableResource<EntrezGene> resource = new FilterableResource<EntrezGene>(gene);
-		resource.add(entityLinks.linkToSingleResource(EntrezGene.class, gene.getId()).withSelfRel());
+		resource.add(linkTo(controller).slash(gene.getId()).withSelfRel());
 		return resource;
 	}
+	
 }

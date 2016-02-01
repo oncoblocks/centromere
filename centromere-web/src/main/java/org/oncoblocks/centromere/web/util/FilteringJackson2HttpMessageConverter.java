@@ -29,6 +29,7 @@ import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.Set;
 
 /**
@@ -49,7 +50,7 @@ public class FilteringJackson2HttpMessageConverter extends MappingJackson2HttpMe
 	}
 
 	@Override
-	protected void writeInternal(Object object, HttpOutputMessage outputMessage)
+	protected void writeInternal(Object object, Type type, HttpOutputMessage outputMessage)
 			throws IOException, HttpMessageNotWritableException {
 
 		ObjectMapper objectMapper = getObjectMapper();
@@ -58,7 +59,7 @@ public class FilteringJackson2HttpMessageConverter extends MappingJackson2HttpMe
 		try {
 
 			if (this.prefixJson) {
-				jsonGenerator.writeRaw("{} && ");
+				jsonGenerator.writeRaw(")]}', ");
 			}
 
 			if (object instanceof ResponseEnvelope) {
@@ -86,14 +87,14 @@ public class FilteringJackson2HttpMessageConverter extends MappingJackson2HttpMe
 								.setFailOnUnknownId(false);
 				}
 				
-				objectMapper.setFilters(filters);
+				objectMapper.setFilterProvider(filters);
 				objectMapper.writeValue(jsonGenerator, entity);
 
 			} else if (object == null){
 				jsonGenerator.writeNull();
 			} else {
 				FilterProvider filters = new SimpleFilterProvider().setFailOnUnknownId(false);
-				objectMapper.setFilters(filters);
+				objectMapper.setFilterProvider(filters);
 				objectMapper.writeValue(jsonGenerator, object);
 			}
 

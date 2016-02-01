@@ -33,8 +33,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/swagger")
 public class SwaggerController extends CrudApiController<EntrezGene, Long, EntrezGeneParameters> {
 	@Autowired
-	public SwaggerController(EntrezGeneRepository repository, EntrezGeneAssembler assembler) {
-		super(repository, assembler);
+	public SwaggerController(EntrezGeneRepository repository) {
+		super(repository, new EntrezGeneAssembler(SwaggerController.class));
 	}
 
 }

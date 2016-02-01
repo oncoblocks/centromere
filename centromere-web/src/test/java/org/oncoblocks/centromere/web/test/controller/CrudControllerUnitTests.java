@@ -29,8 +29,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.oncoblocks.centromere.core.repository.QueryCriteria;
-import org.oncoblocks.centromere.web.controller.BasicResourceAssembler;
-import org.oncoblocks.centromere.web.controller.FilterableResource;
 import org.oncoblocks.centromere.web.test.config.TestMongoConfig;
 import org.oncoblocks.centromere.web.test.config.TestWebConfig;
 import org.oncoblocks.centromere.web.test.models.EntrezGene;
@@ -102,8 +100,7 @@ public class CrudControllerUnitTests {
 		MockitoAnnotations.initMocks(this);
 		
 		mockMvc = MockMvcBuilders.standaloneSetup(
-				new EntrezGeneCrudController(repository, 
-						new BasicResourceAssembler<>(EntrezGeneCrudController.class, FilterableResource.class)))
+				new EntrezGeneCrudController(repository))
 				.setMessageConverters(createMessageConverters())
 				.setCustomArgumentResolvers(
 						new PageableHandlerMethodArgumentResolver(), 

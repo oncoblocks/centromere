@@ -78,7 +78,8 @@ public class ReadOnlyControllerIntegrationTests {
 				.andExpect(jsonPath("$.entrezGeneId", is(1)))
 				.andExpect(jsonPath("$.primaryGeneSymbol", is("GeneA")))
 				.andExpect(jsonPath("$.links", hasSize(1)))
-				.andExpect(jsonPath("$.links[0].rel", is("self")));
+				.andExpect(jsonPath("$.links[0].rel", is("self")))
+				.andExpect(jsonPath("$.links[0].href", endsWith(BASE_URL + "/1")));
 	}
 
 	@Test
@@ -211,8 +212,8 @@ public class ReadOnlyControllerIntegrationTests {
 				.andExpect(jsonPath("$.content[0]", hasKey("entrezGeneId")))
 				.andExpect(jsonPath("$.content[0].entrezGeneId", is(4)))
 				.andExpect(jsonPath("$", hasKey("links")))
-				.andExpect(jsonPath("$.links", hasSize(2)))
-				.andExpect(jsonPath("$.links[0].rel", is("self")))
+				.andExpect(jsonPath("$.links", hasSize(4)))
+				.andExpect(jsonPath("$.links[0].rel", is("first")))
 				.andExpect(jsonPath("$", hasKey("page")))
 				.andExpect(jsonPath("$.page.totalElements", is(5)))
 				.andExpect(jsonPath("$.page.number", is(1)))
