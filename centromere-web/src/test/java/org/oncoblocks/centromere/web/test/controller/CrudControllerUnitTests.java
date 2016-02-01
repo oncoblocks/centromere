@@ -29,6 +29,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.oncoblocks.centromere.core.repository.QueryCriteria;
+import org.oncoblocks.centromere.web.exceptions.RestExceptionHandler;
 import org.oncoblocks.centromere.web.test.config.TestMongoConfig;
 import org.oncoblocks.centromere.web.test.config.TestWebConfig;
 import org.oncoblocks.centromere.web.test.models.EntrezGene;
@@ -143,8 +144,8 @@ public class CrudControllerUnitTests {
 	private ExceptionHandlerExceptionResolver createExceptionResolver() {
 		ExceptionHandlerExceptionResolver exceptionResolver = new ExceptionHandlerExceptionResolver() {
 			protected ServletInvocableHandlerMethod getExceptionHandlerMethod(HandlerMethod handlerMethod, Exception exception) {
-				Method method = new ExceptionHandlerMethodResolver(TestExceptionHandler.class).resolveMethod(exception);
-				return new ServletInvocableHandlerMethod(new TestExceptionHandler(), method);
+				Method method = new ExceptionHandlerMethodResolver(RestExceptionHandler.class).resolveMethod(exception);
+				return new ServletInvocableHandlerMethod(new RestExceptionHandler(), method);
 			}
 		};
 		exceptionResolver.afterPropertiesSet();

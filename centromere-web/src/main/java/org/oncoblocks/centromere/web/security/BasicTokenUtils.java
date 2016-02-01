@@ -18,6 +18,7 @@ package org.oncoblocks.centromere.web.security;
 
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.Assert;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -31,6 +32,7 @@ import java.security.NoSuchAlgorithmException;
 public class BasicTokenUtils implements TokenOperations {
 	
 	private String key;
+	private Long tokenLifespan = 1000L * 60 * 60 * 24; // expires in one day
 
 	public BasicTokenUtils(String key) {
 		this.key = key;
@@ -39,7 +41,7 @@ public class BasicTokenUtils implements TokenOperations {
 	@Override
 	public String createToken(UserDetails userDetails){
 		
-		long expires = System.currentTimeMillis() + (1000L * 60 * 60 * 24); // expires in one day
+		long expires = System.currentTimeMillis() + tokenLifespan;
 		StringBuilder tokenBuilder = new StringBuilder();
 		tokenBuilder.append(userDetails.getUsername());
 		tokenBuilder.append(":");
@@ -98,6 +100,18 @@ public class BasicTokenUtils implements TokenOperations {
 		
 		return signature.equals(computeSignature(userDetails, expires));
 		
+	}
+	
+	public void setTokenLifespanDays(Long days){
+		Assert.notNull(days, "Number of days must not be null.");
+		if (days < 1) throw new IllegalArgumentException("Number of days must be greater than zero.");
+		tokenLifespan = 1000L * 60 * 60 * 24 * days;
+	}
+
+	public void setTokenLifespanHours(Long hours){
+		Assert.notNull(hours, "Number of hours must not be null.");
+		if (hours < 1) throw new IllegalArgumentException("Number of hours must be greater than zero.");
+		tokenLifespan = 1000L * 60 * 60 * hours;
 	}
 	
 }

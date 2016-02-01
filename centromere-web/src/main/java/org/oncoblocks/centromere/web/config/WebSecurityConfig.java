@@ -71,7 +71,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		@Bean
 		public TokenOperations tokenUtils() {
-			return new BasicTokenUtils(env.getRequiredProperty("centromere.security.token"));
+			BasicTokenUtils tokenUtils = new BasicTokenUtils(env.getRequiredProperty("centromere.security.token"));
+			try {
+				tokenUtils.setTokenLifespanHours(Long.parseLong(env.getRequiredProperty("centromere.security.tokenLifespanHours")));
+			} catch (NumberFormatException e){
+				try {
+					tokenUtils.setTokenLifespanDays(Long.parseLong(env.getRequiredProperty("centromere.security.tokenLifespanDays")));
+				} catch (NumberFormatException ex){
+					logger.warn("[CENTROMERE] Token lifespan not properly configured.  Reverting to default configuration");
+					tokenUtils.setTokenLifespanDays(1L);
+				}
+			}
+			return tokenUtils;
 		}
 
 		@Bean
