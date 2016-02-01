@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.web.test.controller;
+package org.oncoblocks.centromere.web.test.repository;
 
-import org.oncoblocks.centromere.web.exceptions.RestExceptionHandler;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author woemler
  */
 
-@ControllerAdvice
-public class TestExceptionHandler extends RestExceptionHandler {
+@Configuration
+@ComponentScan(basePackages = { "org.oncoblocks.centromere.web.test.repository" })
+public class MongoRepositoryConfig {
 }

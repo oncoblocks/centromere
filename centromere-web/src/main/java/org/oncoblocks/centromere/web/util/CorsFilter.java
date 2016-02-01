@@ -23,6 +23,7 @@ import java.io.IOException;
 /**
  * @author woemler
  */
+@Deprecated
 public class CorsFilter implements Filter {
 
 	@Override 

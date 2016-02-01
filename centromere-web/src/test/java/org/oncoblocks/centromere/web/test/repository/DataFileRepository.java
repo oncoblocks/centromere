@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.web.test.repository.mongo;
+package org.oncoblocks.centromere.web.test.repository;
 
-import org.oncoblocks.centromere.core.repository.support.DataSetRepositoryOperations;
+import org.oncoblocks.centromere.core.repository.support.DataFileRepositoryOperations;
 import org.oncoblocks.centromere.mongodb.GenericMongoRepository;
-import org.oncoblocks.centromere.web.test.models.DataSet;
+import org.oncoblocks.centromere.web.test.models.DataFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -32,22 +32,26 @@ import java.util.List;
  */
 
 @Repository
-public class DataSetRepository extends GenericMongoRepository<DataSet, String> implements
-		DataSetRepositoryOperations<DataSet, String> {
+public class DataFileRepository extends GenericMongoRepository<DataFile, String> implements
+		DataFileRepositoryOperations<DataFile, String> {
 
 	@Autowired
-	public DataSetRepository(MongoTemplate mongoTemplate) {
-		super(mongoTemplate, DataSet.class);
+	public DataFileRepository(MongoTemplate mongoTemplate) {
+		super(mongoTemplate, DataFile.class);
 	}
 
 	@Override 
-	public DataSet getByName(String name) {
-		Query query = new Query(Criteria.where("name").is(name));
-		List<DataSet> dataSets = this.getMongoOperations().find(query, getModel());
-		if (!dataSets.isEmpty()){
-			return dataSets.get(0);
-		} else {
-			return null;
-		}
+	public DataFile getByFilePath(String filePath) {
+		return this.getMongoOperations().findOne(new Query(Criteria.where("filePath").is(filePath)), this.getModel());
+	}
+
+	@Override 
+	public List<DataFile> findByDataSetId(String dataSetId) {
+		return this.getMongoOperations().find(new Query(Criteria.where("dataSetId").is(dataSetId)), this.getModel());
+	}
+
+	@Override 
+	public List<DataFile> findByDataType(String dataType) {
+		return this.getMongoOperations().find(new Query(Criteria.where("dataType").is(dataType)), this.getModel());
 	}
 }

@@ -18,12 +18,14 @@ package org.oncoblocks.centromere.web.config;
 
 import org.apache.catalina.connector.Connector;
 import org.apache.coyote.http11.AbstractHttp11Protocol;
+import org.oncoblocks.centromere.web.exceptions.RestExceptionHandler;
 import org.oncoblocks.centromere.web.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.boot.context.embedded.tomcat.TomcatConnectorCustomizer;
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
@@ -57,6 +59,7 @@ import java.util.List;
 @EnableSpringDataWebSupport
 @EnableHypermediaSupport(type = { EnableHypermediaSupport.HypermediaType.HAL })
 @EnableEntityLinks
+@ComponentScan(basePackageClasses = { RestExceptionHandler.class })
 public class WebServicesConfig extends WebMvcConfigurerAdapter {
 	
 	@Autowired Environment env;
@@ -66,11 +69,11 @@ public class WebServicesConfig extends WebMvcConfigurerAdapter {
 
 		FilteringJackson2HttpMessageConverter jsonConverter 
 				= new FilteringJackson2HttpMessageConverter();
-		jsonConverter.setSupportedMediaTypes(HalMediaType.getJsonMediaTypes());
+		jsonConverter.setSupportedMediaTypes(ApiMediaTypes.getJsonMediaTypes());
 		converters.add(jsonConverter);
 		
 		MarshallingHttpMessageConverter xmlConverter = new MarshallingHttpMessageConverter();
-		xmlConverter.setSupportedMediaTypes(HalMediaType.getXmlMediaTypes());
+		xmlConverter.setSupportedMediaTypes(ApiMediaTypes.getXmlMediaTypes());
 		XStreamMarshaller xStreamMarshaller = new XStreamMarshaller();
 		xmlConverter.setMarshaller(xStreamMarshaller);
 		xmlConverter.setUnmarshaller(xStreamMarshaller);
@@ -87,12 +90,7 @@ public class WebServicesConfig extends WebMvcConfigurerAdapter {
 	public void configureContentNegotiation(ContentNegotiationConfigurer configurer){
 		configurer.defaultContentType(MediaType.APPLICATION_JSON);
 	}
-//
-//	@Bean
-//	public CorsFilter corsFilter(){
-//		return new CorsFilter();
-//	}
-	
+
 	@Override 
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping(env.getRequiredProperty("centromere.api.antMatcherUrl"));

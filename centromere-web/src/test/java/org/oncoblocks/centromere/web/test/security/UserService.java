@@ -17,7 +17,7 @@
 package org.oncoblocks.centromere.web.test.security;
 
 import org.oncoblocks.centromere.core.repository.QueryCriteria;
-import org.oncoblocks.centromere.web.test.repository.mongo.UserRepository;
+import org.oncoblocks.centromere.web.test.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

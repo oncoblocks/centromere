@@ -17,6 +17,7 @@
 package org.oncoblocks.centromere.web.exceptions;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
@@ -26,7 +27,8 @@ import org.springframework.web.context.request.WebRequest;
  * 
  * @author woemler
  */
-public abstract class RestExceptionHandler {
+@ControllerAdvice
+public class RestExceptionHandler {
 
 	/**
 	 * Catches a {@link org.oncoblocks.centromere.web.exceptions.RestException} thrown bt a web service

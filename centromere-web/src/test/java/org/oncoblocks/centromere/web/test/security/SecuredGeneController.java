@@ -20,7 +20,7 @@ import org.oncoblocks.centromere.web.controller.CrudApiController;
 import org.oncoblocks.centromere.web.test.controller.EntrezGeneParameters;
 import org.oncoblocks.centromere.web.test.controller.EntrezGeneAssembler;
 import org.oncoblocks.centromere.web.test.models.EntrezGene;
-import org.oncoblocks.centromere.web.test.repository.mongo.EntrezGeneRepository;
+import org.oncoblocks.centromere.web.test.repository.EntrezGeneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

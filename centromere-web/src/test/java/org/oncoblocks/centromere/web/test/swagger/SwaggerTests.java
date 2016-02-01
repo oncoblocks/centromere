@@ -23,7 +23,7 @@ import org.junit.runner.RunWith;
 import org.oncoblocks.centromere.web.test.config.TestMongoConfig;
 import org.oncoblocks.centromere.web.test.config.TestWebConfig;
 import org.oncoblocks.centromere.web.test.controller.ControllerIntegrationTestConfig;
-import org.oncoblocks.centromere.web.test.repository.mongo.MongoRepositoryConfig;
+import org.oncoblocks.centromere.web.test.repository.MongoRepositoryConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;

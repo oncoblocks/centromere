@@ -18,7 +18,7 @@ package org.oncoblocks.centromere.web.test.controller;
 
 import org.oncoblocks.centromere.web.controller.ReadOnlyApiController;
 import org.oncoblocks.centromere.web.test.models.EntrezGene;
-import org.oncoblocks.centromere.web.test.repository.mongo.EntrezGeneRepository;
+import org.oncoblocks.centromere.web.test.repository.EntrezGeneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.stereotype.Controller;

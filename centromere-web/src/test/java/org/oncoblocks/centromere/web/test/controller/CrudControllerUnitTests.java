@@ -32,10 +32,10 @@ import org.oncoblocks.centromere.core.repository.QueryCriteria;
 import org.oncoblocks.centromere.web.test.config.TestMongoConfig;
 import org.oncoblocks.centromere.web.test.config.TestWebConfig;
 import org.oncoblocks.centromere.web.test.models.EntrezGene;
-import org.oncoblocks.centromere.web.test.repository.mongo.EntrezGeneRepository;
-import org.oncoblocks.centromere.web.test.repository.mongo.MongoRepositoryConfig;
+import org.oncoblocks.centromere.web.test.repository.EntrezGeneRepository;
+import org.oncoblocks.centromere.web.test.repository.MongoRepositoryConfig;
 import org.oncoblocks.centromere.web.util.FilteringJackson2HttpMessageConverter;
-import org.oncoblocks.centromere.web.util.HalMediaType;
+import org.oncoblocks.centromere.web.util.ApiMediaTypes;
 import org.oncoblocks.centromere.web.util.StringToAttributeConverter;
 import org.oncoblocks.centromere.web.util.StringToSourcedAliasConverter;
 import org.springframework.data.domain.PageImpl;
@@ -136,7 +136,7 @@ public class CrudControllerUnitTests {
 	
 	private HttpMessageConverter<?> createMessageConverters(){
 		FilteringJackson2HttpMessageConverter jsonConverter = new FilteringJackson2HttpMessageConverter();
-		jsonConverter.setSupportedMediaTypes(HalMediaType.getJsonMediaTypes());
+		jsonConverter.setSupportedMediaTypes(ApiMediaTypes.getJsonMediaTypes());
 		return jsonConverter;
 	}
 
@@ -161,7 +161,7 @@ public class CrudControllerUnitTests {
 	public void findById() throws Exception {
 
 		mockMvc.perform(get(BASE_URL + "/{id}", 1L)
-				.accept(HalMediaType.APPLICATION_HAL_JSON_VALUE))
+				.accept(ApiMediaTypes.APPLICATION_HAL_JSON_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.entrezGeneId", is(1)))
 				.andExpect(jsonPath("$.primaryGeneSymbol", is("GeneA")))
@@ -192,7 +192,7 @@ public class CrudControllerUnitTests {
 
 	@Test
 	public void findAll() throws Exception {
-		mockMvc.perform(get(BASE_URL).accept(HalMediaType.APPLICATION_HAL_JSON_VALUE))
+		mockMvc.perform(get(BASE_URL).accept(ApiMediaTypes.APPLICATION_HAL_JSON_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(5)))
@@ -238,7 +238,7 @@ public class CrudControllerUnitTests {
 
 	@Test
 	public void findPaged() throws Exception {
-		mockMvc.perform(get(BASE_URL + "?page=0&size=5").accept(HalMediaType.APPLICATION_HAL_JSON_VALUE))
+		mockMvc.perform(get(BASE_URL + "?page=0&size=5").accept(ApiMediaTypes.APPLICATION_HAL_JSON_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(5)))
@@ -269,7 +269,7 @@ public class CrudControllerUnitTests {
 	@Test
 	public void findSorted() throws Exception {
 		mockMvc.perform(get(BASE_URL + "?sort=geneSymbol,asc").accept(
-				HalMediaType.APPLICATION_HAL_JSON_VALUE))
+				ApiMediaTypes.APPLICATION_HAL_JSON_VALUE))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasKey("content")))
 				.andExpect(jsonPath("$.content", hasSize(5)))

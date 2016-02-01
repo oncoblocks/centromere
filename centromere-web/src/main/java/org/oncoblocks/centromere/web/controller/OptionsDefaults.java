@@ -17,7 +17,7 @@
 package org.oncoblocks.centromere.web.controller;
 
 import org.oncoblocks.centromere.web.query.AnnotatedQueryParameters;
-import org.oncoblocks.centromere.web.util.HalMediaType;
+import org.oncoblocks.centromere.web.util.ApiMediaTypes;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpMethod;
@@ -53,7 +53,7 @@ public class OptionsDefaults {
 		descriptors.add(new OptionsEndpointDescriptor(
 				HttpMethod.GET,
 				"/{id}",
-				Arrays.asList(new String[]{ HalMediaType.APPLICATION_HAL_JSON_VALUE}),
+				Arrays.asList(new String[]{ ApiMediaTypes.APPLICATION_HAL_JSON_VALUE}),
 				OptionsDefaults.getDefaultHeaders(),
 				new AnnotatedQueryParameters(),
 				new FilterableResource<>(model.newInstance()),
@@ -71,7 +71,7 @@ public class OptionsDefaults {
 		descriptors.add(new OptionsEndpointDescriptor(
 				HttpMethod.GET,
 				"",
-				Arrays.asList(new String[]{ HalMediaType.APPLICATION_HAL_JSON_VALUE}),
+				Arrays.asList(new String[]{ ApiMediaTypes.APPLICATION_HAL_JSON_VALUE}),
 				OptionsDefaults.getDefaultHeaders(),
 				new AnnotatedQueryParameters(),
 				Arrays.asList(new FilterableResource[]{ new FilterableResource<>(model.newInstance())}),
@@ -89,7 +89,7 @@ public class OptionsDefaults {
 		descriptors.add(new OptionsEndpointDescriptor(
 				HttpMethod.GET,
 				"?page={int}&size={int}&sort={string,[asc,desc]}",
-				Arrays.asList(new String[]{ HalMediaType.APPLICATION_HAL_JSON_VALUE}),
+				Arrays.asList(new String[]{ ApiMediaTypes.APPLICATION_HAL_JSON_VALUE}),
 				OptionsDefaults.getDefaultHeaders(),
 				new AnnotatedQueryParameters(),
 				new PagedResources(

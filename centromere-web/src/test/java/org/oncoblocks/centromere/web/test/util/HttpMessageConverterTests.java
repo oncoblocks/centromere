@@ -25,7 +25,7 @@ import org.oncoblocks.centromere.web.controller.ResponseEnvelope;
 import org.oncoblocks.centromere.web.test.models.EntrezGene;
 import org.oncoblocks.centromere.web.util.FilteringJackson2HttpMessageConverter;
 import org.oncoblocks.centromere.web.util.FilteringTextMessageConverter;
-import org.oncoblocks.centromere.web.util.HalMediaType;
+import org.oncoblocks.centromere.web.util.ApiMediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.mock.http.MockHttpOutputMessage;
 import org.springframework.test.context.ContextConfiguration;
@@ -53,7 +53,7 @@ public class HttpMessageConverterTests {
 	@Before
 	public void setup(){
 		jsonConverter = new FilteringJackson2HttpMessageConverter();
-		jsonConverter.setSupportedMediaTypes(HalMediaType.getJsonMediaTypes());
+		jsonConverter.setSupportedMediaTypes(ApiMediaTypes.getJsonMediaTypes());
 		jsonConverter.setPrettyPrint(true);
 		textConverter = new FilteringTextMessageConverter(textMediaType);
 		textConverter.setDelimiter("\t");

@@ -21,7 +21,7 @@ import org.oncoblocks.centromere.core.repository.RepositoryOperations;
 import org.oncoblocks.centromere.web.exceptions.RequestFailureException;
 import org.oncoblocks.centromere.web.exceptions.ResourceNotFoundException;
 import org.oncoblocks.centromere.web.query.QueryParameters;
-import org.oncoblocks.centromere.web.util.HalMediaType;
+import org.oncoblocks.centromere.web.util.ApiMediaTypes;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -58,13 +58,13 @@ public class CrudApiController<T extends Model<ID>, ID extends Serializable, Q e
 	 * @return updated representation of the submitted entity
 	 */
 	@RequestMapping(value = "", method = RequestMethod.POST, 
-			produces = { MediaType.APPLICATION_JSON_VALUE, HalMediaType.APPLICATION_HAL_JSON_VALUE,
-					HalMediaType.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE,
+			produces = { MediaType.APPLICATION_JSON_VALUE, ApiMediaTypes.APPLICATION_HAL_JSON_VALUE,
+					ApiMediaTypes.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE,
 					MediaType.TEXT_PLAIN_VALUE})
 	public HttpEntity<?> create(@RequestBody T entity, HttpServletRequest request) {
 		T created = getRepository().insert(entity);
 		if (created == null) throw new RequestFailureException(40003, "There was a problem creating the record.", "", "");
-		if (HalMediaType.isHalMediaType(request.getHeader("Accept"))){
+		if (ApiMediaTypes.isHalMediaType(request.getHeader("Accept"))){
 			FilterableResource resource = getAssembler().toResource(created);
 			return new ResponseEntity<>(resource, HttpStatus.CREATED);
 		} else {
@@ -88,7 +88,7 @@ public class CrudApiController<T extends Model<ID>, ID extends Serializable, Q e
 		if (!getRepository().exists(id)) throw new ResourceNotFoundException();
 		T updated = getRepository().update(entity);
 		if (updated == null) throw new RequestFailureException(40004, "There was a problem updating the record.", "", "");
-		if (HalMediaType.isHalMediaType(request.getHeader("Accept"))){
+		if (ApiMediaTypes.isHalMediaType(request.getHeader("Accept"))){
 			FilterableResource resource = getAssembler().toResource(updated);
 			return new ResponseEntity<>(resource, HttpStatus.CREATED);
 		} else {

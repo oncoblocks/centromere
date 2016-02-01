@@ -21,7 +21,7 @@ import org.oncoblocks.centromere.core.repository.QueryCriteria;
 import org.oncoblocks.centromere.core.repository.RepositoryOperations;
 import org.oncoblocks.centromere.web.exceptions.ResourceNotFoundException;
 import org.oncoblocks.centromere.web.query.QueryParameters;
-import org.oncoblocks.centromere.web.util.HalMediaType;
+import org.oncoblocks.centromere.web.util.ApiMediaTypes;
 import org.slf4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -79,8 +79,8 @@ public abstract class BaseApiController<
 	 * @return {@code T} instance
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET,
-			produces = { HalMediaType.APPLICATION_HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE, 
-					HalMediaType.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE, 
+			produces = { ApiMediaTypes.APPLICATION_HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE, 
+					ApiMediaTypes.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE, 
 					MediaType.TEXT_PLAIN_VALUE })
 	public HttpEntity<?> findById(
 			@PathVariable ID id,
@@ -91,7 +91,7 @@ public abstract class BaseApiController<
 		T entity = repository.findOne(id);
 		if (entity == null) throw new ResourceNotFoundException();
 		ResponseEnvelope envelope = null;
-		if (HalMediaType.isHalMediaType(request.getHeader("Accept"))){
+		if (ApiMediaTypes.isHalMediaType(request.getHeader("Accept"))){
 			FilterableResource resource = assembler.toResource(entity);
 			envelope = new ResponseEnvelope(resource, fields, exclude);
 		} else {
@@ -111,8 +111,8 @@ public abstract class BaseApiController<
 	 * @return
 	 */
 	@RequestMapping(value = "/distinct", method = RequestMethod.GET,
-			produces = { HalMediaType.APPLICATION_HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE,
-					HalMediaType.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE,
+			produces = { ApiMediaTypes.APPLICATION_HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE,
+					ApiMediaTypes.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE,
 					MediaType.TEXT_PLAIN_VALUE })
 	public HttpEntity<?> findDistinct(
 			@RequestParam String field, 
@@ -122,7 +122,7 @@ public abstract class BaseApiController<
 		List<QueryCriteria> queryCriterias = params.getQueryCriteria();
 		List<Object> distinct = (List<Object>) repository.distinct(field, queryCriterias);
 		ResponseEnvelope envelope = null;
-		if (HalMediaType.isHalMediaType(request.getHeader("Accept"))){
+		if (ApiMediaTypes.isHalMediaType(request.getHeader("Accept"))){
 			Link selfLink = new Link(linkTo(this.getClass()).slash("distinct").toString() + 
 					(request.getQueryString() != null ? "?" + request.getQueryString() : ""), "self");
 			Resources resources = new Resources(distinct);
@@ -145,8 +145,8 @@ public abstract class BaseApiController<
 	 * @return
 	 */
 	@RequestMapping(value = "", method = RequestMethod.GET,
-			produces = { MediaType.APPLICATION_JSON_VALUE, HalMediaType.APPLICATION_HAL_JSON_VALUE,
-					HalMediaType.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE,
+			produces = { MediaType.APPLICATION_JSON_VALUE, ApiMediaTypes.APPLICATION_HAL_JSON_VALUE,
+					ApiMediaTypes.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE,
 					MediaType.TEXT_PLAIN_VALUE})
 	public HttpEntity<?> find(
 			@ModelAttribute Q params,
@@ -165,7 +165,7 @@ public abstract class BaseApiController<
 				(request.getQueryString() != null ? "?" + request.getQueryString() : ""), "self");
 		if (parameterMap.containsKey("page") || parameterMap.containsKey("size")){
 			Page<T> page = repository.find(criterias, pageable);
-			if (HalMediaType.isHalMediaType(mediaType)){
+			if (ApiMediaTypes.isHalMediaType(mediaType)){
 				PagedResources<FilterableResource> pagedResources
 						= pagedResourcesAssembler.toResource(page, assembler, selfLink);
 				envelope = new ResponseEnvelope(pagedResources, fields, exclude);
@@ -180,7 +180,7 @@ public abstract class BaseApiController<
 			} else {
 				entities = (List<T>) repository.find(criterias);
 			}
-			if (HalMediaType.isHalMediaType(mediaType)){
+			if (ApiMediaTypes.isHalMediaType(mediaType)){
 				List<FilterableResource> resourceList = assembler.toResources(entities);
 				Resources<FilterableResource> resources = new Resources<>(resourceList);
 				resources.add(selfLink);

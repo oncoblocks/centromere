@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.web.test.repository.mongo;
+package org.oncoblocks.centromere.web.test.repository;
 
 import org.oncoblocks.centromere.mongodb.GenericMongoRepository;
 import org.oncoblocks.centromere.web.test.security.User;
