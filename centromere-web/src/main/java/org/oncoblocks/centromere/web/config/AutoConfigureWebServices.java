@@ -14,16 +14,21 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.web.test.config;
+package org.oncoblocks.centromere.web.config;
+
+import org.springframework.context.annotation.Import;
+
+import java.lang.annotation.*;
 
 /**
+ * Enables default configuration of many of the required web application components, including web 
+ *   request handling, exception handling, message converters, CORS support, and property mapping.
+ * 
  * @author woemler
  */
-
-import org.oncoblocks.centromere.web.config.AutoConfigureWebSecurity;
-import org.springframework.context.annotation.Configuration;
-
-@Configuration
-@AutoConfigureWebSecurity
-public class TestSecurityConfig {}
-
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
+@Inherited
+@Import({WebServicesConfig.class, CentromereWebPropertiesConfig.class})
+public @interface AutoConfigureWebServices {
+}

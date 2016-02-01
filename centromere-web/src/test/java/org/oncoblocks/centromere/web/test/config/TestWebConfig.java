@@ -16,7 +16,7 @@
 
 package org.oncoblocks.centromere.web.test.config;
 
-import org.oncoblocks.centromere.web.config.AutoConfigureCentromereWeb;
+import org.oncoblocks.centromere.web.config.AutoConfigureWebServices;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -24,7 +24,7 @@ import org.springframework.context.annotation.Configuration;
  */
 
 @Configuration
-@AutoConfigureCentromereWeb
+@AutoConfigureWebServices
 public class TestWebConfig {
 	// No other configuration needed!
 }

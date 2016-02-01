@@ -16,6 +16,7 @@
 
 package org.oncoblocks.centromere.web.test.swagger;
 
+import org.oncoblocks.centromere.web.config.AutoConfigureApiDocumentation;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
@@ -24,36 +25,7 @@ import org.springframework.context.annotation.Configuration;
  */
 
 @Configuration
-//@EnableWebMvc
-//@EnableSwagger2
+@AutoConfigureApiDocumentation
 @ComponentScan(basePackages = { "org.oncoblocks.centromere.web.test.swagger" })
 public class TestSwaggerConfig {
-
-//	@Bean
-//	public Docket api(){
-//		return new Docket(DocumentationType.SWAGGER_2)
-//				.select()
-//				.apis(RequestHandlerSelectors.any())
-//				.paths(apiPaths())
-//				.build()
-//				.apiInfo(apiInfo())
-//				.enableUrlTemplating(true);
-//	}
-//
-//	private ApiInfo apiInfo(){
-//		return new ApiInfo(
-//				"Centromere Test",
-//				"Centromere test API", 
-//				"0.1", 
-//				"",
-//				"woemler@blueprintmedicines.com",
-//				"Apache License 2.0", 
-//				"https://github.com/oncoblocks/centromere/blob/master/LICENSE"
-//		);
-//	}
-//
-//	private Predicate<String> apiPaths(){
-//		return regex("/swagger.*");
-//	}
-	
 }

@@ -21,18 +21,14 @@ import org.springframework.context.annotation.Import;
 import java.lang.annotation.*;
 
 /**
- * Enables default configuration of many of the required web application components, including the
- *   dispatcher servlet, web request handling, CORS support, Swagger, and property mapping.
+ * Automatically enables REST API documentation features.
  * 
  * @author woemler
  */
+
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Inherited
-@Import({ 
-		WebServicesConfig.class, 
-		CentromereWebPropertiesConfig.class, 
-		SwaggerConfig.class
-})
-public @interface AutoConfigureCentromereWeb {
+@Import({SwaggerConfig.class})
+public @interface AutoConfigureApiDocumentation {
 }

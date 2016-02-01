@@ -10,11 +10,13 @@ This project is still in early development.  Components can and will change, and
 
 ### Configuration
 
-The easiest way to configure Centromere is to use the `@AutoConfigureCentromereWeb` annotation in your configuration class.  This will handle all of the required web context configuration and bean registration.
+The easiest way to configure Centromere is to use the available autoconfiguration annotations in your configuration class: `@AutoConfigureWebServices`, `@AutoConfigureWebSecurity`, and `@AutoConfigureApiDocumentation`.  This will handle all of the required web context configuration and bean registration.
 
 ```java
 @Configuration
-@AutoConfigureCentromereWeb
+@AutoConfigureWebServices
+@AutoConfigureWebSecurity
+@AutoConfigureApiDocumentation
 @ComponentScan(basePackages = { "me.woemler.myapp.centromere" })
 public class ApplicationConfig {
 	// Additional config steps go here.
