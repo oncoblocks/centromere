@@ -37,8 +37,8 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.xml.MarshallingHttpMessageConverter;
 import org.springframework.oxm.xstream.XStreamMarshaller;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.nio.charset.Charset;
@@ -50,6 +50,7 @@ import java.util.List;
  *   - Default media type handling
  *   - CORS filter support
  *   - GZIP compression of request responses using the 'Accept-Encoding: gzip,deflate' header.
+ *   - Resource handling for webjars and Swagger UI
  *
  * @author woemler
  */
@@ -91,10 +92,15 @@ public class WebServicesConfig extends WebMvcConfigurerAdapter {
 		configurer.defaultContentType(MediaType.APPLICATION_JSON);
 	}
 
-	@Override 
-	public void addCorsMappings(CorsRegistry registry) {
-		registry.addMapping(env.getRequiredProperty("centromere.api.antMatcherUrl"));
+	@Bean
+	public CorsFilter corsFilter(){
+		return new CorsFilter();
 	}
+	
+//	@Override 
+//	public void addCorsMappings(CorsRegistry registry) {
+//		registry.addMapping(env.getRequiredProperty("centromere.api.antMatcherUrl"));
+//	}
 
 	@Override 
 	public void addFormatters(FormatterRegistry registry) {
@@ -120,5 +126,10 @@ public class WebServicesConfig extends WebMvcConfigurerAdapter {
 				}
 		);
 	}
-	
+
+	@Override 
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
+		registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+	}
 }

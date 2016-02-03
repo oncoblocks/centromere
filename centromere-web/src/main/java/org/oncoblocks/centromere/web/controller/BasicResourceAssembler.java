@@ -19,21 +19,18 @@ package org.oncoblocks.centromere.web.controller;
 import org.oncoblocks.centromere.core.model.Model;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 
-import java.io.Serializable;
-
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 /**
  * @author woemler
  */
-public class BasicResourceAssembler<T extends Model<ID>, ID extends Serializable> 
+public class BasicResourceAssembler<T extends Model<?>> 
 		extends ResourceAssemblerSupport<T, FilterableResource> {
 	
 	private Class<?> controllerClass;
 
-	public BasicResourceAssembler(Class<?> controllerClass,
-			Class<FilterableResource> resourceType) {
-		super(controllerClass, resourceType);
+	public BasicResourceAssembler(Class<?> controllerClass) {
+		super(controllerClass, FilterableResource.class);
 		this.controllerClass = controllerClass;
 	}
 

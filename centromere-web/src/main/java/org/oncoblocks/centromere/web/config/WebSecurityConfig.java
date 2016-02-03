@@ -73,10 +73,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		public TokenOperations tokenUtils() {
 			BasicTokenUtils tokenUtils = new BasicTokenUtils(env.getRequiredProperty("centromere.security.token"));
 			try {
-				tokenUtils.setTokenLifespanHours(Long.parseLong(env.getRequiredProperty("centromere.security.tokenLifespanHours")));
+				tokenUtils.setTokenLifespanHours(Long.parseLong(env.getRequiredProperty(
+						"centromere.security.token-lifespan-hours")));
 			} catch (NumberFormatException e){
 				try {
-					tokenUtils.setTokenLifespanDays(Long.parseLong(env.getRequiredProperty("centromere.security.tokenLifespanDays")));
+					tokenUtils.setTokenLifespanDays(Long.parseLong(env.getRequiredProperty(
+							"centromere.security.token-lifespan-days")));
 				} catch (NumberFormatException ex){
 					logger.warn("[CENTROMERE] Token lifespan not properly configured.  Reverting to default configuration");
 					tokenUtils.setTokenLifespanDays(1L);
@@ -93,9 +95,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 			
-			String secureUrl = env.getRequiredProperty("centromere.security.secureUrl");
-			Boolean secureRead = Boolean.parseBoolean(env.getRequiredProperty("centromere.security.secureRead"));
-			Boolean secureWrite = Boolean.parseBoolean(env.getRequiredProperty("centromere.security.secureWrite"));
+			String secureUrl = env.getRequiredProperty("centromere.security.secure-url");
+			Boolean secureRead = Boolean.parseBoolean(env.getRequiredProperty(
+					"centromere.security.secure-read"));
+			Boolean secureWrite = Boolean.parseBoolean(env.getRequiredProperty(
+					"centromere.security.secure-write"));
 			
 			logger.info(String.format("[CENTROMERE] Secure URL: %s", secureUrl));
 			logger.info(String.format("[CENTROMERE] Secure Read: %s", secureRead.toString()));

@@ -59,14 +59,14 @@ public class SwaggerConfig {
 				env.getRequiredProperty("centromere.api.description"),
 				env.getRequiredProperty("centromere.api.version"),
 				env.getRequiredProperty("centromere.api.tos"),
-				env.getRequiredProperty("centromere.api.contactEmail"),
+				env.getRequiredProperty("centromere.api.contact-email"),
 				env.getRequiredProperty("centromere.api.license"),
-				env.getRequiredProperty("centromere.api.licenseUrl")
+				env.getRequiredProperty("centromere.api.license-url")
 		);
 	}
 
 	private Predicate<String> apiPaths(){
-		return regex(env.getRequiredProperty("centromere.api.regexUrl"));
+		return regex(env.getRequiredProperty("centromere.api.regex-url"));
 	}
 	
 }

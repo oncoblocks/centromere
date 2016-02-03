@@ -70,6 +70,12 @@ public class SwaggerTests {
 	}
 	
 	@Test
+	public void swaggerUiTest() throws Exception {
+		mockMvc.perform(get("/swagger-ui.html"))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
 	public void generateAsciiStaticDocs() throws Exception {
 		mockMvc.perform(get("/v2/api-docs")
 		.accept(MediaType.APPLICATION_JSON))

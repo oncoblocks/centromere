@@ -33,8 +33,7 @@ import java.util.Map;
  * 
  * @author woemler
  */
-public abstract class QueryCriteriaParameters implements
-		org.oncoblocks.centromere.web.query.QueryParameters {
+public abstract class QueryCriteriaParameters implements QueryParameters {
 
 	private List<QueryCriteria> queryCriterias = new ArrayList<>();
 	private Map<String,String> parameterMap;
