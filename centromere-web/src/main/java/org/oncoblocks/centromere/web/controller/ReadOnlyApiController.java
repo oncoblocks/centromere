@@ -19,7 +19,6 @@ package org.oncoblocks.centromere.web.controller;
 import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.repository.RepositoryOperations;
 import org.oncoblocks.centromere.web.exceptions.MethodNotAllowedException;
-import org.oncoblocks.centromere.web.query.QueryParameters;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,14 +32,12 @@ import java.io.Serializable;
  * 
  * @author woemler
  */
-public class ReadOnlyApiController<
-		T extends Model<ID>, 
-		ID extends Serializable, 
-		Q extends QueryParameters> extends BaseApiController<T, ID, Q>  {
+public class ReadOnlyApiController<T extends Model<ID>, ID extends Serializable> 
+		extends AbstractApiController<T, ID>  {
 
-	public ReadOnlyApiController(RepositoryOperations<T, ID> repository,
+	public ReadOnlyApiController(RepositoryOperations<T, ID> repository, Class<T> model,
 			ResourceAssemblerSupport<T, FilterableResource> assembler) {
-		super(repository, assembler);
+		super(repository, model, assembler);
 	}
 
 	/**

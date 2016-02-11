@@ -53,6 +53,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.*;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -70,6 +71,7 @@ public abstract class AbstractApiController<T extends Model<ID>, ID extends Seri
 	private ResourceAssemblerSupport<T, FilterableResource> assembler;
 	private Class<T> model;
 	private final ConversionService conversionService = new DefaultConversionService();
+	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(AbstractApiController.class);
 
 	public AbstractApiController(
 			RepositoryOperations<T, ID> repository,
@@ -80,8 +82,6 @@ public abstract class AbstractApiController<T extends Model<ID>, ID extends Seri
 		this.assembler = assembler;
 	}
 
-	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(AbstractApiController.class);
-	
 	/**
 	 * {@code GET /{id}}
 	 * Fetches a single record by its primary ID and returns it, or a {@code Not Found} exception if not.
@@ -240,31 +240,42 @@ public abstract class AbstractApiController<T extends Model<ID>, ID extends Seri
 	 * @return
 	 */
 	private List<QueryCriteria> getQueryCriteriaFromRequest(HttpServletRequest request){
+		logger.debug(String.format("Generating QueryCriteria for request parameters: model=%s params=%s", 
+				model.getName(), request.getQueryString()));
 		List<QueryCriteria> criterias = new ArrayList<>();
 		for (Map.Entry entry: request.getParameterMap().entrySet()){
 			QueryCriteria criteria = null;
 			String paramName = (String) entry.getKey();
 			String[] paramValue = ((String[]) entry.getValue())[0].split(",");
+			Class<?> type;
 			for (Field field: this.model.getDeclaredFields()){
+				if (Collection.class.isAssignableFrom(field.getType())){
+					ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
+					type = (Class<?>) parameterizedType.getActualTypeArguments()[0];
+				} else {
+					type = field.getType();
+				}
 				String fieldName = field.getName();
 				if (field.isAnnotationPresent(Ignored.class)) continue;
-				if (fieldName.equals(paramName)) {
+				if (field.getName().equals(paramName)) {
 					if (paramValue.length > 1){
-						criteria = createCriteriaFromRequestParameter(field, paramValue, Evaluation.IN);
+						criteria = createCriteriaFromRequestParameter(fieldName, paramValue, type, Evaluation.IN);
 					} else {
-						criteria = createCriteriaFromRequestParameter(field, paramValue, Evaluation.EQUALS);
+						criteria = createCriteriaFromRequestParameter(fieldName, paramValue, type, Evaluation.EQUALS);
 					}
 				} else if (field.isAnnotationPresent(Aliases.class)){
 					Aliases aliases = field.getAnnotation(Aliases.class);
 					for (Alias alias: aliases.value()){
 						if (alias.value().equals(paramName)){
-							criteria = createCriteriaFromRequestParameter(field, paramValue, alias.evaluation());
+							if (!alias.fieldName().equals("")) fieldName = alias.fieldName();
+							criteria = createCriteriaFromRequestParameter(fieldName, paramValue, type, alias.evaluation());
 						}
 					}
 				} else if (field.isAnnotationPresent(Alias.class)){
 					Alias alias = field.getAnnotation(Alias.class);
 					if (alias.value().equals(paramName)){
-						criteria = createCriteriaFromRequestParameter(field, paramValue, alias.evaluation());
+						if (!alias.fieldName().equals("")) fieldName = alias.fieldName();
+						criteria = createCriteriaFromRequestParameter(fieldName, paramValue, type, alias.evaluation());
 					}
 				}
 			}
@@ -281,6 +292,8 @@ public abstract class AbstractApiController<T extends Model<ID>, ID extends Seri
 	 * @return
 	 */
 	private Object convertParameter(Object param, Class<?> type){
+		logger.debug(String.format("Attempting to convert parameter: from=%s to=%s", 
+				param.getClass().getName(), type.getName()));
 		if (conversionService.canConvert(param.getClass(), type)){
 			try {
 				return conversionService.convert(param, type);
@@ -312,14 +325,15 @@ public abstract class AbstractApiController<T extends Model<ID>, ID extends Seri
 	 * Creates a {@link QueryCriteria} object based upon a request parameter and {@link Evaluation}
 	 *   value.
 	 * 
-	 * @param field
+	 * @param param
 	 * @param values
+	 * @param type
 	 * @param evaluation
 	 * @return
 	 */
-	private QueryCriteria createCriteriaFromRequestParameter(Field field, Object[] values, Evaluation evaluation){
-		String param = field.getName();
-		Class<?> type = field.getType();
+	private QueryCriteria createCriteriaFromRequestParameter(String param, Object[] values, Class<?> type, Evaluation evaluation){
+		logger.debug(String.format("Generating QueryCriteria object for query string parameter: " 
+				+ "param=%s values=%s type=%s eval=%s", param, values.toString(), type.getName(), evaluation.toString()));
 		switch (evaluation){
 			case EQUALS:
 				return new QueryCriteria(param, convertParameter(values[0], type), Evaluation.EQUALS);
@@ -371,6 +385,7 @@ public abstract class AbstractApiController<T extends Model<ID>, ID extends Seri
 	 * @return
 	 */
 	private Pageable remapPageable(Pageable pageable){
+		logger.debug("Attempting to remap Pageable parameter names.");
 		Sort sort = null;
 		if (pageable.getSort() != null){
 			List<Sort.Order> orders = new ArrayList<>();
@@ -390,6 +405,7 @@ public abstract class AbstractApiController<T extends Model<ID>, ID extends Seri
 	 * @return
 	 */
 	private String remapParameterName(String param){
+		logger.debug(String.format("Attempting to remap query string parameter: %s", param));
 		for (Field field: model.getDeclaredFields()){
 			String fieldName = field.getName();
 			if (field.isAnnotationPresent(Aliases.class)){
@@ -402,6 +418,7 @@ public abstract class AbstractApiController<T extends Model<ID>, ID extends Seri
 				if (alias.value().equals(param)) return fieldName;
 			}
 		}
+		logger.debug(String.format("Parameter remapped to: %s", param));
 		return param;
 	}
 	

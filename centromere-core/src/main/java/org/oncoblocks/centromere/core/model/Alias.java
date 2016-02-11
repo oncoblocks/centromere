@@ -24,12 +24,34 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Allows the use of query string parameters, other than the model field's name to be used in web
+ *   API query operations.  {@link Evaluation} values, other than the default equality check, can
+ *   be assigned tothe alias as well.
+ * 
  * @author woemler
  */
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Alias {
+
+	/**
+	 * The string name of the parameter to be used.
+	 * @return
+	 */
 	String value();
+
+	/**
+	 * The database query evaluation to be used when generating a 
+	 *   {@link org.oncoblocks.centromere.core.repository.QueryCriteria}. 
+	 * @return
+	 */
 	Evaluation evaluation() default Evaluation.EQUALS;
+
+	/**
+	 * Alternate field name to be used in the {@link org.oncoblocks.centromere.core.repository.QueryCriteria},
+	 *   if the default name of the field would be invalid (such as with maps or lists of key-value pairs.
+	 * @return
+	 */
+	String fieldName() default "";
 }

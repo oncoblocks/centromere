@@ -30,10 +30,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(value = "/genes/read")
 //@ExposesResourceFor(EntrezGene.class)
 public class EntrezGeneReadOnlyController extends
-		ReadOnlyApiController<EntrezGene, Long, EntrezGeneParameters> {
+		ReadOnlyApiController<EntrezGene, Long> {
 	@Autowired
 	public EntrezGeneReadOnlyController(EntrezGeneRepository repository) {
-		super(repository, new EntrezGeneAssembler(EntrezGeneReadOnlyController.class));
+		super(repository, EntrezGene.class, new EntrezGeneAssembler(EntrezGeneReadOnlyController.class));
 	}
 
 }

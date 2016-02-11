@@ -57,9 +57,9 @@ public class DefaultResourceAssembler<T extends Model<?>>
 		for (Field field: model.getDeclaredFields()){
 			ForeignKey fk = field.getAnnotation(ForeignKey.class);
 			if (fk == null) continue;
-			if (fk.value() == null) throw new RuntimeException(String.format("ForeignKey annotation for " 
+			if (fk.model() == null) throw new RuntimeException(String.format("ForeignKey annotation for " 
 					+ "class %s does not contain any class reference!", model.getName()));
-			Class<?> fkCLass = fk.value();
+			Class<?> fkCLass = fk.model();
 			String relName = fk.rel().equals("") ? field.getName() : fk.rel();
 			String fieldName = fk.field().equals("") ? field.getName() : fk.field();
 			if (!Model.class.isAssignableFrom(fkCLass)) continue;

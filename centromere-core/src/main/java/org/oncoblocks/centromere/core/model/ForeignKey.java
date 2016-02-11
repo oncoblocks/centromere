@@ -19,7 +19,9 @@ package org.oncoblocks.centromere.core.model;
 import java.lang.annotation.*;
 
 /**
- * TODO
+ * Marks a {@link Model} class field as being a foreign key identifier of another class.  Allows for 
+ *   automatic generation of hypermedia links in web responses, based upon the inferred relationship 
+ *   and query string parameters.
  * 
  * @author woemler
  */
@@ -28,13 +30,32 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})
 public @interface ForeignKey {
-	
-	Class<?> value();
+
+	/**
+	 * The {@link Model} class that the foreign key field is referencing.
+	 * @return
+	 */
+	Class<?> model();
+
+	/**
+	 * {@link Relationship} value that represents the entity relationship to the referenced class.
+	 * @return
+	 */
 	Relationship relationship();
+
+	/**
+	 * String name of the relationship to be used in hypermedia links.  By default, the field name is used.
+	 * @return
+	 */
 	String rel() default "";
+
+	/**
+	 * Query string parameter name to be used in the hypermedia link.  By default, the field name is used.
+	 * @return
+	 */
 	String field() default "";
-	
-	public static enum Relationship {
+
+	enum Relationship {
 		ONE_TO_MANY,
 		MANY_TO_ONE,
 		MANY_TO_MANY

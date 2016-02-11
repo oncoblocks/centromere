@@ -41,9 +41,6 @@ import static org.oncoblocks.centromere.sql.sqlbuilder.SqlBuilder.*;
 @ContextConfiguration(classes = {SqlBuilderTests.EmptyContext.class})
 public class SqlBuilderTests {
 	
-	@Configuration
-	public static class EmptyContext {} 
-
 	private ComplexTableDescription tableDescription = Subject.getSubjectTableDescription();
 
 	@Test
@@ -118,7 +115,7 @@ public class SqlBuilderTests {
 		Assert.notEmpty(values);
 		Assert.isTrue(values.size() == 4);
 		String name = (String) values.get(2);
-		Assert.isTrue(name.equals("Mittens"));
+		Assert.isTrue("Mittens".equals(name));
 
 	}
 
@@ -137,7 +134,7 @@ public class SqlBuilderTests {
 		Assert.notEmpty(values);
 		Assert.isTrue(values.size() == 4);
 		String name = (String) values.get(1);
-		Assert.isTrue(name.equals("cat"));
+		Assert.isTrue("cat".equals(name));
 
 	}
 
@@ -250,5 +247,8 @@ public class SqlBuilderTests {
 		System.out.println(sql);
 		Assert.notNull(sql);
 	}
-	
+
+	@Configuration
+	public static class EmptyContext {}
+
 }

@@ -30,7 +30,7 @@ public class CopyNumber implements Model<String> {
 
 	@Id private String id;
 
-	@ForeignKey(value = EntrezGene.class, relationship = ForeignKey.Relationship.MANY_TO_ONE, 
+	@ForeignKey(model = EntrezGene.class, relationship = ForeignKey.Relationship.MANY_TO_ONE, 
 			rel = "gene", field = "entrezGeneId")
 	private String geneId;
 

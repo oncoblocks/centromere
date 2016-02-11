@@ -16,8 +16,7 @@
 
 package org.oncoblocks.centromere.web.test.models;
 
-import org.oncoblocks.centromere.core.model.Filterable;
-import org.oncoblocks.centromere.core.model.Model;
+import org.oncoblocks.centromere.core.model.*;
 import org.oncoblocks.centromere.core.model.support.Attribute;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -32,16 +31,37 @@ import java.util.*;
 @Document(collection = "genes")
 public class EntrezGene implements Model<Long> {
 
-	@Id private Long entrezGeneId;
+	@Id 
+	private Long entrezGeneId;
+	
+	@Alias("geneSymbol") 
 	private String primaryGeneSymbol;
+	
 	private Integer taxId;
+	
+	@Ignored 
 	private String locusTag;
+	
 	private String chromosome;
+	
+	@Ignored 
 	private String chromosomeLocation;
+	
+	@Ignored 
 	private String description;
+	
 	private String geneType;
+	
+	@Aliases({
+			@Alias(value = "attributeName", fieldName = "attributes.name"),
+			@Alias(value = "attributeValue", fieldName = "attributes.value")
+	})
 	private List<Attribute> attributes;
+	
+	@Ignored 
 	private Map<String, Object> dbXrefs;
+	
+	@Alias("alias")
 	private Set<String> aliases;
 	
 	public EntrezGene() { }

@@ -20,7 +20,6 @@ import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.repository.RepositoryOperations;
 import org.oncoblocks.centromere.web.exceptions.RequestFailureException;
 import org.oncoblocks.centromere.web.exceptions.ResourceNotFoundException;
-import org.oncoblocks.centromere.web.query.QueryParameters;
 import org.oncoblocks.centromere.web.util.ApiMediaTypes;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.http.HttpEntity;
@@ -41,12 +40,12 @@ import java.io.Serializable;
  * 
  * @author woemler
  */
-public class CrudApiController<T extends Model<ID>, ID extends Serializable, Q extends QueryParameters> 
-		extends BaseApiController<T, ID, Q> {
+public class CrudApiController<T extends Model<ID>, ID extends Serializable> 
+		extends AbstractApiController<T, ID> {
 	
-	public CrudApiController(RepositoryOperations<T, ID> service,
+	public CrudApiController(RepositoryOperations<T, ID> repository, Class<T> model,
 			ResourceAssemblerSupport<T, FilterableResource> assembler) {
-		super(service, assembler);
+		super(repository, model, assembler);
 	}
 
 	/**

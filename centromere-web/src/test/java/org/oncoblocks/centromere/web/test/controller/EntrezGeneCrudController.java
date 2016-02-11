@@ -30,10 +30,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping(value = "/genes/crud")
 @ExposesResourceFor(EntrezGene.class)
-public class EntrezGeneCrudController extends CrudApiController<EntrezGene, Long, EntrezGeneParameters> {
+public class EntrezGeneCrudController extends CrudApiController<EntrezGene, Long> {
 	@Autowired
 	public EntrezGeneCrudController(EntrezGeneRepository repository) {
-		super(repository, new EntrezGeneAssembler(EntrezGeneCrudController.class));
+		super(repository, EntrezGene.class, new EntrezGeneAssembler(EntrezGeneCrudController.class));
 	}
 
 }

@@ -205,7 +205,7 @@ public class CrudControllerIntegrationTests {
 
 	@Test
 	public void findByKeyValueAttributes() throws Exception {
-		mockMvc.perform(get(BASE_URL + "?attribute=isKinase:Y").accept(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get(BASE_URL + "?attributeName=isKinase&attributeValue=Y").accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasSize(2)))
 				.andExpect(jsonPath("$[0]", hasKey("entrezGeneId")))

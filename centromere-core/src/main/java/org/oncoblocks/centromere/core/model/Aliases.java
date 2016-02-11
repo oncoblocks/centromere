@@ -22,11 +22,19 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Allows for a field to have multiple {@link Alias} annotations applied to it.
+ * 
  * @author woemler
  */
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Aliases {
+
+	/**
+	 * Array of {@link Alias} instances to be assigned to the field via annotation.
+	 * @return
+	 */
 	Alias[] value();
+	
 }
