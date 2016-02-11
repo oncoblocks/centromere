@@ -16,10 +16,13 @@
 
 package org.oncoblocks.centromere.web.test.controller;
 
-import org.oncoblocks.centromere.web.controller.ReadOnlyApiController;
-import org.oncoblocks.centromere.web.test.models.EntrezGene;
-import org.oncoblocks.centromere.web.test.repository.EntrezGeneRepository;
+import org.oncoblocks.centromere.web.controller.AbstractApiController;
+import org.oncoblocks.centromere.web.controller.DefaultResourceAssembler;
+import org.oncoblocks.centromere.web.test.models.CopyNumber;
+import org.oncoblocks.centromere.web.test.repository.CopyNumberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityLinks;
+import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -27,13 +30,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author woemler
  */
 @Controller
-@RequestMapping(value = "/genes/read")
-//@ExposesResourceFor(EntrezGene.class)
-public class EntrezGeneReadOnlyController extends
-		ReadOnlyApiController<EntrezGene, Long, EntrezGeneParameters> {
+@RequestMapping("/cnv")
+@ExposesResourceFor(CopyNumber.class)
+public class CopyNumberController extends AbstractApiController<CopyNumber, String> {
 	@Autowired
-	public EntrezGeneReadOnlyController(EntrezGeneRepository repository) {
-		super(repository, new EntrezGeneAssembler(EntrezGeneReadOnlyController.class));
+	public CopyNumberController(CopyNumberRepository repository, EntityLinks entityLinks) {
+		super(repository, CopyNumber.class,
+				new DefaultResourceAssembler<>(CopyNumberController.class, CopyNumber.class,
+						entityLinks));
 	}
-
 }

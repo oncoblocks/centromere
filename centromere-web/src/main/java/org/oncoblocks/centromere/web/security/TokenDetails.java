@@ -24,16 +24,16 @@ import java.util.Date;
  * 
  * @author woemler
  */
-public class ApiUserToken {
+public class TokenDetails {
 	
 	private String token;
 	private String username;
 	private Date issued;
 	private Date expires;
 
-	public ApiUserToken() { }
+	public TokenDetails() { }
 
-	public ApiUserToken(String token, String username, Date issueDate, Date expirationDate) {
+	public TokenDetails(String token, String username, Date issueDate, Date expirationDate) {
 		this.token = token;
 		this.username = username;
 		this.issued = issueDate;

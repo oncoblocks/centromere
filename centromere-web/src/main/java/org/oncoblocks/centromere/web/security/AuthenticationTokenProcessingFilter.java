@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
- * Authenticates user requests using a previously generated {@link ApiUserToken}.
+ * Authenticates user requests using a previously generated {@link TokenDetails}.
  *   The token contains a hashed representation of the user's credentials and token creation and 
  *   expiration times, that allow it to be validated without the user having to submit their credentials
  *   every time a request is made, but still takes steps to prevent user impersonation and token

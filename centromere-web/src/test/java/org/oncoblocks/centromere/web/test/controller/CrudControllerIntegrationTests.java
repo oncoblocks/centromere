@@ -72,23 +72,6 @@ public class CrudControllerIntegrationTests {
 		}
 		isConfigured = true;
 	}
-	
-//	@Test
-//	public void test() throws Exception {
-//		RequestMappingHandlerAdapter adapter = (RequestMappingHandlerAdapter) webApplicationContext.getBean("requestMappingHandlerAdapter");
-//		List<EntrezGene> genes = EntrezGene.createDummyData();
-//		Set<String> exclude = new HashSet<>();
-//		exclude.add("entrezGeneId");
-//		ResponseEnvelope envelope = new ResponseEnvelope(genes, new HashSet<String>(), exclude);
-//		for (HttpMessageConverter converter: adapter.getMessageConverters()){
-//			System.out.println(converter.getClass().getName());
-//			if (converter.canWrite(ResponseEnvelope.class, MediaType.APPLICATION_JSON)){
-//				MockHttpOutputMessage message =  new MockHttpOutputMessage();
-//				converter.write((Object) envelope, MediaType.APPLICATION_JSON, message);	
-//				System.out.println(message.getBodyAsString());
-//			}
-//		}
-//	}
 
 	@Test
 	public void headTest() throws Exception {

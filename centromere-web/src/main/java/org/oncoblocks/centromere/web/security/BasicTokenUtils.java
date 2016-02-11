@@ -22,6 +22,8 @@ import org.springframework.util.Assert;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Simple implementation of {@link TokenOperations} that
@@ -112,6 +114,15 @@ public class BasicTokenUtils implements TokenOperations {
 		Assert.notNull(hours, "Number of hours must not be null.");
 		if (hours < 1) throw new IllegalArgumentException("Number of hours must be greater than zero.");
 		tokenLifespan = 1000L * 60 * 60 * hours;
+	}
+	
+	public TokenDetails createTokenAndDetails(UserDetails userDetails){
+		String token = this.createToken(userDetails);
+		Calendar calendar = Calendar.getInstance();
+		Date now = calendar.getTime();
+		calendar.add(Calendar.MILLISECOND, this.tokenLifespan.intValue());
+		Date expires = calendar.getTime();
+		return new TokenDetails(token, userDetails.getUsername(), now, expires);
 	}
 	
 }

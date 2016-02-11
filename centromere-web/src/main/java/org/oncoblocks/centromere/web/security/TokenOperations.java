@@ -19,7 +19,7 @@ package org.oncoblocks.centromere.web.security;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
- * Standard method interface for creating and validating user {@link org.oncoblocks.centromere.web.security.ApiUserToken}
+ * Standard method interface for creating and validating user {@link TokenDetails}
  * 
  * @author woemler
  */

@@ -16,7 +16,7 @@
 
 package org.oncoblocks.centromere.web.test.security;
 
-import org.oncoblocks.centromere.web.security.ApiUserToken;
+import org.oncoblocks.centromere.web.security.TokenDetails;
 import org.oncoblocks.centromere.web.security.TokenOperations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
@@ -39,13 +39,13 @@ public class UserController {
 	@Autowired TokenOperations tokenUtils;
 	
 	@RequestMapping(value = "", method = RequestMethod.POST)
-	public @ResponseBody ApiUserToken createToken(@AuthenticationPrincipal User user){
+	public @ResponseBody TokenDetails createToken(@AuthenticationPrincipal User user){
 		String token = tokenUtils.createToken(user);
 		Calendar calendar = Calendar.getInstance();
 		Date now = calendar.getTime();
 		calendar.add(Calendar.HOUR, 1);
 		Date expires = calendar.getTime();
-		return new ApiUserToken(token, user.getId(), now, expires);
+		return new TokenDetails(token, user.getId(), now, expires);
 	}
 	
 }
