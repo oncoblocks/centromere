@@ -40,8 +40,6 @@ public class User implements UserDetails, Model<String> {
 	private Date registrationDate = Calendar.getInstance().getTime();
 	private Set<String> roles = new HashSet<>();
 
-	public User() { }
-
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		if (roles == null){

@@ -62,7 +62,7 @@ public class TokenTests {
 		String token = tokenOperations.createToken(user);
 		String username = tokenOperations.getUserNameFromToken(token);
 		Assert.notNull(username);
-		Assert.isTrue(username.equals("user"));
+		Assert.isTrue("user".equals(username));
 	}
 	
 	@Test

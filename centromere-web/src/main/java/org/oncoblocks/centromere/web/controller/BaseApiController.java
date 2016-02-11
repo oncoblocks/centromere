@@ -41,7 +41,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
@@ -59,6 +62,7 @@ public abstract class BaseApiController<
 
 	private RepositoryOperations<T, ID> repository;
 	private ResourceAssemblerSupport<T, FilterableResource> assembler;
+	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(BaseApiController.class);
 
 	public BaseApiController(
 			RepositoryOperations<T, ID> repository,
@@ -67,8 +71,6 @@ public abstract class BaseApiController<
 		this.assembler = assembler;
 	}
 
-	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(BaseApiController.class);
-	
 	/**
 	 * {@code GET /{id}}
 	 * Fetches a single record by its primary ID and returns it, or a {@code Not Found} exception if not.

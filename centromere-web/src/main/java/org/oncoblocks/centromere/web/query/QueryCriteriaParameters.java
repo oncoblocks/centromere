@@ -46,9 +46,10 @@ public abstract class QueryCriteriaParameters implements QueryParameters {
 	@Override 
 	public String remapParameterName(String name) {
 		if (this.getParameterMap().containsKey(name)){
-			name = this.getParameterMap().get(name);
+			return this.getParameterMap().get(name);
+		} else {
+			return name;
 		}
-		return name;
 	}
 	
 	public void addQueryCriteria(QueryCriteria criteria){
