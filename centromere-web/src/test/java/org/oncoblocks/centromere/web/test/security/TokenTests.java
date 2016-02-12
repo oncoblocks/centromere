@@ -37,7 +37,7 @@ import java.util.Date;
 public class TokenTests {
 	
 	private User user;
-	private TokenOperations tokenOperations = new BasicTokenUtils("test");
+	private final TokenOperations tokenOperations = new BasicTokenUtils("test");
 	
 	@Before
 	public void setup(){

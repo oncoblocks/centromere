@@ -28,14 +28,14 @@ import java.util.*;
 /**
  * @author woemler
  */
-public class DefaultResourceAssembler<T extends Model<?>> 
+public class ModelResourceAssembler<T extends Model<?>> 
 		extends ResourceAssemblerSupport<T, FilterableResource> {
 
-	private EntityLinks entityLinks;
-	private Class<?> modelController;
-	private Class<T> model;
+	private final EntityLinks entityLinks;
+	private final Class<?> modelController;
+	private final Class<T> model;
 	
-	public DefaultResourceAssembler(Class<?> controllerClass, Class<T> model,  EntityLinks entityLinks) {
+	public ModelResourceAssembler(Class<?> controllerClass, Class<T> model,  EntityLinks entityLinks) {
 		super(controllerClass, FilterableResource.class);
 		this.modelController = controllerClass;
 		this.model = model;

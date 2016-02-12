@@ -26,10 +26,10 @@ import java.util.List;
  */
 public class Conditions {
 	
-	public static enum Operation { AND, OR }
+	public enum Operation { AND, OR }
 	
-	private Operation operation;
-	private String sql;
+	private final Operation operation;
+	private final String sql;
 	private List<Object> values;
 	
 	public Conditions(Operation operation, Condition... conditions){

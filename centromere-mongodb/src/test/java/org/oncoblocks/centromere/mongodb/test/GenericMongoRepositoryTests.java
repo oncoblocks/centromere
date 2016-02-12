@@ -63,7 +63,7 @@ public class GenericMongoRepositoryTests {
 		EntrezGene gene = geneRepository.findOne(1L);
 		Assert.notNull(gene);
 		Assert.isTrue(gene.getEntrezGeneId().equals(1L));
-		Assert.isTrue(gene.getPrimaryGeneSymbol().equals("GeneA"));
+		Assert.isTrue("GeneA".equals(gene.getPrimaryGeneSymbol()));
 		Assert.notNull(gene.getAliases());
 		Assert.notEmpty(gene.getAliases());
 		Assert.isTrue(gene.getAliases().size() == 1);
@@ -81,7 +81,7 @@ public class GenericMongoRepositoryTests {
 		EntrezGene gene = genes.get(0);
 		Assert.notNull(gene);
 		Assert.isTrue(gene.getEntrezGeneId().equals(1L));
-		Assert.isTrue(gene.getPrimaryGeneSymbol().equals("GeneA"));
+		Assert.isTrue("GeneA".equals(gene.getPrimaryGeneSymbol()));
 		Assert.notNull(gene.getAliases());
 		Assert.notEmpty(gene.getAliases());
 		Assert.isTrue(gene.getAliases().size() == 1);
@@ -111,7 +111,7 @@ public class GenericMongoRepositoryTests {
 		EntrezGene gene = genes.get(0);
 		Assert.notNull(gene);
 		Assert.isTrue(gene.getEntrezGeneId().equals(2L));
-		Assert.isTrue(gene.getPrimaryGeneSymbol().equals("GeneB"));
+		Assert.isTrue("GeneB".equals(gene.getPrimaryGeneSymbol()));
 
 	}
 
@@ -128,7 +128,7 @@ public class GenericMongoRepositoryTests {
 		EntrezGene gene = genes.get(0);
 		Assert.notNull(gene);
 		Assert.isTrue(gene.getEntrezGeneId().equals(2L));
-		Assert.isTrue(gene.getPrimaryGeneSymbol().equals("GeneB"));
+		Assert.isTrue("GeneB".equals(gene.getPrimaryGeneSymbol()));
 		Assert.isTrue(gene.getAliases().contains("DEF"));
 
 	}
@@ -147,7 +147,7 @@ public class GenericMongoRepositoryTests {
 		EntrezGene gene = genes.get(0);
 		Assert.notNull(gene);
 		Assert.isTrue(gene.getEntrezGeneId().equals(1L));
-		Assert.isTrue(gene.getPrimaryGeneSymbol().equals("GeneA"));
+		Assert.isTrue("GeneA".equals(gene.getPrimaryGeneSymbol()));
 		Assert.isTrue(gene.getAttributes().size() == 1);
 		Assert.isTrue(gene.getAttributes().get(0).getName().equals("isKinase"));
 		Assert.isTrue(gene.getAttributes().get(0).getValue().equals("Y"));
@@ -166,7 +166,7 @@ public class GenericMongoRepositoryTests {
 		EntrezGene gene = genes.get(0);
 		Assert.notNull(gene);
 		Assert.isTrue(gene.getEntrezGeneId().equals(5L));
-		Assert.isTrue(gene.getPrimaryGeneSymbol().equals("GeneE"));
+		Assert.isTrue("GeneE".equals(gene.getPrimaryGeneSymbol()));
 
 	}
 
@@ -222,7 +222,7 @@ public class GenericMongoRepositoryTests {
 		EntrezGene created = geneRepository.findOne(100L);
 		Assert.notNull(created);
 		Assert.isTrue(created.getId().equals(100L));
-		Assert.isTrue(created.getPrimaryGeneSymbol().equals("TEST"));
+		Assert.isTrue("TEST".equals(created.getPrimaryGeneSymbol()));
 
 		geneRepository.delete(100L);
 
@@ -241,8 +241,8 @@ public class GenericMongoRepositoryTests {
 
 		EntrezGene updated = geneRepository.findOne(100L);
 		Assert.notNull(updated);
-		Assert.isTrue(updated.getPrimaryGeneSymbol().equals("TEST_TEST"));
-		Assert.isTrue(updated.getGeneType().equals("pseudogene"));
+		Assert.isTrue("TEST_TEST".equals(updated.getPrimaryGeneSymbol()));
+		Assert.isTrue("pseudogene".equals(updated.getGeneType()));
 
 		geneRepository.delete(100L);
 
@@ -273,7 +273,7 @@ public class GenericMongoRepositoryTests {
 		Assert.notEmpty(geneSymbols);
 		Assert.isTrue(geneSymbols.size() == 5);
 		String symbol = (String) geneSymbols.get(0);
-		Assert.isTrue(symbol.equals("GeneA"));
+		Assert.isTrue("GeneA".equals(symbol));
 		
 	}
 	
@@ -287,7 +287,7 @@ public class GenericMongoRepositoryTests {
 		Assert.notEmpty(geneSymbols);
 		Assert.isTrue(geneSymbols.size() == 3);
 		String symbol = (String) geneSymbols.get(2);
-		Assert.isTrue(symbol.equals("GeneD"));
+		Assert.isTrue("GeneD".equals(symbol));
 		
 	}
 	
@@ -311,7 +311,7 @@ public class GenericMongoRepositoryTests {
 		Assert.notEmpty(genes);
 		Assert.isTrue(genes.size() == 1);
 		EntrezGene gene = genes.get(0);
-		Assert.isTrue(gene.getPrimaryGeneSymbol().equals("GeneA"));
+		Assert.isTrue("GeneA".equals(gene.getPrimaryGeneSymbol()));
 		
 	}
 
@@ -359,7 +359,7 @@ public class GenericMongoRepositoryTests {
 		System.out.println(genes);
 		Assert.notNull(genes);
 		Assert.isTrue(genes.size() == 2);
-		Assert.isTrue(genes.get(1).getPrimaryGeneSymbol().equals("GeneB"));
+		Assert.isTrue("GeneB".equals(genes.get(1).getPrimaryGeneSymbol()));
 	}
 	
 	@Test

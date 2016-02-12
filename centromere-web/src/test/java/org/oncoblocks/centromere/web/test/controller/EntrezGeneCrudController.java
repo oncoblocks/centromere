@@ -17,9 +17,11 @@
 package org.oncoblocks.centromere.web.test.controller;
 
 import org.oncoblocks.centromere.web.controller.CrudApiController;
+import org.oncoblocks.centromere.web.controller.ModelResourceAssembler;
 import org.oncoblocks.centromere.web.test.models.EntrezGene;
 import org.oncoblocks.centromere.web.test.repository.EntrezGeneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityLinks;
 import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,8 +34,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @ExposesResourceFor(EntrezGene.class)
 public class EntrezGeneCrudController extends CrudApiController<EntrezGene, Long> {
 	@Autowired
-	public EntrezGeneCrudController(EntrezGeneRepository repository) {
-		super(repository, EntrezGene.class, new EntrezGeneAssembler(EntrezGeneCrudController.class));
+	public EntrezGeneCrudController(EntrezGeneRepository repository, EntityLinks entityLinks) {
+		super(repository, EntrezGene.class, 
+				new ModelResourceAssembler<>(EntrezGeneCrudController.class, EntrezGene.class, entityLinks));
 	}
 
 }

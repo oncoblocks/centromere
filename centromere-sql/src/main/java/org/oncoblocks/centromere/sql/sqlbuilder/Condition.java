@@ -24,8 +24,8 @@ import org.oncoblocks.centromere.core.repository.Evaluation;
  * @author woemler 
  */
 public class Condition {
-	private String clause;
-	private Object value;
+	private final String clause;
+	private final Object value;
 
 	public Condition(String column, Object value, Evaluation evalutation){
 		StringBuilder builder = new StringBuilder(" " + column);

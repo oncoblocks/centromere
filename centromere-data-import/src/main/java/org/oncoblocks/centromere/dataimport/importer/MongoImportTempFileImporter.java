@@ -28,13 +28,13 @@ import java.io.InputStreamReader;
  */
 public class MongoImportTempFileImporter implements EntityRecordImporter {
 	
-	private DatabaseCredentials credentials;
-	private String collection;
+	private final DatabaseCredentials credentials;
+	private final String collection;
 	private boolean stopOnError = true;
 	private boolean upsertRecords = false;
 	private boolean dropCollection = false;
 
-	final static Logger logger = LoggerFactory.getLogger(MongoImportTempFileImporter.class);
+	private final static Logger logger = LoggerFactory.getLogger(MongoImportTempFileImporter.class);
 
 	public MongoImportTempFileImporter(DatabaseCredentials credentials, String collection) {
 		this.credentials = credentials;

@@ -41,8 +41,8 @@ import java.io.IOException;
  */
 public class AuthenticationTokenProcessingFilter extends GenericFilterBean {
 	
-	private TokenOperations tokenOperations;
-	private UserDetailsService userDetailsService;
+	private final TokenOperations tokenOperations;
+	private final UserDetailsService userDetailsService;
 	
 	public AuthenticationTokenProcessingFilter(TokenOperations tokenOperations, 
 			UserDetailsService userDetailsService){

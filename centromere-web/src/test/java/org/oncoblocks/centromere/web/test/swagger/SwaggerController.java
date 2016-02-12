@@ -17,10 +17,11 @@
 package org.oncoblocks.centromere.web.test.swagger;
 
 import org.oncoblocks.centromere.web.controller.CrudApiController;
-import org.oncoblocks.centromere.web.test.controller.EntrezGeneAssembler;
+import org.oncoblocks.centromere.web.controller.ModelResourceAssembler;
 import org.oncoblocks.centromere.web.test.models.EntrezGene;
 import org.oncoblocks.centromere.web.test.repository.EntrezGeneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityLinks;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -32,8 +33,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/swagger")
 public class SwaggerController extends CrudApiController<EntrezGene, Long> {
 	@Autowired
-	public SwaggerController(EntrezGeneRepository repository) {
-		super(repository, EntrezGene.class,  new EntrezGeneAssembler(SwaggerController.class));
+	public SwaggerController(EntrezGeneRepository repository, EntityLinks entityLinks) {
+		super(repository, EntrezGene.class,  
+				new ModelResourceAssembler<>(SwaggerController.class, EntrezGene.class, entityLinks));
 	}
 
 }

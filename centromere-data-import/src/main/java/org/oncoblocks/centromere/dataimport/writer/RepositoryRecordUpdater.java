@@ -27,7 +27,7 @@ import java.io.Serializable;
 public class RepositoryRecordUpdater<T extends Model<ID>, ID extends Serializable> 
 		implements EntityRecordWriter<T, ID> {
 	
-	RepositoryOperations<T, ID> repository;
+	private RepositoryOperations<T, ID> repository;
 
 	public RepositoryRecordUpdater(
 			RepositoryOperations<T, ID> repository) {

@@ -281,7 +281,7 @@ public class SqlBuilder {
 	//// ORDER BY
 	
 	public String getOrderByClause(){
-		return orderByClause.equals("") ? orderByClause : " ORDER BY " + orderByClause;
+		return "".equals(orderByClause) ? orderByClause : " ORDER BY " + orderByClause;
 	}
 	
 	public void setOrderByClause(String orderByClause){
@@ -331,7 +331,7 @@ public class SqlBuilder {
 	//// LIMIT
 	
 	public String getLimitClause(){
-		return limitClause.equals("") ? limitClause : " LIMIT " + limitClause;
+		return "".equals(limitClause) ? limitClause : " LIMIT " + limitClause;
 	}
 	
 	public void setLimitClause(String limitClause){

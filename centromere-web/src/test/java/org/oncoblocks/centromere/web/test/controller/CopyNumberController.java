@@ -17,7 +17,7 @@
 package org.oncoblocks.centromere.web.test.controller;
 
 import org.oncoblocks.centromere.web.controller.AbstractApiController;
-import org.oncoblocks.centromere.web.controller.DefaultResourceAssembler;
+import org.oncoblocks.centromere.web.controller.ModelResourceAssembler;
 import org.oncoblocks.centromere.web.test.models.CopyNumber;
 import org.oncoblocks.centromere.web.test.repository.CopyNumberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,6 @@ public class CopyNumberController extends AbstractApiController<CopyNumber, Stri
 	@Autowired
 	public CopyNumberController(CopyNumberRepository repository, EntityLinks entityLinks) {
 		super(repository, CopyNumber.class,
-				new DefaultResourceAssembler<>(CopyNumberController.class, CopyNumber.class,
-						entityLinks));
+				new ModelResourceAssembler<>(CopyNumberController.class, CopyNumber.class, entityLinks));
 	}
 }

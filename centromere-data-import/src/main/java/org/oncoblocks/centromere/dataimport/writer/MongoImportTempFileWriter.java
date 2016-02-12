@@ -33,7 +33,7 @@ import java.io.Serializable;
 public class MongoImportTempFileWriter<T extends Model<ID>, ID extends Serializable> 
 		extends TempFileWriter<T, ID> {
 
-	private MongoDbUtils mongoUtils;
+	private final MongoDbUtils mongoUtils;
 	
 	public MongoImportTempFileWriter(MongoTemplate mongoTemplate) {
 		super();

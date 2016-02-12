@@ -23,11 +23,11 @@ import org.springframework.http.HttpStatus;
  */
 public class RestError {
 
-	private HttpStatus status;
-	private Integer code;
-	private String message;
-	private String developerMessage;
-	private String moreInfoUrl;
+	private final HttpStatus status;
+	private final Integer code;
+	private final String message;
+	private final String developerMessage;
+	private final String moreInfoUrl;
 
 	public RestError(HttpStatus status, Integer code, String message, String developerMessage,
 			String moreInfoUrl) {

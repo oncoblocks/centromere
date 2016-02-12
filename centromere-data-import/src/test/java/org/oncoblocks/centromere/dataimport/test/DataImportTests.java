@@ -55,12 +55,12 @@ public class DataImportTests {
 	
 	@Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();;
 	private File tempFile;
-	private String geneInfoPath = ClassLoader.getSystemClassLoader().getResource("Homo_sapiens.gene_info").getPath();
+	private final String geneInfoPath = ClassLoader.getSystemClassLoader().getResource("Homo_sapiens.gene_info").getPath();
 	private static boolean isConfigured = false;
 	
 	@Autowired private MongoTemplate mongoTemplate;
 	@Autowired private EntrezGeneRepository repository;
-	@Autowired Environment environment;
+	@Autowired private Environment environment;
 	
 	@Before
 	public void setup() throws Exception{

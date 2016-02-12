@@ -14,41 +14,15 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.dataimport.config;
+package org.oncoblocks.centromere.dataimport.reader;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.oncoblocks.centromere.dataimport.config.DataImportException;
+
+import java.io.Serializable;
 
 /**
  * @author woemler
  */
-public class DataFileQueue {
-	
-	private final List<QueuedFile> queuedFiles;
-
-	public DataFileQueue() {
-		queuedFiles = new ArrayList<>();
-	}
-
-	public DataFileQueue(
-			List<QueuedFile> queuedFiles) {
-		this.queuedFiles = queuedFiles;
-	}
-
-	public void addQueuedFile(QueuedFile queuedFile){
-		queuedFiles.add(queuedFile);
-	}
-	
-	public QueuedFile next(){
-		try {
-			return queuedFiles.remove(0);
-		} catch (IndexOutOfBoundsException e){
-			return null;
-		}
-	}
-	
-	public boolean hasNext(){
-		return queuedFiles != null && queuedFiles.size() > 0;
-	}
-	
+public interface EntityReader<T, ID extends Serializable> {
+	T readRecord() throws DataImportException;
 }

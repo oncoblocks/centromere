@@ -16,10 +16,12 @@
 
 package org.oncoblocks.centromere.web.test.controller;
 
+import org.oncoblocks.centromere.web.controller.ModelResourceAssembler;
 import org.oncoblocks.centromere.web.controller.ReadOnlyApiController;
 import org.oncoblocks.centromere.web.test.models.EntrezGene;
 import org.oncoblocks.centromere.web.test.repository.EntrezGeneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityLinks;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -32,8 +34,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class EntrezGeneReadOnlyController extends
 		ReadOnlyApiController<EntrezGene, Long> {
 	@Autowired
-	public EntrezGeneReadOnlyController(EntrezGeneRepository repository) {
-		super(repository, EntrezGene.class, new EntrezGeneAssembler(EntrezGeneReadOnlyController.class));
+	public EntrezGeneReadOnlyController(EntrezGeneRepository repository, EntityLinks entityLinks) {
+		super(repository, EntrezGene.class, 
+				new ModelResourceAssembler<>(EntrezGeneReadOnlyController.class, EntrezGene.class, entityLinks));
 	}
 
 }

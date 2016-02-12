@@ -46,7 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = { TestWebConfig.class, TestMongoConfig.class, 
 		MongoRepositoryConfig.class, ControllerIntegrationTestConfig.class})
 @WebAppConfiguration
-public class AbstractControllerTests {
+public class AbstractControllerIntegrationTests {
 	
 	@Autowired private WebApplicationContext webApplicationContext;
 	@Autowired private CopyNumberRepository repository;

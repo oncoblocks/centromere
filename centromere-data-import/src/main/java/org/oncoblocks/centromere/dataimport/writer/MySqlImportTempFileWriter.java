@@ -58,7 +58,7 @@ public class MySqlImportTempFileWriter<T extends Model<ID>, ID extends Serializa
 					Object value = field.get(record) != null ? field.get(record) : null;
 					if (value == null){
 						value = "null";
-					} else if (!enclosedBy.equals("") && value instanceof String) {
+					} else if (!"".equals(enclosedBy) && value instanceof String) {
 						value = ((String) value).replaceAll(enclosedBy, escapedBy + enclosedBy);
 					}
 					if (flag)

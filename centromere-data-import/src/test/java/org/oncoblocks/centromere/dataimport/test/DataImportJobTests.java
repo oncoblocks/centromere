@@ -47,10 +47,10 @@ public class DataImportJobTests {
 
 	@Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
 	
-	@Autowired DataSetRepository dataSetRepository;
-	@Autowired DataFileRepository dataFileRepository;
-	@Autowired EntrezGeneRepository entrezGeneRepository;
-	@Autowired DataImportJob dataImportJob;
+	@Autowired private DataSetRepository dataSetRepository;
+	@Autowired private DataFileRepository dataFileRepository;
+	@Autowired private EntrezGeneRepository entrezGeneRepository;
+	@Autowired private DataImportJob dataImportJob;
 	
 	public static boolean isConfigured = false;
 	

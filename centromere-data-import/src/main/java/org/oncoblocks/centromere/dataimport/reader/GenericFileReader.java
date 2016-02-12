@@ -16,7 +16,6 @@
 
 package org.oncoblocks.centromere.dataimport.reader;
 
-import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.dataimport.config.DataImportException;
 
 import java.io.BufferedReader;
@@ -27,16 +26,16 @@ import java.io.Serializable;
 /**
  * @author woemler
  */
-public abstract class GeneralFileReader<T extends Model<ID>, ID extends Serializable>
-		implements EntityRecordReader<T, ID> {
+public abstract class GenericFileReader<T, ID extends Serializable>
+		implements EntityReader<T, ID> {
 
 	private BufferedReader reader;
-	private ID dataSetId;
-	private ID dataFileId;
-	private boolean failOnUnknownSample = true;
-	private boolean failOnUnknownGene = true;
+	private String filePath;
+	
+	public GenericFileReader(String filePath){ 
+		this.filePath = filePath;
+	}
 
-	@Override
 	public void open(String inputFilePath) throws DataImportException{
 		try {
 			reader = new BufferedReader(new java.io.FileReader(new File(inputFilePath)));
@@ -46,7 +45,6 @@ public abstract class GeneralFileReader<T extends Model<ID>, ID extends Serializ
 		}
 	}
 
-	@Override
 	public void close(){
 		if (reader != null){
 			try {
@@ -60,38 +58,5 @@ public abstract class GeneralFileReader<T extends Model<ID>, ID extends Serializ
 	public BufferedReader getReader(){
 		return this.reader;
 	}
-
-	public void setDataSetId(ID dataSetId) {
-		this.dataSetId = dataSetId;
-	}
-
-	public void setDataFileId(ID dataFileId) {
-		this.dataFileId = dataFileId;
-	}
-
-	public ID getDataSetId() {
-		return dataSetId;
-	}
-
-	public ID getDataFileId() {
-		return dataFileId;
-	}
-
-	public boolean isFailOnUnknownSample() {
-		return failOnUnknownSample;
-	}
-
-	public GeneralFileReader<T, ID> failOnUnknownSample(boolean failOnUnknownSample) {
-		this.failOnUnknownSample = failOnUnknownSample;
-		return this;
-	}
-
-	public boolean isFailOnUnknownGene() {
-		return failOnUnknownGene;
-	}
-
-	public GeneralFileReader<T, ID> failOnUnknownGene(boolean failOnUnknownGene) {
-		this.failOnUnknownGene = failOnUnknownGene;
-		return this;
-	}
+	
 }

@@ -40,8 +40,7 @@ import java.util.List;
 @ComponentScan(basePackages = { "org.oncoblocks.centromere.mongodb.test" })
 public class TestMongoConfig extends AbstractMongoConfiguration {
 
-	@Autowired
-	Environment env;
+	@Autowired private Environment env;
 
 	@Override
 	public String getDatabaseName(){

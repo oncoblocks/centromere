@@ -17,10 +17,11 @@
 package org.oncoblocks.centromere.web.test.security;
 
 import org.oncoblocks.centromere.web.controller.CrudApiController;
-import org.oncoblocks.centromere.web.test.controller.EntrezGeneAssembler;
+import org.oncoblocks.centromere.web.controller.ModelResourceAssembler;
 import org.oncoblocks.centromere.web.test.models.EntrezGene;
 import org.oncoblocks.centromere.web.test.repository.EntrezGeneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityLinks;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -33,7 +34,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class SecuredGeneController extends
 		CrudApiController<EntrezGene, Long> {
 	@Autowired
-	public SecuredGeneController(EntrezGeneRepository repository) {
-		super(repository, EntrezGene.class, new EntrezGeneAssembler(SecuredGeneController.class));
+	public SecuredGeneController(EntrezGeneRepository repository, EntityLinks entityLinks) {
+		super(repository, EntrezGene.class, 
+				new ModelResourceAssembler<>(SecuredGeneController.class, EntrezGene.class, entityLinks));
 	}
 }

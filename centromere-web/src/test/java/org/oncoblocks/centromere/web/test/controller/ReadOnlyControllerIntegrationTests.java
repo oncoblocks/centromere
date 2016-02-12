@@ -79,7 +79,7 @@ public class ReadOnlyControllerIntegrationTests {
 				.andExpect(jsonPath("$.primaryGeneSymbol", is("GeneA")))
 				.andExpect(jsonPath("$.links", hasSize(1)))
 				.andExpect(jsonPath("$.links[0].rel", is("self")))
-				.andExpect(jsonPath("$.links[0].href", endsWith(BASE_URL + "/1")));
+				.andExpect(jsonPath("$.links[0].href", endsWith("/1")));
 	}
 
 	@Test

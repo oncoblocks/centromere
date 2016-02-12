@@ -41,7 +41,7 @@ public class DataImportJob {
 	private JobProcess beforeProcess;
 	private JobProcess afterProcess;
 	
-	final static Logger logger = LoggerFactory.getLogger(DataImportJob.class);
+	private final static Logger logger = LoggerFactory.getLogger(DataImportJob.class);
 	
 	public DataImportJob(){ }
 

@@ -25,7 +25,6 @@ import org.oncoblocks.centromere.core.repository.QueryCriteria;
 import org.oncoblocks.centromere.core.repository.RepositoryOperations;
 import org.oncoblocks.centromere.web.exceptions.InvalidParameterException;
 import org.oncoblocks.centromere.web.exceptions.ResourceNotFoundException;
-import org.oncoblocks.centromere.web.query.QueryParameters;
 import org.oncoblocks.centromere.web.util.ApiMediaTypes;
 import org.slf4j.Logger;
 import org.springframework.core.convert.ConversionFailedException;
@@ -60,16 +59,16 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 /**
  * Base implementation of web API controller operations for GET, HEAD, and OPTIONS requests.  
- *   Supports dynamic queries of repository resources using {@link QueryParameters} implementations,
+ *   Supports dynamic queries of repository resources using annotated {@link Model} classes,
  *   field filtering, pagination, and hypermedia support.
  * 
  * @author woemler
  */
 public abstract class AbstractApiController<T extends Model<ID>, ID extends Serializable> {
 
-	private RepositoryOperations<T, ID> repository;
-	private ResourceAssemblerSupport<T, FilterableResource> assembler;
-	private Class<T> model;
+	private final RepositoryOperations<T, ID> repository;
+	private final ResourceAssemblerSupport<T, FilterableResource> assembler;
+	private final Class<T> model;
 	private final ConversionService conversionService = new DefaultConversionService();
 	private static final Logger logger = org.slf4j.LoggerFactory.getLogger(AbstractApiController.class);
 
@@ -146,8 +145,8 @@ public abstract class AbstractApiController<T extends Model<ID>, ID extends Seri
 	}
 
 	/**
-	 * Queries the repository using inputted query string paramters, defined within a custom 
-	 *   {@link QueryParameters} implementation.  Supports hypermedia, pagination, sorting, field 
+	 * Queries the repository using inputted query string paramters, defined within a annotated 
+	 *   {@link Model} classes.  Supports hypermedia, pagination, sorting, field 
 	 *   filtering, and field exclusion.
 	 * 
 	 * @param pagedResourcesAssembler {@link PagedResourcesAssembler}
@@ -378,7 +377,7 @@ public abstract class AbstractApiController<T extends Model<ID>, ID extends Seri
 	
 
 	/**
-	 * Uses {@link QueryParameters} to remap any request attribute names in a 
+	 * Uses annotated {@link Model} class definitions to remap any request attribute names in a 
 	 *   {@link Pageable} so that they match repository attribute names.
 	 *
 	 * @param pageable {@link Pageable}

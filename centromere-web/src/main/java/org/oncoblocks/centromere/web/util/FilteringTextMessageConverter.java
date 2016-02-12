@@ -50,7 +50,7 @@ import java.util.Set;
 public class FilteringTextMessageConverter extends AbstractHttpMessageConverter<Object> {
 	
 	private String delimiter = "\t";
-	private MediaType mediaType;
+	private final MediaType mediaType;
 
 	public FilteringTextMessageConverter(MediaType supportedMediaType, String delimiter) {
 		super(supportedMediaType);
