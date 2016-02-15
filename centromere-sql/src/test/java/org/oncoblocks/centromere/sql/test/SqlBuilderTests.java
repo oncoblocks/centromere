@@ -41,7 +41,7 @@ import static org.oncoblocks.centromere.sql.sqlbuilder.SqlBuilder.*;
 @ContextConfiguration(classes = {SqlBuilderTests.EmptyContext.class})
 public class SqlBuilderTests {
 	
-	private ComplexTableDescription tableDescription = Subject.getSubjectTableDescription();
+	private final ComplexTableDescription tableDescription = Subject.getSubjectTableDescription();
 
 	@Test
 	public void simpleQueryTest(){

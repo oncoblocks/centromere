@@ -31,7 +31,7 @@ public class ResponseEnvelope {
 
 	private Set<String> fieldSet;
 	private Set<String> exclude;
-	private Object entity;
+	private final Object entity;
 
 	public ResponseEnvelope(Object entity) {
 		this.entity = entity;

@@ -65,7 +65,7 @@ public class SecurityTests {
 
 	private MockMvc mockMvc;
 	@Autowired private WebApplicationContext webApplicationContext;
-	@Autowired UserRepository userRepository;
+	@Autowired private UserRepository userRepository;
 
 	@Autowired
 	@SuppressWarnings("SpringJavaAutowiringInspection")

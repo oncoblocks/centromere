@@ -27,7 +27,7 @@ import org.springframework.data.mongodb.core.convert.MongoConverter;
 
 public class MongoDbUtils {
 	
-	private MongoTemplate mongoTemplate;
+	private final MongoTemplate mongoTemplate;
 
 	public MongoDbUtils(MongoTemplate mongoTemplate) {
 		this.mongoTemplate = mongoTemplate;

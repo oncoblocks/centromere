@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class GeneInfoProcessor extends GeneralFileProcessor<EntrezGene, Long> {
 
-	private EntrezGeneRepository geneRepository;
+	private final EntrezGeneRepository geneRepository;
 	
 	@Autowired
 	public GeneInfoProcessor(EntrezGeneRepository geneRepository) {

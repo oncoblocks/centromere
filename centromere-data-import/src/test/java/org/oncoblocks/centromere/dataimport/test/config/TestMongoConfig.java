@@ -40,8 +40,7 @@ import java.util.List;
 @PropertySource({ "classpath:test-mongo-data-source.properties" })
 public class TestMongoConfig extends AbstractMongoConfiguration {
 
-	@Autowired
-	Environment env;
+	@Autowired private Environment env;
 
 	@Override
 	public String getDatabaseName(){

@@ -6,7 +6,7 @@ before_script:
   - mongo centromere-test --eval 'db.addUser("centromere", "centromere");'
 script:
   - cd centromere-parent
-  - mvn clean install -DskipTests
+  - mvn -U clean install -DskipTests
   - mvn test
 notifications:
   email:

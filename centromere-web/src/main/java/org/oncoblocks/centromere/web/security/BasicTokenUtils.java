@@ -33,7 +33,7 @@ import java.util.Date;
  */
 public class BasicTokenUtils implements TokenOperations {
 	
-	private String key;
+	private final String key;
 	private Long tokenLifespan = 1000L * 60 * 60 * 24; // expires in one day
 
 	public BasicTokenUtils(String key) {

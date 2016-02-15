@@ -17,6 +17,7 @@
 package org.oncoblocks.centromere.web.exceptions;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.util.Assert;
 
 /**
  * @author woemler
@@ -30,9 +31,7 @@ public class RestException extends RuntimeException {
 	private String moreInfoUrl;
 
 	public RestException(HttpStatus status, Integer code, String message, String developerMessage, String moreInfoUrl){
-		if (status == null){
-			throw new NullPointerException("HttpStatus argument cannot be null.");
-		}
+		Assert.notNull(status,"HttpStatus argument cannot be null.");
 		this.status = status;
 		this.code = code;
 		this.message = message;

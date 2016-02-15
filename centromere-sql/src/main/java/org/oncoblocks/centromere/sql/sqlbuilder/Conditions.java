@@ -30,7 +30,7 @@ public class Conditions {
 	
 	private final Operation operation;
 	private final String sql;
-	private List<Object> values;
+	private final List<Object> values;
 	
 	public Conditions(Operation operation, Condition... conditions){
 		

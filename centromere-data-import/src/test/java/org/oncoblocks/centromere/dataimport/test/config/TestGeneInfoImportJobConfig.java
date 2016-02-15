@@ -42,11 +42,11 @@ import java.util.Date;
 @Import({TestMongoConfig.class})
 public class TestGeneInfoImportJobConfig {
 	
-	@Autowired EntrezGeneRepository geneRepository;
-	@Autowired DataSetRepository dataSetRepository;
-	@Autowired DataFileRepository dataFileRepository;
+	@Autowired private EntrezGeneRepository geneRepository;
+	@Autowired private DataSetRepository dataSetRepository;
+	@Autowired private DataFileRepository dataFileRepository;
 	@Autowired private GeneInfoProcessor geneInfoProcessor;
-	@Autowired Environment env;
+	@Autowired private Environment env;
 
 	private DataFileQueue dataFileQueue() {
 		

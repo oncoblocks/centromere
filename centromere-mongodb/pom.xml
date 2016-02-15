@@ -17,17 +17,18 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd
+            http://www.w3.org/2001/XMLSchema-instance ">
 
     <modelVersion>4.0.0</modelVersion>
-    
+
     <parent>
         <groupId>org.oncoblocks.centromere</groupId>
         <artifactId>centromere-parent</artifactId>
         <version>0.3.0-SNAPSHOT</version>
         <relativePath>../centromere-parent</relativePath>
     </parent>
-    
+
     <artifactId>centromere-mongodb</artifactId>
     <name>Oncoblocks: Centromere MongoDB Repositories</name>
     <packaging>jar</packaging>
@@ -55,26 +56,26 @@
     </scm>
 
     <dependencies>
-        
+
         <!-- Centromere -->
         <dependency>
             <groupId>org.oncoblocks.centromere</groupId>
             <artifactId>centromere-core</artifactId>
             <version>0.3.0-SNAPSHOT</version>
         </dependency>
-        
+
         <!-- Spring -->
 
         <dependency>
-        <groupId>org.springframework.data</groupId>
-        <artifactId>spring-data-mongodb</artifactId>
-        <exclusions>
-            <exclusion>
-                <groupId>org.mongodb</groupId>
-                <artifactId>mongo-java-driver</artifactId>
-            </exclusion>
-        </exclusions>
-    </dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-mongodb</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.mongodb</groupId>
+                    <artifactId>mongo-java-driver</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
         <!-- MongoDB -->
 

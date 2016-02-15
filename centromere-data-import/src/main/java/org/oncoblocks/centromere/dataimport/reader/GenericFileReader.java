@@ -30,18 +30,18 @@ public abstract class GenericFileReader<T, ID extends Serializable>
 		implements EntityReader<T, ID> {
 
 	private BufferedReader reader;
-	private String filePath;
+	private final String filePath;
 	
 	public GenericFileReader(String filePath){ 
 		this.filePath = filePath;
 	}
 
-	public void open(String inputFilePath) throws DataImportException{
+	public void open() throws DataImportException{
 		try {
-			reader = new BufferedReader(new java.io.FileReader(new File(inputFilePath)));
+			reader = new BufferedReader(new java.io.FileReader(new File(filePath)));
 		} catch (IOException e){
 			e.printStackTrace();
-			throw new DataFileReaderException(String.format("Cannot read input file: %s", inputFilePath));
+			throw new DataFileReaderException(String.format("Cannot read input file: %s", filePath));
 		}
 	}
 
