@@ -27,7 +27,6 @@ import java.util.*;
  * @author woemler
  */
 
-@Filterable
 @Document(collection = "genes")
 public class EntrezGene implements Model<Long> {
 

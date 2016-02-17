@@ -1,20 +1,15 @@
 # Centromere Core
 
-Components for creating database repositories for the Centromere genomic data warehouse.  These components are data-model-agnostic and can be used to fit any data type.  
+Components for creating database repositories for Centromere data warehouses.  These components are data-model-agnostic and can be used to fit any data type.  
 
 ## Quick Start
 
-### Note
-
-This project is still in early development.  Components can and will change, and the documentation below may become out of sync with the latest build of the project.  I will do my best to keep the documentation up-to-date.
-
 ### Creating a Data Model
 
-Centromere is designed for use with the work-in-progress Oncoblocks data model, but is not limited to this specification.  The first step in implementing a data warehouse with Centromere is to design a data model and create representational Java classes for each one.  Once implemented, a single model class will be used for each web service resource endpoint, so model classes should be considered to be atomic, normalized entities.  It is possible to create model classes with nested attributes, but keep in mind that this will add complexity in the repository layer and could affect performance.  You should think of model classes as DTOs that implement the `Model` interface:
+The first step in implementing a data warehouse with Centromere is to design a data model and create representational Java classes for each entity.  Once implemented, a single model class will be used for each web service endpoint, so model classes should be considered to be atomic, normalized entities.  All data model entity classes should implement the `Model` interface:
 
 ```java
-/* Simple representation of an Entrez Gene record for a MongoDB database.  */
-@Filterable
+/* Simple representation of an Entrez Gene record.  */
 public class Gene implements Model<String> {
 
 	private String id;
@@ -27,219 +22,121 @@ public class Gene implements Model<String> {
 	private String description;
 	private String geneType;
 	private Set<String> aliases;
+	private Map<String,String> attributes;
 
-	public Gene() { };
-
-	@Override public String getId(){ return id; }
-
-	/* Getters and Setters */
-}
-
-/* Simple representation of a subject for a SQL database */
-@Filterable
-public class Subject implements Model<Integer> {
-
-	private Integer id;
-	private String name;
-	private String gender;
-	private Integer age;
-	private List<Attributes> attributes;
-
-	public Subject() { };
-
-	@Override public Integer getId(){ return id; }
+	public String getId(){ return id; }
 
 	/* Getters and Setters */
-
 }
 
 ```
 
-The `Model` interface ensures that the entity has a defined primary ID, of the specified type (in this case, a `String` representation of a MongoDB `ObjectID`, and an `Integer` representation of an auto-incremented SQL table ID).  It is possible to use tables/collections with composite primary key ids.  To do this, the `ID` generic type in the `Model` implementation should be an array or collection.  The `@Filterable` annotation identifies the entity class as being a candidate for field-filtering operations in the web services layer.  The `Attributes` class is a helper class for creating additional sparse key-value pair attributes for the class.
+The `Model` interface ensures that the entity has an identifying attribute of a specified type (in this case, a `String` representation of a MongoDB `ObjectID`).  It is possible to use composite primary key ids, in which case the implemented `getId()` method would return the required fields:
+
+```java
+public String getId(){
+	return this.entrezGeneId.toString() + "-" + this.primaryGeneSymbol;
+}
+
+/* OR */
+
+public Collection<String> getId(){
+	return Arrays.asList(this.entrezGeneId, this.primaryGeneSymbol);
+}
+```
+
+Each implementation of the `Model` interface inherits the `@Filterable` annotation, which identifies the entity class as being a candidate for field-filtering operations in the web services layer.
 
 For MongoDB databases, you can customize how the model classes are persisted by using [Spring Data annotations](http://docs.spring.io/spring-data/data-document/docs/current/reference/html/#mapping-usage-annotations) in your model class.  By default, persisted models will be created in a collection with the same name as your class, and with the document ID assigned to an attribute with the name `id`, if one exists.
 
 For SQL databases, mapping to and from the repository is handled manually with several user-defined helper classes, adding extra work in development, but also a greater amount of customization in how your data is persisted and represented.
 
-### Creating Repositories
+### Repositories
 
-Whereas model class implementations are largely agnostic of the actual database technology that they will be used with, repository implementations will depend on the specific database technology being used.  In general, this will mean extending either `GenericMongoRepository` or `GenericJdbcRepository`.  Both of these classes implement the base `RepositoryOperations` interface, which is based on Spring Data's `PagingAndSortingRepository`, and defines all of the basic CRUD operations that all Centromere repositories should support. The database-specific implementations also include several methods specific to those data stores.
+All Centromere repository classes implement the base `RepositoryOperations` interface, which defines all of the basic CRUD operations that all Centromere repositories should support.  This interface is based on Spring Data's `PagingAndSortingRepository`, but with some additional method definitions for dynamic query operations.  The database-specific implementations also include several methods specific to those data stores.
 
-Beyond the standard query operations defined in a `PagingAndSortingRepository` are several methods that support dynamic query execution using the `QueryCriteria` class.  This class represents a single conditional criteria that database queries should meet in order to return results.  In practice, it effectively allows you to generate dynamic `WHERE` statements in your queries using predefined operation sets.  For example, in a SQL database, passing `new QueryCriteria('name', 'Joe', Evalutation.NOT_EQUALS)` to the `.find()` method would result in a statement of `WHERE name != 'Joe'`.  This same criteria used in a MongoDB repository would result in a query of `{ name: { $ne: 'Joe' } }`.  Multiple `QueryCriteria` can be passed into repository query methods to create complex, on-demand queries.
-
-#### MongoDB
-
-By far the simplest repository implementation to configure is the MongoDB implementation.  The `GenericMongoRepository` utilizes Spring Data MongoDB's `MongoTemplate`, which handles query execution and object mapping.  You can also expand on the basic operation set of the repository class by defining your own methods:
+Dynamic repository queries in Centromere are created by chaining a series of query operations, represented by the `QueryCriteria` class.  These operations are defined by the field to be queried, the value of the field, and the operator to be used to make the evaluation.  For example:
 
 ```java
-@Repository
-public class GeneRepository extends GenericMongoRepository<Gene, String> {
+QueryCriteria criteria = new QueryCriteria("entrezGeneId", 1L, Evaluation.EQUALS)
 
-	@Autowired
-	public GeneRepository(MongoTemplate mongoTemplate) {
-		super(mongoTemplate, Gene.class);
-	}
+/*
+Will be translated based upon the database implementation to:
+   WHERE entrezGeneId = 1 # for SQL
+   or
+   {"entrezGeneId": 1} # for MongoDB
+*/
 
-	public List<Gene> findByEntrezGeneId(Long entrezGeneId){
-	    return this.getMongoOperations()
-	        .find(new Query(Criteria.where("entrezGeneId").is(entrezGeneId));
-	}
+```
+
+## Customizing Model Classes
+
+By default, all fields in classes that implement `Model` are exposed as valid query string parameters in the web services layer.  You can further customize a resource's query parameters by applying several annotations:
+
+```java
+public class Gene implements Model<String> {
+
+	private String id;
+	private Long entrezGeneId;
+	@Alias("symbol") private String primaryGeneSymbol;
+	private Integer taxId;
+	@Ignored private String locusTag;
+	private String chromosome;
+	@Ignored private String chromosomeLocation;
+	@Ignored private String description;
+	private String geneType;
+	@Alias("alias") private Set<String> aliases;
+	@Aliases({
+		@Alias(value = "isKinase", fieldName = "attributes.kinase"),
+		@Alias(value = "isCgcGene", fieldName = "attributes.cgcGene")
+	})
+	private Map<String,String> attributes;
+
+	/* Getters and Setters */
+}
+```
+
+The `Alias` annotation allows query string parameters to map to entity fields of a different name, or to nested fields, with an optional value of `Evaluation`, different from the standard equality test.
+
+It is also possible to customize HATEOAS link generation in the web service layer by using the `ForeignKey` annotation:
+
+```java
+public class CopyNumber implements Model<String> {
+
+	private String id;
+
+	@ForeignKey(model = Sample.class, relationship = ForeignKey.Relationship.MANY_TO_ONE, rel = "sample")
+	private String sampleId;
+
+	@ForeignKey(model = Gene.class, relationship = ForeignKey.Relationship.MANY_TO_ONE,
+			rel = "gene", field = "entrezGeneId")
+	private String geneId;
+
+	@Aliases({
+			@Alias(value = "signalGreaterThan", evaluation = Evaluation.GREATER_THAN),
+			@Alias(value = "signalLessThan", evaluation = Evaluation.LESS_THAN),
+			@Alias(value = "signalBetween", evaluation = Evaluation.BETWEEN),
+			@Alias(value = "signalOutside", evaluation = Evaluation.OUTSIDE_INCLUSIVE)
+	})
+	private Double signal;
+
+	/* Getters and Setters */
 
 }
 ```
 
-#### SQL Databases
+All model classes will have `self` links created when HATEOAS-supported media types are requested in the web services layer.  Classes with `ForeignKey`-annotated field will also get links generated based upon the relationship described in the annotation parameters:
 
-Repository implementations for SQL databases are more complex, but still allow the same flexibility and query power that that the MongoDB repositories allow.  The `GenericJdbcRepository` is based on the class, `com.nurkiewicz.jdbcrepository.JdbcRepository`, but uses a more complex version of the `TableDescription` class, and a custom SQL generation class, `SqlBuilder`.  Much like with `JdbcRepository`, you define a `GenericJdbcRepository` using a `ComplexTableDescription`, `RowMapper`, and optional `RowUnmapper`.  The following repository class implementation supposes that the `Subject` class defined above is persisted in a signle table:
-
-```java
-/* Subject data stored in a single table */
-@Repository
-public SubjectRepository extends GenericJdbcRepository<Subject, Integer> {
-
-	@Autowired
-	public SubjectRepository(DataSource dataSource){
-	    super(dataSource, new SubjectTableDescription(), new SubjectMapper(), new SubjectUnmapper());
-	}
-
-	public static class SubjectTableDescription extends ComplexTableDescription {
-		public SubjectTableDescription(){
-			super(
-				"subjects", // table name
-				Arrays.asList("subject_id") // primary key ID columns
-			);
-		}
-	}
-
-	public static class SubjectMapper implements RowMapper<Subject> {
-		@Override
-		public Subject mapRow(ResultSet rs, int i){
-			Subject subject = new Subject();
-			subject.setId(rs.getInt("subject_id"));
-			subject.setName(rs.getString("name"));
-			subject.setAge(rs.getInt("age"));
-			subject.setGender(rs.getString("gender"));
-			List<Attributes> attributes = new ArrayList();
-			if (rs.getString("attributes") != null){
-				for (String attribute: rs.getString("attributes").split(":::")){
-					String[] bits = attributes.split("::");
-					attributes.add(new Attribute(bits[0], bits[1]));
-				}
-			}
-			subject.setAttributes(attributes);
-			return subject;
-		}
-	}
-
-	public static class SubjectUnmapper implements RowUnmapper<Subject> {
-		@Override
-		public Map<String,Object> mapColumns(Subject subject){
-			Map<String,Object> map = new HashMap();
-			map.put("subject_id", subject.getId());
-			map.put("name", subject.getName());
-			map.put("age", subject.getAge());
-			map.put("gender", subject.getGender());
-			boolean flag = false;
-			StringBuilder sb = new StringBuilder();
-			for (Attribute attribute: subject.getAttributes()){
-				if (flag){
-					sb.append(":::");
-				}
-				flag = true;
-				sb.append(attribute.getName()).append("::").append(attribute.getValue());
-			}
-			map.put("attributes", sb.toString());
-			return map;
-		}
-	}
-
+```javascript
+{
+	"id": "123",
+	"sampleId": "456",
+	"geneId": 789,
+	"signal": 2.45,
+	"links": [
+		{ "rel": "self", "href": "/api/cnv/123" },
+		{ "rel": "sample", "href": "/api/samples/456" },
+		{ "rel": "gene", "href": "/api/genes?entrezGeneId=789" }
+	]
 }
 ```
-
-If the `RowUnmapper` is left out, the repository will be read-only, and all `insert` or `update` method calls will result in an exception.
-
-Storing `Subject` records with their `Attributes` in a single table is simple enough, but it is not ideal.  The better solution would be to create a separate table, `subject_attributes`, with a many-to-one relationship with the `subjects` table.  This would allow you to index the attribute names for easier queries:
-
-```java
-/* Subject data stored in two MySQL tables */
-@Repository
-public SubjectRepository extends GenericJdbcRepository<Subject, Integer> {
-
-	@Autowired
-	public SubjectRepository(DataSource dataSource){
-	    super(dataSource, new SubjectTableDescription(), new SubjectMapper());
-	}
-
-	@Override
-	public <S extends Subject> S insert(S entity) {
-
-    		KeyHolder keyHolder = new GeneratedKeyHolder();
-    		this.getJdbcTemplate().update(
-    				new PreparedStatementCreator() {
-    					@Override
-    					@SuppressWarnings("JpaQueryApiInspection")
-    					public PreparedStatement createPreparedStatement(Connection connection) throws
-    							SQLException {
-    						PreparedStatement ps = connection.prepareStatement(
-    								"INSERT INTO `subjects` (name, gender, age) VALUES (?, ?, ?);",
-    								new String[] {"id"}
-    						);
-    						ps.setString(1, entity.getName());
-    						ps.setString(2, entity.getGender());
-    						ps.setInt(3, entity.getAge());
-    						return ps;
-    					}
-    				},
-    				keyHolder
-    		);
-    		Integer subjectId = keyHolder.getKey().intValue();
-    		entity.setId(Integer.toString(geneId));
-
-    		if (entity.getAttributes() != null) {
-    			for (Attribute attribute : entity.getAttributes()) {
-    				this.getJdbcTemplate().update(
-    						"INSERT INTO `subject_attributes` (subject_id, name, value) VALUES (?, ?, ?)",
-    						subjectId, attribute.getName(), attribute.getValue());
-    			}
-    		}
-
-    		return entity;
-
-    	}
-
-	public static class SubjectTableDescription extends ComplexTableDescription {
-		public SubjectTableDescription(){
-			super(
-				"subjects", // table name
-				Arrays.asList("s.subject_id"), // primary key IDs
-				"s.*, GROUP_CONCAT(CONCAT(a.name, '::', a.value) SEPARATOR ':::') as attributes", // SELECT statement
-				"subjects s left join subject_attributes a on s.subject_id = a.subject_id", // FROM statement
-				"s.subject_id" // GROUP BY statement
-			);
-		}
-	}
-
-	public static class SubjectMapper implements RowMapper<Subject> {
-		@Override
-		public Subject mapRow(ResultSet rs, int i){
-			Subject subject = new Subject();
-			subject.setId(rs.getInt("subject_id"));
-			subject.setName(rs.getString("name"));
-			subject.setAge(rs.getInt("age"));
-			subject.setGender(rs.getString("gender"));
-			List<Attributes> attributes = new ArrayList();
-			if (rs.getString("attributes") != null){
-				for (String attribute: rs.getString("attributes").split(":::")){
-					String[] bits = attributes.split("::");
-					attributes.add(new Attribute(bits[0], bits[1]));
-				}
-			}
-			subject.setAttributes(attributes);
-			return subject;
-		}
-	}
-
-}
-```
-
-Now we have a CRUD repository that pulls data from two tables into a single model class.  

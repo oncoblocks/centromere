@@ -24,7 +24,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 /**
  * @author woemler
  */
-@Filterable
 @Document(collection = "copy_number")
 public class CopyNumber implements Model<String> {
 

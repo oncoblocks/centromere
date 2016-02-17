@@ -16,7 +16,6 @@
 
 package org.oncoblocks.centromere.web.test.models;
 
-import org.oncoblocks.centromere.core.model.Filterable;
 import org.oncoblocks.centromere.core.model.support.DataFileMetadata;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -26,7 +25,6 @@ import java.util.Date;
  * @author woemler
  */
 
-@Filterable
 @Document(collection = "data_files")
 public class DataFile implements DataFileMetadata<String> {
 	
