@@ -16,7 +16,8 @@
 
 package org.oncoblocks.centromere.dataimport.importer;
 
-import org.oncoblocks.centromere.dataimport.config.DataImportException;
+import org.oncoblocks.centromere.core.input.DataImportException;
+import org.oncoblocks.centromere.core.input.importer.DatabaseCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

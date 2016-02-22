@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.dataimport.writer;
+package org.oncoblocks.centromere.sql;
 
+import org.oncoblocks.centromere.core.input.DataImportException;
+import org.oncoblocks.centromere.core.input.writer.AbstractRecordFileWriter;
 import org.oncoblocks.centromere.core.model.Model;
-import org.oncoblocks.centromere.dataimport.config.DataImportException;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +33,7 @@ import java.util.List;
  * 
  * @author woemler
  */
-public class MySqlImportTempFileWriter<T extends Model<ID>, ID extends Serializable> 
-		extends TempFileWriter<T, ID> {
+public class MySqlImportTempFileWriter<T extends Model<?>> extends AbstractRecordFileWriter<T> {
 	
 	private String delimiter = "\t";
 	private String enclosedBy = "";
@@ -48,7 +47,7 @@ public class MySqlImportTempFileWriter<T extends Model<ID>, ID extends Serializa
 
 	@Override 
 	public void writeRecord(T record) throws DataImportException {
-		FileWriter writer = getFileWriter();
+		FileWriter writer = this.getWriter();
 		StringBuilder stringBuilder = new StringBuilder();
 		try {
 			boolean flag = false;
@@ -71,14 +70,14 @@ public class MySqlImportTempFileWriter<T extends Model<ID>, ID extends Serializa
 			}
 		} catch (IllegalAccessException e){
 			e.printStackTrace();
-			throw new TempFileWriterException(e.getMessage());
+			throw new DataImportException(e.getMessage());
 		}
 		try {
 			writer.write(stringBuilder.toString());
 			writer.write(terminatedBy);
 		} catch (IOException e){
 			e.printStackTrace();
-			throw new TempFileWriterException(e.getMessage());
+			throw new DataImportException(e.getMessage());
 		}
 	}
 

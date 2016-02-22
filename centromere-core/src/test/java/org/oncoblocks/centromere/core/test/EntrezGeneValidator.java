@@ -14,15 +14,25 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.dataimport.reader;
+package org.oncoblocks.centromere.core.test;
 
-import org.oncoblocks.centromere.dataimport.config.DataImportException;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ValidationUtils;
+import org.springframework.validation.Validator;
 
 /**
  * @author woemler
  */
-public class DataFileReaderException extends DataImportException {
-	public DataFileReaderException(String message) {
-		super(message);
+public class EntrezGeneValidator implements Validator {
+
+	@Override 
+	public boolean supports(Class<?> aClass) {
+		return aClass.equals(EntrezGene.class);
+	}
+
+	@Override 
+	public void validate(Object o, Errors errors) {
+		EntrezGene gene = (EntrezGene) o;
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors,  "primaryGeneSymbol", "symbol.empty");
 	}
 }

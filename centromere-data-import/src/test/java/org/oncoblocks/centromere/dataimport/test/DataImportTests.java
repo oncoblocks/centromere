@@ -22,7 +22,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
-import org.oncoblocks.centromere.dataimport.importer.DatabaseCredentials;
+import org.oncoblocks.centromere.core.input.importer.DatabaseCredentials;
 import org.oncoblocks.centromere.dataimport.importer.MongoImportTempFileImporter;
 import org.oncoblocks.centromere.dataimport.test.config.TestMongoConfig;
 import org.oncoblocks.centromere.dataimport.test.models.EntrezGene;
@@ -68,20 +68,13 @@ public class DataImportTests {
 	}
 	
 	@Test
-	public void geneInfoReaderTest(){
-		GeneInfoReader geneInfoReader = new GeneInfoReader();
+	public void geneInfoReaderTest() throws Exception{
+		EntrezGeneReader entrezGeneReader = new EntrezGeneReader(geneInfoPath);
 		List<EntrezGene> genes = new ArrayList<>();
-		try {
-			geneInfoReader.open(geneInfoPath);
-			EntrezGene gene = geneInfoReader.readRecord();
-			while (gene != null){
-				genes.add(gene);
-				gene = geneInfoReader.readRecord();
-			}
-		} catch (Exception e){
-			e.printStackTrace();
-		} finally {
-			geneInfoReader.close();
+		EntrezGene gene = entrezGeneReader.readRecord();
+		while (gene != null) {
+			genes.add(gene);
+			gene = entrezGeneReader.readRecord();
 		}
 		Assert.notEmpty(genes);
 		Assert.isTrue(genes.size() == 5);

@@ -19,7 +19,7 @@ package org.oncoblocks.centromere.dataimport.test;
 import org.oncoblocks.centromere.dataimport.processor.GeneralFileProcessor;
 import org.oncoblocks.centromere.dataimport.test.models.EntrezGene;
 import org.oncoblocks.centromere.dataimport.test.repositories.EntrezGeneRepository;
-import org.oncoblocks.centromere.dataimport.writer.RepositoryRecordWriter;
+import org.oncoblocks.centromere.core.input.writer.RepositoryRecordWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

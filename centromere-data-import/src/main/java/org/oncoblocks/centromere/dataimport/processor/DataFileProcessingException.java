@@ -16,7 +16,7 @@
 
 package org.oncoblocks.centromere.dataimport.processor;
 
-import org.oncoblocks.centromere.dataimport.config.DataImportException;
+import org.oncoblocks.centromere.core.input.DataImportException;
 
 /**
  * Generic exception for data file parsing issues.

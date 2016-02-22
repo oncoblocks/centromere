@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.dataimport.writer;
+package org.oncoblocks.centromere.core.input.writer;
 
 import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.repository.RepositoryOperations;
 
-import java.io.Serializable;
-
 /**
  * @author woemler
  */
-public class RepositoryRecordWriter<T extends Model<ID>, ID extends Serializable> 
-		implements EntityRecordWriter<T, ID> {
+public class RepositoryRecordWriter<T extends Model<?>> implements RecordWriter<T> {
 	
-	private final RepositoryOperations<T, ID> repository;
+	private RepositoryOperations<T, ?> repository;
+
+	public RepositoryRecordWriter() { }
 
 	public RepositoryRecordWriter(
-			RepositoryOperations<T, ID> repository) {
+			RepositoryOperations<T, ?> repository) {
 		this.repository = repository;
 	}
 
@@ -39,18 +38,12 @@ public class RepositoryRecordWriter<T extends Model<ID>, ID extends Serializable
 		repository.insert(entity);	
 	}
 
-	@Override 
-	public void open(String filePath) {
-		// Do nothing
-	}
-	
-	public void open(){
-		this.open(null);
+	public RepositoryOperations<T, ?> getRepository() {
+		return repository;
 	}
 
-	@Override 
-	public void close() {
-		// Do nothing
+	public void setRepository(
+			RepositoryOperations<T, ?> repository) {
+		this.repository = repository;
 	}
-
 }

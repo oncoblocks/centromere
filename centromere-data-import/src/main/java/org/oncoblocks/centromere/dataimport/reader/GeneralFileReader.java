@@ -17,7 +17,7 @@
 package org.oncoblocks.centromere.dataimport.reader;
 
 import org.oncoblocks.centromere.core.model.Model;
-import org.oncoblocks.centromere.dataimport.config.DataImportException;
+import org.oncoblocks.centromere.core.input.DataImportException;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -42,7 +42,7 @@ public abstract class GeneralFileReader<T extends Model<ID>, ID extends Serializ
 			reader = new BufferedReader(new java.io.FileReader(new File(inputFilePath)));
 		} catch (IOException e){
 			e.printStackTrace();
-			throw new DataFileReaderException(String.format("Cannot read input file: %s", inputFilePath));
+			throw new EntityReaderException(String.format("Cannot read input file: %s", inputFilePath));
 		}
 	}
 

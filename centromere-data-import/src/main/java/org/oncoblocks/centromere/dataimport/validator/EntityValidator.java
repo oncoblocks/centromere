@@ -16,7 +16,7 @@
 
 package org.oncoblocks.centromere.dataimport.validator;
 
-import org.oncoblocks.centromere.dataimport.config.DataImportException;
+import org.oncoblocks.centromere.core.input.DataImportException;
 
 /**
  * @author woemler

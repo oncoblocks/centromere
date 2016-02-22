@@ -17,7 +17,7 @@
 package org.oncoblocks.centromere.dataimport.processor;
 
 import org.oncoblocks.centromere.core.model.Model;
-import org.oncoblocks.centromere.dataimport.config.DataImportException;
+import org.oncoblocks.centromere.core.input.DataImportException;
 import org.oncoblocks.centromere.dataimport.importer.EntityRecordImporter;
 import org.oncoblocks.centromere.dataimport.reader.EntityRecordReader;
 import org.oncoblocks.centromere.dataimport.validator.EntityValidator;

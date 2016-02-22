@@ -14,43 +14,14 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.dataimport.writer;
+package org.oncoblocks.centromere.core.input.writer;
 
+import org.oncoblocks.centromere.core.input.DataImportException;
 import org.oncoblocks.centromere.core.model.Model;
-import org.oncoblocks.centromere.core.repository.RepositoryOperations;
-
-import java.io.Serializable;
 
 /**
  * @author woemler
  */
-public class RepositoryRecordUpdater<T extends Model<ID>, ID extends Serializable> 
-		implements EntityRecordWriter<T, ID> {
-	
-	private RepositoryOperations<T, ID> repository;
-
-	public RepositoryRecordUpdater(
-			RepositoryOperations<T, ID> repository) {
-		this.repository = repository;
-	}
-
-	@Override 
-	public void writeRecord(T entity) {
-		repository.update(entity);	
-	}
-
-	@Override 
-	public void open(String filePath) {
-		// Do nothing
-	}
-	
-	public void open(){
-		this.open(null);
-	}
-
-	@Override 
-	public void close() {
-		// Do nothing
-	}
-
+public interface RecordWriter<T extends Model<?>> {
+	void writeRecord(T record) throws DataImportException;
 }

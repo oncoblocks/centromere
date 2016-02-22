@@ -9,9 +9,31 @@ Repository class implementations for MongoDB.
 The `GenericMongoRepository` is the MongoDB implementation of `RepositoryOperations`, utilizing Spring Data MongoDB's `MongoTemplate` for query execution and object mapping.  Before creating repository classes, you should configure your database connection:
 
 ```java
+/* Example configuration for a MongoDB 3.x instance */
 @Configuration
-public class MongoConfig {
+@PropertySource({ "classpath:mongodb-data-source.properties" })
+public class MongoConfig extends AbstractMongoConfiguration {
+	
+	@Autowired private Environment env;
 
+	@Override
+	public String getDatabaseName(){
+		return env.getRequiredProperty("mongo.name");
+	}
+
+	@Override
+	@Bean
+	public Mongo mongo() throws Exception {
+		ServerAddress serverAddress = new ServerAddress(env.getRequiredProperty("mongo.host"));
+		List<MongoCredential> credentials = new ArrayList<>();
+		credentials.add(MongoCredential.createScramSha1Credential(
+				env.getRequiredProperty("mongo.username"),
+				env.getRequiredProperty("mongo.name"),
+				env.getRequiredProperty("mongo.password").toCharArray()
+		));
+		return new MongoClient(serverAddress, credentials);
+	}
+	
 }
 ```
 

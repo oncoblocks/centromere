@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.dataimport.importer;
+package org.oncoblocks.centromere.mongodb;
+
+import org.oncoblocks.centromere.core.input.importer.DatabaseCredentials;
 
 /**
  * @author woemler
  */
-public class DatabaseCredentials {
+public class MongoCredentials implements DatabaseCredentials {
 
 	private String username;
 	private String password;
-	private String host;
-	private String port;
+	private String host = "localhost";
+	private String port = "27017";
 	private String database;
 
-	public DatabaseCredentials() {
+	public MongoCredentials() {
 	}
 
-	public DatabaseCredentials(String username, String password, String host, String port,
+	public MongoCredentials(String username, String password, String host, String port,
 			String database) {
 		this.username = username;
 		this.password = password;
@@ -43,7 +45,7 @@ public class DatabaseCredentials {
 		return username;
 	}
 
-	public DatabaseCredentials setUsername(String username) {
+	public MongoCredentials setUsername(String username) {
 		this.username = username;
 		return this;
 	}
@@ -52,7 +54,7 @@ public class DatabaseCredentials {
 		return password;
 	}
 
-	public DatabaseCredentials setPassword(String password) {
+	public MongoCredentials setPassword(String password) {
 		this.password = password;
 		return this;
 	}
@@ -61,7 +63,7 @@ public class DatabaseCredentials {
 		return host;
 	}
 
-	public DatabaseCredentials setHost(String host) {
+	public MongoCredentials setHost(String host) {
 		this.host = host;
 		return this;
 	}
@@ -70,7 +72,7 @@ public class DatabaseCredentials {
 		return port;
 	}
 
-	public DatabaseCredentials setPort(String port) {
+	public MongoCredentials setPort(String port) {
 		this.port = port;
 		return this;
 	}
@@ -79,11 +81,9 @@ public class DatabaseCredentials {
 		return database;
 	}
 
-	public DatabaseCredentials setDatabase(String database) {
+	public MongoCredentials setDatabase(String database) {
 		this.database = database;
 		return this;
 	}
-
-
-
+	
 }

@@ -16,18 +16,17 @@
 
 package org.oncoblocks.centromere.dataimport.reader;
 
-import org.oncoblocks.centromere.dataimport.config.DataImportException;
+import org.oncoblocks.centromere.core.input.DataImportException;
+import org.oncoblocks.centromere.core.input.reader.RecordReader;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 
 /**
  * @author woemler
  */
-public abstract class GenericFileReader<T, ID extends Serializable>
-		implements EntityReader<T, ID> {
+public abstract class GenericFileReader<T> implements RecordReader<T> {
 
 	private BufferedReader reader;
 	private final String filePath;
@@ -41,7 +40,7 @@ public abstract class GenericFileReader<T, ID extends Serializable>
 			reader = new BufferedReader(new java.io.FileReader(new File(filePath)));
 		} catch (IOException e){
 			e.printStackTrace();
-			throw new DataFileReaderException(String.format("Cannot read input file: %s", filePath));
+			throw new EntityReaderException(String.format("Cannot read input file: %s", filePath));
 		}
 	}
 

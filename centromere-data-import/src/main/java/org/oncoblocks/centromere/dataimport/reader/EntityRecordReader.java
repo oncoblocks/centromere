@@ -17,7 +17,7 @@
 package org.oncoblocks.centromere.dataimport.reader;
 
 import org.oncoblocks.centromere.core.model.Model;
-import org.oncoblocks.centromere.dataimport.config.DataImportException;
+import org.oncoblocks.centromere.core.input.DataImportException;
 
 import java.io.Serializable;
 

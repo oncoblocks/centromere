@@ -16,7 +16,7 @@
 
 package org.oncoblocks.centromere.dataimport.test;
 
-import org.oncoblocks.centromere.dataimport.config.DataImportException;
+import org.oncoblocks.centromere.core.input.DataImportException;
 import org.oncoblocks.centromere.dataimport.test.models.EntrezGene;
 import org.oncoblocks.centromere.dataimport.validator.EntityValidationException;
 import org.oncoblocks.centromere.dataimport.validator.EntityValidator;

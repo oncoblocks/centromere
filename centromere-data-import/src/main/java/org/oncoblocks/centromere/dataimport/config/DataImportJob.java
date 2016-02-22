@@ -16,6 +16,7 @@
 
 package org.oncoblocks.centromere.dataimport.config;
 
+import org.oncoblocks.centromere.core.input.DataImportException;
 import org.oncoblocks.centromere.core.model.support.DataFileMetadata;
 import org.oncoblocks.centromere.core.model.support.DataSetMetadata;
 import org.oncoblocks.centromere.core.repository.support.DataFileRepositoryOperations;

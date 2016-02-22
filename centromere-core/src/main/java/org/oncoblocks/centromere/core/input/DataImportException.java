@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.dataimport.config;
+package org.oncoblocks.centromere.core.input;
 
 /**
  * @author woemler

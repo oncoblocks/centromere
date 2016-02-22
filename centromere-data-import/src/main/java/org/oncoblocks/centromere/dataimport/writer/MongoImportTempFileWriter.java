@@ -17,7 +17,7 @@
 package org.oncoblocks.centromere.dataimport.writer;
 
 import org.oncoblocks.centromere.core.model.Model;
-import org.oncoblocks.centromere.dataimport.config.DataImportException;
+import org.oncoblocks.centromere.core.input.DataImportException;
 import org.oncoblocks.centromere.dataimport.support.MongoDbUtils;
 import org.springframework.data.mongodb.core.MongoTemplate;
 

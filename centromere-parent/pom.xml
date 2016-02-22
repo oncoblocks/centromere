@@ -31,7 +31,7 @@
         <module>../centromere-core</module>
         <module>../centromere-mongodb</module>
         <module>../centromere-sql</module>
-        <module>../centromere-data-import</module>
+        <!--<module>../centromere-data-import</module>-->
         <module>../centromere-web</module>
     </modules>
 

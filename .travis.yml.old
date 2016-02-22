@@ -1,0 +1,16 @@
+language: java
+jdk: oraclejdk8
+services: mongodb
+before_script:
+  - sleep 15
+  - mongo centromere-test --eval 'db.addUser("centromere", "centromere");'
+script:
+  - cd centromere-parent
+  - mvn -U clean install -DskipTests
+  - mvn test
+notifications:
+  email:
+    recipients:
+      - willoemler@gmail.com
+    on_success: change
+    on_failure: always

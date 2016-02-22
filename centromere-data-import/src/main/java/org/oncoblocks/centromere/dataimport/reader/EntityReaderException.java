@@ -16,13 +16,13 @@
 
 package org.oncoblocks.centromere.dataimport.reader;
 
-import org.oncoblocks.centromere.dataimport.config.DataImportException;
-
-import java.io.Serializable;
+import org.oncoblocks.centromere.core.input.DataImportException;
 
 /**
  * @author woemler
  */
-public interface EntityReader<T, ID extends Serializable> {
-	T readRecord() throws DataImportException;
+public class EntityReaderException extends DataImportException {
+	public EntityReaderException(String message) {
+		super(message);
+	}
 }
