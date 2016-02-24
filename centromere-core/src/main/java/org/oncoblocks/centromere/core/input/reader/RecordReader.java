@@ -24,4 +24,6 @@ import org.oncoblocks.centromere.core.model.Model;
  */
 public interface RecordReader<T extends Model<?>> {
 	T readRecord() throws DataImportException;
+	void doBefore(String input) throws DataImportException;
+	void doAfter() throws DataImportException;
 }

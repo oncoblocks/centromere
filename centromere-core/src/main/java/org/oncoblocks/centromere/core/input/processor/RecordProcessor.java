@@ -24,5 +24,5 @@ import org.oncoblocks.centromere.core.input.DataImportException;
 public interface RecordProcessor {
 	void doBefore();
 	void doAfter();
-	long run() throws DataImportException;
+	void run(String path) throws DataImportException;
 }

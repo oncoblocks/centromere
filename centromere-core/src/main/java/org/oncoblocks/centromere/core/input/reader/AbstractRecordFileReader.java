@@ -33,8 +33,16 @@ public abstract class AbstractRecordFileReader<T extends Model<?>> implements Re
 	private BufferedReader reader;
 	private static final Logger logger = LoggerFactory.getLogger(AbstractRecordFileReader.class);
 
-	public void open(String inputFilePath) throws DataImportException{
+	@Override public void doBefore(String input) throws DataImportException{
 		this.close();
+		this.open(input);
+	}
+
+	@Override public void doAfter() {
+		this.close();
+	}
+
+	public void open(String inputFilePath) throws DataImportException{
 		try {
 			reader = new BufferedReader(new FileReader(inputFilePath));
 		} catch (IOException e){
@@ -53,11 +61,8 @@ public abstract class AbstractRecordFileReader<T extends Model<?>> implements Re
 		}
 	}
 
-	public BufferedReader getReader() {
+	protected BufferedReader getReader() {
 		return reader;
 	}
-
-	public void setReader(BufferedReader reader) {
-		this.reader = reader;
-	}
+	
 }

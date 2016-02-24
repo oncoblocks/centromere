@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.input.writer;
+package org.oncoblocks.centromere.core.input.pipeline;
 
 import org.oncoblocks.centromere.core.input.DataImportException;
-import org.oncoblocks.centromere.core.model.Model;
 
 /**
  * @author woemler
  */
-public interface RecordWriter<T extends Model<?>> {
-	void writeRecord(T record) throws DataImportException;
-	void doBefore(String destination) throws DataImportException;
-	void doAfter() throws DataImportException;
+public interface JobFileParser {
+	ImportJob parseJobFile(String inputPath) throws DataImportException;
 }

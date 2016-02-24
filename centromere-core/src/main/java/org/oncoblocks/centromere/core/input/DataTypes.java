@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.input.writer;
+package org.oncoblocks.centromere.core.input;
 
-import org.oncoblocks.centromere.core.input.DataImportException;
-import org.oncoblocks.centromere.core.model.Model;
+import java.lang.annotation.*;
 
 /**
  * @author woemler
  */
-public interface RecordWriter<T extends Model<?>> {
-	void writeRecord(T record) throws DataImportException;
-	void doBefore(String destination) throws DataImportException;
-	void doAfter() throws DataImportException;
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface DataTypes {
+	String[] value();
 }

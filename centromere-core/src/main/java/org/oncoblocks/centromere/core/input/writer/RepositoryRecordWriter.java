@@ -16,6 +16,7 @@
 
 package org.oncoblocks.centromere.core.input.writer;
 
+import org.oncoblocks.centromere.core.input.DataImportException;
 import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.repository.RepositoryOperations;
 
@@ -45,5 +46,13 @@ public class RepositoryRecordWriter<T extends Model<?>> implements RecordWriter<
 	public void setRepository(
 			RepositoryOperations<T, ?> repository) {
 		this.repository = repository;
+	}
+
+	@Override public void doBefore(String destination) throws DataImportException {
+		
+	}
+
+	@Override public void doAfter() throws DataImportException {
+
 	}
 }

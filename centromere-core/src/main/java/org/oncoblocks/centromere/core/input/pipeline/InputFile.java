@@ -14,16 +14,39 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.input.writer;
-
-import org.oncoblocks.centromere.core.input.DataImportException;
-import org.oncoblocks.centromere.core.model.Model;
+package org.oncoblocks.centromere.core.input.pipeline;
 
 /**
  * @author woemler
  */
-public interface RecordWriter<T extends Model<?>> {
-	void writeRecord(T record) throws DataImportException;
-	void doBefore(String destination) throws DataImportException;
-	void doAfter() throws DataImportException;
+public class InputFile {
+	
+	private String path;
+	private String dataType;
+	private String dataSet;
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public String getDataType() {
+		return dataType;
+	}
+
+	public void setDataType(String dataType) {
+		this.dataType = dataType;
+	}
+
+	public String getDataSet() {
+		return dataSet;
+	}
+
+	public void setDataSet(String dataSet) {
+		this.dataSet = dataSet;
+	}
+
 }

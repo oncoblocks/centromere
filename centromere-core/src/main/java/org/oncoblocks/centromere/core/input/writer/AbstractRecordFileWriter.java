@@ -32,6 +32,16 @@ public abstract class AbstractRecordFileWriter<T extends Model<?>> implements Re
 	private FileWriter writer;
 	private static final Logger logger = LoggerFactory.getLogger(AbstractRecordFileWriter.class);
 
+	@Override 
+	public void doBefore(String destination) throws DataImportException {
+		this.open(destination);
+	}
+
+	@Override 
+	public void doAfter() throws DataImportException {
+		this.close();
+	}
+
 	public void open(String outputFilePath) throws DataImportException{
 		this.close();
 		try {
@@ -51,11 +61,7 @@ public abstract class AbstractRecordFileWriter<T extends Model<?>> implements Re
 		}
 	}
 
-	public FileWriter getWriter() {
+	protected FileWriter getWriter() {
 		return writer;
-	}
-
-	public void setWriter(FileWriter writer) {
-		this.writer = writer;
 	}
 }

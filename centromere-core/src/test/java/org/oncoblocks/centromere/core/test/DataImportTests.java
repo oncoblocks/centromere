@@ -16,10 +16,14 @@
 
 package org.oncoblocks.centromere.core.test;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.oncoblocks.centromere.core.input.pipeline.*;
+import org.oncoblocks.centromere.core.input.writer.RepositoryRecordWriter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.Assert;
@@ -27,6 +31,8 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.Validator;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,9 +48,17 @@ public class DataImportTests {
 	
 	@Autowired private Validator validator;
 	private final String geneInfoPath = ClassLoader.getSystemClassLoader().getResource("Homo_sapiens.gene_info").getPath();
+	private final String importJobJsonFilePath = ClassLoader.getSystemClassLoader().getResource("example_import.json").getPath();
+	@Autowired GeneInfoProcessor processor;
+	@Autowired TestRepository testRepository;
+	@Autowired ApplicationContext applicationContext;
+	private static final ObjectMapper mapper = new ObjectMapper();
 
 	@Before
-	public void setup() throws Exception{ }
+	public void setup() throws Exception{
+		testRepository.deleteAll();
+		testRepository.insert(EntrezGene.createDummyData());
+	}
 
 	@Test
 	public void geneInfoReaderTest() throws Exception{
@@ -78,5 +92,99 @@ public class DataImportTests {
 			fail("Validation did not catch missing field.");
 		}
 	}
+	
+	@Test
+	public void recordWriterTest() throws Exception {
+		testRepository.deleteAll();
+		Assert.isTrue(testRepository.count() == 0);
+		RepositoryRecordWriter<EntrezGene> writer = new RepositoryRecordWriter<>(testRepository);
+		for (EntrezGene gene: EntrezGene.createDummyData()){
+			writer.writeRecord(gene);
+		}
+		Assert.isTrue(testRepository.count() == 5);
+	}
+	
+	@Test
+	public void recordUpdaterTest() throws Exception {
+		
+	}
+	
+	@Test
+	public void recordProcessorTest() throws Exception {
+		testRepository.deleteAll();
+		System.out.println(String.format("There are %d records in the test repository.", testRepository.count()));
+		Assert.isTrue(testRepository.count() == 0);
+		processor.run(geneInfoPath);
+		Assert.isTrue(testRepository.count() == 5);
+		EntrezGene gene = testRepository.findOne(1L);
+		Assert.notNull(gene);
+		Assert.isTrue(gene.getId() == 1L);
+		System.out.println(String.format("There are %d records in the test repository.", testRepository.count()));
+		System.out.println(gene.toString());
+	}
+	
+	@Test
+	public void mapImportOptionsTest() throws Exception {
+		String json = "{\"tempDirectoryPath\": \"/tmp\", \"failOnMissingFile\": false}";
+		ImportOptions options = mapper.readValue(json, BasicImportOptions.class);
+		Assert.notNull(options);
+		Assert.notNull(options.getTempDirectoryPath());
+		Assert.isTrue(options.getTempDirectoryPath().equals("/tmp"));
+		Assert.isTrue(options.failOnDataImportException());
+		Assert.isTrue(!options.failOnMissingFile());
+	}
+	
+	@Test
+	public void mapInputFileTest() throws Exception {
+		String json = "{\"path\": \"/path/to/file.txt\", \"dataType\": \"ENTREZ_GENE\", \"dataSet\":\"metadata\"}";
+		InputFile inputFile = mapper.readValue(json, InputFile.class);
+		Assert.notNull(inputFile);
+		Assert.isTrue(inputFile.getPath().endsWith("file.txt"));
+		Assert.isTrue(inputFile.getDataType().equals("ENTREZ_GENE"));
+		Assert.isTrue(inputFile.getDataSet().equals("metadata"));
+	}
+	
+	@Test
+	public void mapImportJobTest() throws Exception {
+		StringBuilder sb = new StringBuilder();
+		BufferedReader br = null;
+		try {
+			br = new BufferedReader(new FileReader(importJobJsonFilePath));
+			String line = br.readLine();
+			while (line != null){
+				sb.append(line);
+				line = br.readLine();
+			}
+		} finally {
+			if (br != null) br.close();
+		}
+		ImportJob job = mapper.readValue(sb.toString(), ImportJob.class);
+		Assert.notNull(job);
+		Assert.notNull(job.getDataTypes());
+		Assert.notEmpty(job.getDataTypes());
+		Assert.notNull(job.getFiles());
+		Assert.notEmpty(job.getFiles());
+	}
+
+	@Test
+	public void jsonJobFileParserTest() throws Exception {
+		JsonJobFileParser parser = new JsonJobFileParser();
+		parser.setObjectMapper(mapper);
+		ImportJob job = parser.parseJobFile(importJobJsonFilePath);
+		Assert.notNull(job);
+		Assert.notNull(job.getDataTypes());
+		Assert.notEmpty(job.getDataTypes());
+		Assert.notNull(job.getFiles());
+		Assert.notEmpty(job.getFiles());
+	}
+	
+	@Test
+	public void jobRunnerTest() throws Exception {
+		JsonJobFileParser parser = new JsonJobFileParser();
+		parser.setObjectMapper(mapper);
+		ImportJob job = parser.parseJobFile(importJobJsonFilePath);
+		Assert.notNull(job);
+	}
+	
 	
 }

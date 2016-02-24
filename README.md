@@ -21,15 +21,11 @@ What Centromere is _**not**_:
 
 #### Centromere Core
 
-The core module, containing common dependencies, support classes for data model creation, and repository interfaces.
+The core module, containing common dependencies classes for creating data model, repository, and data import component classes.
 
 #### Centromere MongoDB and SQL
 
-Database-specific implementations of the core repository interfaces.  MongoDB is the preferred database technology, but MySQL is currently supported at an experimental level.
-
-#### Centromere Data Import
-
-Tools for creating pipeline jobs for processing and ingesting data into the data warehouse.
+Database-specific implementations of the core repository interfaces and data import classes.  MongoDB is the preferred database technology, but MySQL is currently supported at an experimental level.
 
 #### Centromere Web
 

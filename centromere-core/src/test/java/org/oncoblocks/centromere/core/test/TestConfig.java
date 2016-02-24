@@ -16,9 +16,14 @@
 
 package org.oncoblocks.centromere.core.test;
 
+import org.oncoblocks.centromere.core.input.pipeline.ImportOptions;
+import org.oncoblocks.centromere.core.input.pipeline.BasicImportOptions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 /**
@@ -27,11 +32,22 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 @Configuration
 @ComponentScan(basePackages = { "org.oncoblocks.centromere.core.test" })
+@PropertySource({"classpath:test.properties"})
 public class TestConfig {
+	
+	@Autowired Environment environment;
 
 	@Bean
 	public LocalValidatorFactoryBean validator(){
 		return new LocalValidatorFactoryBean();
+	}
+	
+	@Bean
+	public ImportOptions importOptions(){
+		BasicImportOptions importOptions = new BasicImportOptions();
+		importOptions.setTempDirectoryPath(environment.getRequiredProperty("tmp.dir"));
+		importOptions.setFailOnInvalidRecord(false);
+		return importOptions;
 	}
 	
 }

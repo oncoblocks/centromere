@@ -18,6 +18,7 @@ package org.oncoblocks.centromere.core.test;
 
 import org.oncoblocks.centromere.core.input.DataImportException;
 import org.oncoblocks.centromere.core.input.reader.AbstractRecordFileReader;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -28,6 +29,7 @@ import java.util.Map;
 /**
  * @author woemler
  */
+@Component
 public class GeneInfoReader extends AbstractRecordFileReader<EntrezGene> {
 
 	public GeneInfoReader() { }

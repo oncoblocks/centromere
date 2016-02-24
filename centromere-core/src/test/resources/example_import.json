@@ -1,0 +1,11 @@
+{
+  "name": "Example import job",
+  "notes": "This is an example data import job configuration file.",
+  "dataSets": [],
+  "dataTypes": [
+    { "name": "gene_info", "processor": "org.oncoblocks.centromere.core.test.GeneInfoProcessor" }
+  ],
+  "files": [
+    { "path": "classpath:Homo_sapiens.gene_info", "dataSet": "", "dataType": "gene_info" }
+  ]
+}
