@@ -16,6 +16,7 @@
 
 package org.oncoblocks.centromere.core.input.pipeline;
 
+import org.oncoblocks.centromere.core.input.processor.RecordProcessor;
 import org.springframework.util.Assert;
 
 import java.util.HashMap;
@@ -27,7 +28,19 @@ import java.util.Map;
 public class DataTypeManager {
 	
 	private Map<String, DataType> dataTypeMap = new HashMap<>();
+
+	public DataTypeManager() { }
 	
+	public DataTypeManager(Iterable<DataType> dataTypes){
+		this.addDataTypes(dataTypes);
+	}
+	
+	public DataTypeManager(DataType... dataTypes){
+		for (DataType dataType: dataTypes){
+			this.addDataType(dataType);
+		}
+	}
+
 	public void addDataType(DataType dataType){
 		Assert.notNull(dataType);
 		Assert.notNull(dataType.getName());
@@ -42,7 +55,7 @@ public class DataTypeManager {
 		}
 	}
 	
-	public Class<?> getProcessorByDataType(String name){
+	public Class<? extends RecordProcessor> getProcessorByDataType(String name){
 		if (!dataTypeMap.containsKey(name)) return null;
 		DataType dataType = dataTypeMap.get(name);
 		return dataType.getProcessor();

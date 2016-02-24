@@ -52,14 +52,6 @@ public class GenericRecordProcessor<T extends Model<?>> implements RecordProcess
 	}
 
 	@Override public void run(String inputFilePath) throws DataImportException {
-		File inputFile = new File(inputFilePath);
-		if (!inputFile.isFile() || !inputFile.canRead()){
-			if (importOptions.failOnMissingFile()){
-				throw new DataImportException(String.format("[CENTROMERE] Input file cannot be found or is not readable: %s", inputFilePath));
-			} else {
-				return;
-			}
-		}
 		reader.doBefore(inputFilePath);
 		writer.doBefore(this.getTempFilePath(inputFilePath));
 		T record = reader.readRecord();

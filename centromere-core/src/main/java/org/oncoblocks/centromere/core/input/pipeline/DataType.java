@@ -27,6 +27,22 @@ public class DataType {
 	private Class<? extends RecordProcessor> processor;
 	private ImportOptions options = new BasicImportOptions();
 
+	public DataType() { }
+
+	public DataType(String name,
+			Class<? extends RecordProcessor> processor) {
+		this.name = name;
+		this.processor = processor;
+	}
+
+	public DataType(String name,
+			Class<? extends RecordProcessor> processor,
+			ImportOptions options) {
+		this.name = name;
+		this.processor = processor;
+		this.options = options;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -51,4 +67,7 @@ public class DataType {
 	public void setOptions(ImportOptions options) {
 		this.options = options;
 	}
+
 }
+
+

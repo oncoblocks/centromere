@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -43,8 +44,16 @@ public abstract class AbstractRecordFileReader<T extends Model<?>> implements Re
 	}
 
 	public void open(String inputFilePath) throws DataImportException{
+		File file = new File(inputFilePath);
+		if (!file.canRead() || !file.isFile()){
+			try {
+				file = new File(ClassLoader.getSystemClassLoader().getResource(inputFilePath).getPath());
+			} catch (NullPointerException e){
+				throw new DataImportException(String.format("Cannot locate input file: %s", inputFilePath));
+			}
+		}
 		try {
-			reader = new BufferedReader(new FileReader(inputFilePath));
+			reader = new BufferedReader(new FileReader(file));
 		} catch (IOException e){
 			e.printStackTrace();
 			throw new DataImportException(String.format("Cannot read input file: %s", inputFilePath));

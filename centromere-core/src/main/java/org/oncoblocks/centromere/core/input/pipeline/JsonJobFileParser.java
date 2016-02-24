@@ -30,6 +30,14 @@ public class JsonJobFileParser implements JobFileParser {
 	
 	private ObjectMapper objectMapper;
 
+	public JsonJobFileParser() {
+		this.objectMapper = new ObjectMapper();
+	}
+
+	public JsonJobFileParser(ObjectMapper objectMapper) {
+		this.objectMapper = objectMapper;
+	}
+
 	@Override
 	public ImportJob parseJobFile(String inputPath) throws DataImportException {
 		ImportJob job = null;

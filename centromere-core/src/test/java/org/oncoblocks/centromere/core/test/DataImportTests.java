@@ -32,9 +32,13 @@ import org.springframework.validation.ObjectError;
 import org.springframework.validation.Validator;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.fail;
 
@@ -180,11 +184,35 @@ public class DataImportTests {
 	
 	@Test
 	public void jobRunnerTest() throws Exception {
+		testRepository.deleteAll();
+		System.out.println(new File(".").getCanonicalPath());
+		Assert.isTrue(testRepository.count() == 0);
 		JsonJobFileParser parser = new JsonJobFileParser();
 		parser.setObjectMapper(mapper);
 		ImportJob job = parser.parseJobFile(importJobJsonFilePath);
 		Assert.notNull(job);
+		ImportJobRunner jobRunner = new ImportJobRunner(applicationContext);
+		jobRunner.setImportJob(job);
+		Calendar calendar = Calendar.getInstance();
+		Date start = calendar.getTime();
+		jobRunner.runImport();
+		Date end = calendar.getTime();
+		System.out.println(String.format("Elapsed time: %s", formatInterval(end.getTime() - start.getTime())));
+		Assert.isTrue(testRepository.count() == 5);
 	}
-	
+
+
+	/**
+	 * From http://stackoverflow.com/a/6710604/1458983
+	 * @param l
+	 * @return
+	 */
+	private static String formatInterval(final long l) {
+		final long hr = TimeUnit.MILLISECONDS.toHours(l);
+		final long min = TimeUnit.MILLISECONDS.toMinutes(l - TimeUnit.HOURS.toMillis(hr));
+		final long sec = TimeUnit.MILLISECONDS.toSeconds(l - TimeUnit.HOURS.toMillis(hr) - TimeUnit.MINUTES.toMillis(min));
+		final long ms = TimeUnit.MILLISECONDS.toMillis(l - TimeUnit.HOURS.toMillis(hr) - TimeUnit.MINUTES.toMillis(min) - TimeUnit.SECONDS.toMillis(sec));
+		return String.format("%02d:%02d:%02d.%03d", hr, min, sec, ms);
+	}
 	
 }

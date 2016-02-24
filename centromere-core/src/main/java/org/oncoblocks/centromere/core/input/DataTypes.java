@@ -19,6 +19,7 @@ package org.oncoblocks.centromere.core.input;
 import java.lang.annotation.*;
 
 /**
+ * TODO: Use component scanning to automatically register processors annotated with this to handle the specified data types.
  * @author woemler
  */
 @Retention(RetentionPolicy.RUNTIME)
