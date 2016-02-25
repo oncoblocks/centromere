@@ -35,7 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 
 /**
- * Extension of {@link org.oncoblocks.centromere.web.controller.BaseApiController} that allows for 
+ * Extension of {@link org.oncoblocks.centromere.web.controller.AbstractApiController} that allows for 
  *   PUT, POST, and DELETE operations.
  * 
  * @author woemler
@@ -80,9 +80,10 @@ public class CrudApiController<T extends Model<ID>, ID extends Serializable>
 	 * @param id primary ID of the target entity
 	 * @return updated representation of the submitted entity.
 	 */
-	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, 
-			produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE,
-					MediaType.TEXT_PLAIN_VALUE })
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT,
+			produces = { MediaType.APPLICATION_JSON_VALUE, ApiMediaTypes.APPLICATION_HAL_JSON_VALUE,
+					ApiMediaTypes.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE,
+					MediaType.TEXT_PLAIN_VALUE})
 	public HttpEntity<?> update(@RequestBody T entity, @PathVariable ID id, HttpServletRequest request) {
 		if (!getRepository().exists(id)) throw new ResourceNotFoundException();
 		T updated = getRepository().update(entity);
@@ -103,7 +104,7 @@ public class CrudApiController<T extends Model<ID>, ID extends Serializable>
 	 * @return {@link HttpStatus} indicating success or failure.
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-	public HttpEntity<?> delete(@PathVariable ID id) {
+	public HttpEntity<?> delete(@PathVariable ID id, HttpServletRequest request) {
 		getRepository().delete(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

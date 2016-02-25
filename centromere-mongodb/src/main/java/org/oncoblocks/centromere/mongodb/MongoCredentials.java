@@ -16,7 +16,7 @@
 
 package org.oncoblocks.centromere.mongodb;
 
-import org.oncoblocks.centromere.core.input.importer.DatabaseCredentials;
+import org.oncoblocks.centromere.core.dataimport.component.DatabaseCredentials;
 
 /**
  * @author woemler

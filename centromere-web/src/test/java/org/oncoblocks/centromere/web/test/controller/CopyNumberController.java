@@ -16,8 +16,8 @@
 
 package org.oncoblocks.centromere.web.test.controller;
 
-import org.oncoblocks.centromere.web.controller.AbstractApiController;
 import org.oncoblocks.centromere.web.controller.ModelResourceAssembler;
+import org.oncoblocks.centromere.web.controller.ReadOnlyApiController;
 import org.oncoblocks.centromere.web.test.models.CopyNumber;
 import org.oncoblocks.centromere.web.test.repository.CopyNumberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/cnv")
 @ExposesResourceFor(CopyNumber.class)
-public class CopyNumberController extends AbstractApiController<CopyNumber, String> {
+public class CopyNumberController extends ReadOnlyApiController<CopyNumber, String> {
 	@Autowired
 	public CopyNumberController(CopyNumberRepository repository, EntityLinks entityLinks) {
 		super(repository, CopyNumber.class,

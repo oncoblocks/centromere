@@ -22,7 +22,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
-import org.oncoblocks.centromere.core.input.writer.RepositoryRecordWriter;
+import org.oncoblocks.centromere.core.dataimport.component.RepositoryRecordWriter;
 import org.oncoblocks.centromere.mongodb.MongoCredentials;
 import org.oncoblocks.centromere.mongodb.MongoImportTempFileImporter;
 import org.oncoblocks.centromere.mongodb.MongoImportTempFileWriter;

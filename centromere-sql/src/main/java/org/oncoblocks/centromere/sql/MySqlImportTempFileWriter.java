@@ -16,8 +16,8 @@
 
 package org.oncoblocks.centromere.sql;
 
-import org.oncoblocks.centromere.core.input.DataImportException;
-import org.oncoblocks.centromere.core.input.writer.AbstractRecordFileWriter;
+import org.oncoblocks.centromere.core.dataimport.component.DataImportException;
+import org.oncoblocks.centromere.core.dataimport.component.AbstractRecordFileWriter;
 import org.oncoblocks.centromere.core.model.Model;
 
 import java.io.FileWriter;

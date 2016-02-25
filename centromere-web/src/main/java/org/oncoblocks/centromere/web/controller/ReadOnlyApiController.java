@@ -19,14 +19,20 @@ package org.oncoblocks.centromere.web.controller;
 import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.repository.RepositoryOperations;
 import org.oncoblocks.centromere.web.exceptions.MethodNotAllowedException;
+import org.oncoblocks.centromere.web.util.ApiMediaTypes;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 
 /**
- * Extension of {@link BaseApiController} that 
+ * Extension of {@link AbstractApiController} that 
  *   throws a {@link MethodNotAllowedException} when
  *   POST, PUT, or DELETE operations are attempted.
  * 
@@ -47,8 +53,11 @@ public class ReadOnlyApiController<T extends Model<ID>, ID extends Serializable>
 	 *
 	 * @return updated representation of the submitted entity
 	 */
-	@RequestMapping(value = {"", "/**" }, method = RequestMethod.POST)
-	public void create() {
+	@RequestMapping(value = {"", "/**" }, method = RequestMethod.POST,
+			produces = { MediaType.APPLICATION_JSON_VALUE, ApiMediaTypes.APPLICATION_HAL_JSON_VALUE,
+					ApiMediaTypes.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE,
+					MediaType.TEXT_PLAIN_VALUE})
+	public HttpEntity<?> create(@RequestBody T entity, HttpServletRequest request) {
 		throw new MethodNotAllowedException();
 	}
 
@@ -59,8 +68,11 @@ public class ReadOnlyApiController<T extends Model<ID>, ID extends Serializable>
 	 *
 	 * @return updated representation of the submitted entity.
 	 */
-	@RequestMapping(value = {"", "/**" }, method = RequestMethod.PUT)
-	public void update() {
+	@RequestMapping(value = {"", "/**", "/{id}" }, method = RequestMethod.PUT,
+			produces = { MediaType.APPLICATION_JSON_VALUE, ApiMediaTypes.APPLICATION_HAL_JSON_VALUE,
+					ApiMediaTypes.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE,
+					MediaType.TEXT_PLAIN_VALUE})
+	public HttpEntity<?> update(@RequestBody T entity, @PathVariable ID id, HttpServletRequest request) {
 		throw new MethodNotAllowedException();
 	}
 
@@ -70,8 +82,8 @@ public class ReadOnlyApiController<T extends Model<ID>, ID extends Serializable>
 	 *
 	 * @return {@link org.springframework.http.HttpStatus} indicating success or failure.
 	 */
-	@RequestMapping(value = {"", "/**" }, method = RequestMethod.DELETE)
-	public void delete() {
+	@RequestMapping(value = {"", "/**", "/{id}" }, method = RequestMethod.DELETE)
+	public HttpEntity<?> delete(@PathVariable ID id, HttpServletRequest request) {
 		throw new MethodNotAllowedException();
 	}
 	

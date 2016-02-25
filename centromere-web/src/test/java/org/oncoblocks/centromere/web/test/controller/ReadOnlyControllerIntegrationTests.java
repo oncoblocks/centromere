@@ -16,6 +16,10 @@
 
 package org.oncoblocks.centromere.web.test.controller;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -54,6 +58,7 @@ public class ReadOnlyControllerIntegrationTests {
 	@Autowired private EntrezGeneRepository repository;
 	private MockMvc mockMvc;
 	@Autowired private WebApplicationContext webApplicationContext;
+	private static final ObjectMapper objectMapper = new ObjectMapper();
 	private static boolean isConfigured = false;
 	
 	private static final String BASE_URL = "/genes/read";
@@ -261,13 +266,27 @@ public class ReadOnlyControllerIntegrationTests {
 	
 	@Test
 	public void postTest() throws Exception {
-		mockMvc.perform(post(BASE_URL))
+		EntrezGene
+				gene = new EntrezGene(6L, "GeneF", 9606, "", "10", "", "", "protein-coding", null, null, null);
+		objectMapper.setFilterProvider(new SimpleFilterProvider().addFilter("fieldFilter",
+				SimpleBeanPropertyFilter.serializeAllExcept()).setFailOnUnknownId(false));
+		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+		mockMvc.perform(post(BASE_URL)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsBytes(gene)))
 				.andExpect(status().isMethodNotAllowed());
 	}
 
 	@Test
 	public void putTest() throws Exception {
-		mockMvc.perform(put(BASE_URL + "/1"))
+		EntrezGene
+				gene = new EntrezGene(6L, "GeneF", 9606, "", "10", "", "", "protein-coding", null, null, null);
+		objectMapper.setFilterProvider(new SimpleFilterProvider().addFilter("fieldFilter",
+				SimpleBeanPropertyFilter.serializeAllExcept()).setFailOnUnknownId(false));
+		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+		mockMvc.perform(put(BASE_URL + "/1")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsBytes(gene)))
 				.andExpect(status().isMethodNotAllowed());
 	}
 

@@ -58,6 +58,7 @@ public class CrudControllerIntegrationTests {
 	@Autowired private EntrezGeneRepository geneRepository;
 	private MockMvc mockMvc;
 	@Autowired private WebApplicationContext webApplicationContext;
+	private static final ObjectMapper objectMapper = new ObjectMapper();
 	private static boolean isConfigured = false;
 	
 	private static final String BASE_URL = "/genes/crud";
@@ -274,14 +275,13 @@ public class CrudControllerIntegrationTests {
 
 		EntrezGene
 				gene = new EntrezGene(6L, "GeneF", 9606, "", "10", "", "", "protein-coding", null, null, null);
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.setFilters(new SimpleFilterProvider().addFilter("fieldFilter",
+		objectMapper.setFilterProvider(new SimpleFilterProvider().addFilter("fieldFilter",
 				SimpleBeanPropertyFilter.serializeAllExcept()).setFailOnUnknownId(false));
-		mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
 		mockMvc.perform(post(BASE_URL)
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsBytes(gene)))
+				.content(objectMapper.writeValueAsBytes(gene)))
 				.andExpect(status().isCreated())
 				.andExpect(jsonPath("$", hasKey("entrezGeneId")))
 				.andExpect(jsonPath("$.entrezGeneId", is(6)));
@@ -297,23 +297,22 @@ public class CrudControllerIntegrationTests {
 	@Test
 	public void updateTest() throws Exception {
 
-		EntrezGene
-				gene = new EntrezGene(7L, "GeneG", 9606, "", "10", "", "", "protein-coding", null, null, null);
-		ObjectMapper mapper = new ObjectMapper();
-				mapper.setFilters(new SimpleFilterProvider().addFilter("fieldFilter",
+		EntrezGene gene = new EntrezGene(7L, "GeneG", 9606, "", "10", "", "", "protein-coding", null, 
+				null, null);
+		objectMapper.setFilterProvider(new SimpleFilterProvider().addFilter("fieldFilter",
 						SimpleBeanPropertyFilter.serializeAllExcept()).setFailOnUnknownId(false));
-		mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
 		mockMvc.perform(post(BASE_URL)
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsBytes(gene)))
+				.content(objectMapper.writeValueAsBytes(gene)))
 				.andExpect(status().isCreated());
 
 		gene.setPrimaryGeneSymbol("TEST_GENE");
 
 		mockMvc.perform(put(BASE_URL + "/{id}", 7L)
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsBytes(gene)))
+				.content(objectMapper.writeValueAsBytes(gene)))
 				.andExpect(status().isCreated())
 				.andExpect(jsonPath("$", hasKey("entrezGeneId")))
 				.andExpect(jsonPath("$.entrezGeneId", is(7)))

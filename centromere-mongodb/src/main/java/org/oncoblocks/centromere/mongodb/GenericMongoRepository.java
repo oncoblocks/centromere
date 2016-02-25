@@ -284,7 +284,7 @@ public class GenericMongoRepository<T extends Model<ID>, ID extends Serializable
 	 *  objects, used to build a {@link Query}.
 	 * 
 	 * @param queryCriterias list of query parameters to be converted.
-	 * @return {@link Criteria} representation of the input.
+	 * @return {@link Criteria} representation of the dataimport.
 	 */
 	protected Criteria getQueryFromQueryCriteria(Iterable<QueryCriteria> queryCriterias){
 		List<Criteria> criteriaList = new ArrayList<>();
