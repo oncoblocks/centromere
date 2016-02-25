@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.input.pipeline;
+package org.oncoblocks.centromere.core.dataimport.pipeline;
 
-import org.oncoblocks.centromere.core.input.DataImportException;
-import org.oncoblocks.centromere.core.input.DataTypes;
-import org.oncoblocks.centromere.core.input.processor.RecordProcessor;
+import org.oncoblocks.centromere.core.dataimport.component.DataImportException;
+import org.oncoblocks.centromere.core.dataimport.component.DataTypes;
+import org.oncoblocks.centromere.core.dataimport.component.RecordProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -53,7 +53,7 @@ public class ImportJobRunner implements ApplicationContextAware {
 			String inputFilePath = inputFile.getPath();
 			this.processDataSet(dataSetName);
 			RecordProcessor processor = this.getProcessorInstanceByDataType(dataTypeName);
-			logger.info(String.format("[CENTROMERE] Processing input file: dataSet=%s dataType=%s, processor=%s, filePath=%s",
+			logger.info(String.format("[CENTROMERE] Processing dataimport file: dataSet=%s dataType=%s, processor=%s, filePath=%s",
 					dataSetName, dataTypeName, processor.getClass().getName(), inputFilePath));
 			processor.run(inputFilePath);
 			logger.info(String.format("[CENTROMERE] Completed file processing: %s", inputFilePath));

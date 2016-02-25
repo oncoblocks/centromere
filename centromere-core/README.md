@@ -53,7 +53,17 @@ For SQL databases, mapping to and from the repository is handled manually with s
 
 ### Repositories
 
-All Centromere repository classes implement the base `RepositoryOperations` interface, which defines all of the basic CRUD operations that all Centromere repositories should support.  This interface is based on Spring Data's `PagingAndSortingRepository`, but with some additional method definitions for dynamic query operations.  The database-specific implementations also include several methods specific to those data stores.
+All Centromere repository classes implement the base `RepositoryOperations` interface, which defines all of the basic CRUD operations that all Centromere repositories should support.  This interface is based on Spring Data's `PagingAndSortingRepository`, but with some additional method definitions for dynamic query operations.  The database-specific implementations also include several methods specific to those data stores.  A MongoDB repository implementation for the above `Gene` model class might look like this:
+
+```java
+@ModelRepository(Gene.class)
+public class GeneRepository extends GenericMongoRepository<Gene, String> {
+	@Autowired
+	public GeneRepository(MongoTemplate mongoTemplate){
+		super(mongoTemplate, Gene.class);
+	}
+}
+```
 
 Dynamic repository queries in Centromere are created by chaining a series of query operations, represented by the `QueryCriteria` class.  These operations are defined by the field to be queried, the value of the field, and the operator to be used to make the evaluation.  For example:
 
@@ -69,7 +79,84 @@ Will be translated based upon the database implementation to:
 
 ```
 
-## Customizing Model Classes
+### Data Import
+
+The `centromere-core` module also contains a number of classes intended to aid in the development of data import pipelines.  The core of this are four basic interfaces: `RecordReader`, `RecordWriter`, `RecordImporter`, and Spring's `Validator`.  When combined with a `RecordProcessor`, these components create a utility for importing a specific data type input into database records.  For example, components for importing Entrez Gene records into a MongoDB database might look like this:
+
+```java
+/* RecordReaders take an input data source and return Model objects.*/
+public class GeneInfoReader extends AbstractRecordFileReader<Gene> {
+
+	@Override
+	public Gene readRecord() throws DataImportException {
+		Gene gene = null;
+		String line;
+		try {
+			boolean flag = true;
+			while(flag) {
+				line = this.getReader().readLine();
+				if (line == null || !line.startsWith("#Format: tax_id GeneID")) {
+					flag = false;
+					if (line != null && !line.equals("")) gene = getRecordFromLine(line);
+				}
+			}
+		} catch (IOException e){
+			e.printStackTrace();
+		}
+		return gene;
+	}
+
+	private Gene getRecordFromLine(String line){
+		String[] bits = line.split("\\t");
+		Gene gene = new Gene();
+		gene.setTaxId(Integer.parseInt(bits[0]));
+		gene.setEntrezGeneId(Long.parseLong(bits[1]));
+		gene.setPrimaryGeneSymbol(bits[2]);
+		gene.setAliases(new HashSet<>(Arrays.asList(bits[3].split("\\|"))));
+		gene.setChromosome(bits[5]);
+		gene.setChromosomeLocation(bits[6]);
+		gene.setDescription(bits[7]);
+		gene.setGeneType(bits[8]);
+		return gene;
+	}
+
+}
+
+/* Validators asses whether a Model object has been correctly constructed.*/
+public class GeneValidator implements Validator {
+
+	public boolean supports(Class<?> aClass) {
+		return aClass.equals(Gene.class);
+	}
+
+	public void validate(Object o, Errors errors) {
+		Gene gene = (Gene) o;
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors,  "primaryGeneSymbol", "symbol.empty");
+	}
+}
+
+/* RecordWriters take Model objects and write them to temporary files or directly to a database.*/
+@Component
+public class GeneRepositoryWriter extends RepositoryRecordWriter<Gene> {
+	@Autowired
+	public GeneRepositoryWriter(GeneRepository repository){
+		super(repository);
+	}
+}
+
+/* RecordProcessors tie all of these components together to import a specific data type. */
+@Component
+public class GeneInfoProcessor extends GenericRecordProcessor<Gene> {
+	@Autowired
+	public GeneInfoProcessor(GeneRepositoryWriter writer){
+		super(new GeneInfoReader(), new GeneValidator(), writer, null, new BasicImportOptions());
+	}
+}
+```
+
+## Advanced Configuration
+
+### Customizing Model Classes
 
 By default, all fields in classes that implement `Model` are exposed as valid query string parameters in the web services layer.  You can further customize a resource's query parameters by applying several annotations:
 
@@ -140,3 +227,7 @@ All model classes will have `self` links created when HATEOAS-supported media ty
 	]
 }
 ```
+
+### Creating a Data Import Pipeline
+
+The data import quick start section above illustrates how to create basic data import components using the helper classes of the `centromere-core` library.  

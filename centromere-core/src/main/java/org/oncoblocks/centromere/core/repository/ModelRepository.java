@@ -14,13 +14,26 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.input.importer;
+package org.oncoblocks.centromere.core.repository;
 
-import org.oncoblocks.centromere.core.input.DataImportException;
+import org.oncoblocks.centromere.core.model.Model;
+import org.springframework.stereotype.Repository;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
+ * Identifies the annotated class as a {@link Repository} and allows it to be referenced as the 
+ *   primary interface for the provided {@link Model} instance.
+ * 
  * @author woemler
  */
-public interface RecordImporter {
-	void importFile(String filePath) throws DataImportException;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@Repository
+public @interface ModelRepository {
+	Class<? extends Model<?>> value();
 }

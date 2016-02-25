@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.input.importer;
+package org.oncoblocks.centromere.core.dataimport.component;
 
 /**
+ * Generic exception thrown when a data import component has an unresolvable problem.
+ * 
  * @author woemler
  */
-public interface DatabaseCredentials {
-	String getUsername();
-	String getPassword();
-	String getHost();
-	String getPort();
-	String getDatabase();
+public class DataImportException extends Exception {
+	public DataImportException(String message) {
+		super(message);
+	}
 }

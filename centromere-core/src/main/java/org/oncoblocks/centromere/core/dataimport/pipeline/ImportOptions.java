@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.input.pipeline;
+package org.oncoblocks.centromere.core.dataimport.pipeline;
+
+import org.oncoblocks.centromere.core.dataimport.component.DataImportException;
 
 /**
  * Defines basic parameters required for a data import pipeline.
@@ -39,14 +41,14 @@ public interface ImportOptions {
 
 	/**
 	 * WHen true, the data import peipleine will halt on any thrown 
-	 *   {@link org.oncoblocks.centromere.core.input.DataImportException}.
+	 *   {@link DataImportException}.
 	 * 
 	 * @return
 	 */
 	boolean failOnDataImportException();
 
 	/**
-	 * When true, will throw an exception if the input file cannot be found or is not readable.
+	 * When true, will throw an exception if the dataimport file cannot be found or is not readable.
 	 * 
 	 * @return
 	 */

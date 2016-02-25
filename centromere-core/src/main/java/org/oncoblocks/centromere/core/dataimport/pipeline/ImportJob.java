@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.input.pipeline;
+package org.oncoblocks.centromere.core.dataimport.pipeline;
 
 import java.util.List;
 
 /**
+ * Simple POJO representation of an import job configuration.  Provides basic job metadata, lists
+ *   all associated data sets, describes all data types and their {@link org.oncoblocks.centromere.core.dataimport.component.RecordProcessor}
+ *   mappings, and lists all of the files to be processed.  Input files, described as {@link InputFile}
+ *   objects, should be listed in the order they are to be processed, and should be associated with a 
+ *   data type that has a registered processor bean in the configuration.
+ * 
  * @author woemler
  */
 public class ImportJob {

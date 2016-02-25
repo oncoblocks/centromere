@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.input.pipeline;
+package org.oncoblocks.centromere.core.dataimport.pipeline;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.oncoblocks.centromere.core.input.DataImportException;
+import org.oncoblocks.centromere.core.dataimport.component.DataImportException;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
 /**
+ * Converts a JSON-formatted job description file and returns an {@link ImportJob} object.  It is
+ *   expected that the complete JSON object will map to a single job object, via simple object 
+ *   mapping with a Jackson {@link ObjectMapper}.
+ * 
  * @author woemler
  */
 public class JsonJobFileParser implements JobFileParser {
@@ -38,6 +42,12 @@ public class JsonJobFileParser implements JobFileParser {
 		this.objectMapper = objectMapper;
 	}
 
+	/**
+	 * {@link JobFileParser#parseJobFile(String)}
+	 * @param inputPath Path to the job description file.
+	 * @return
+	 * @throws DataImportException
+	 */
 	@Override
 	public ImportJob parseJobFile(String inputPath) throws DataImportException {
 		ImportJob job = null;

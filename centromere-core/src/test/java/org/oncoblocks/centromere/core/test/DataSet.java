@@ -16,7 +16,7 @@
 
 package org.oncoblocks.centromere.core.test;
 
-import org.oncoblocks.centromere.core.input.pipeline.DataType;
+import org.oncoblocks.centromere.core.dataimport.pipeline.DataType;
 import org.oncoblocks.centromere.core.model.Model;
 
 /**

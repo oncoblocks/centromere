@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.input.writer;
+package org.oncoblocks.centromere.core.dataimport.component;
 
-import org.oncoblocks.centromere.core.input.DataImportException;
 import org.oncoblocks.centromere.core.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +24,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
+ * Basic abstract implementation of {@link RecordWriter}, for writing records to temp files.  Handles the 
+ *   file object opening and closing in the {@code doBefore} and {@code doAfter} methods, respectively.
+ * 
  * @author woemler
  */
 public abstract class AbstractRecordFileWriter<T extends Model<?>> implements RecordWriter<T> {

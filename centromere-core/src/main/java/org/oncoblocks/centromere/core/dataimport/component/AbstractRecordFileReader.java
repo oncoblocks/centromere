@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.input.reader;
+package org.oncoblocks.centromere.core.dataimport.component;
 
-import org.oncoblocks.centromere.core.input.DataImportException;
 import org.oncoblocks.centromere.core.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +26,9 @@ import java.io.FileReader;
 import java.io.IOException;
 
 /**
+ * Simple abstract implementation of {@link RecordReader}, for reading input files.  Handles the 
+ *   file object opening and closing in the {@code doBefore} and {@code doAfter} methods, respectively.
+ * 
  * @author woemler
  */
 public abstract class AbstractRecordFileReader<T extends Model<?>> implements RecordReader<T> {
@@ -49,14 +51,14 @@ public abstract class AbstractRecordFileReader<T extends Model<?>> implements Re
 			try {
 				file = new File(ClassLoader.getSystemClassLoader().getResource(inputFilePath).getPath());
 			} catch (NullPointerException e){
-				throw new DataImportException(String.format("Cannot locate input file: %s", inputFilePath));
+				throw new DataImportException(String.format("Cannot locate dataimport file: %s", inputFilePath));
 			}
 		}
 		try {
 			reader = new BufferedReader(new FileReader(file));
 		} catch (IOException e){
 			e.printStackTrace();
-			throw new DataImportException(String.format("Cannot read input file: %s", inputFilePath));
+			throw new DataImportException(String.format("Cannot read dataimport file: %s", inputFilePath));
 		}
 	}
 	

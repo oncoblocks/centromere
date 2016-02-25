@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.input.pipeline;
+package org.oncoblocks.centromere.core.dataimport.pipeline;
 
-import org.oncoblocks.centromere.core.input.processor.RecordProcessor;
+import org.oncoblocks.centromere.core.dataimport.component.RecordProcessor;
 import org.springframework.util.Assert;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Simple object that handles mapping of user-defined data types to {@link RecordProcessor} beans,
+ *   as defined by {@link DataType} instances.
+ * 
  * @author woemler
  */
 public class DataTypeManager {
@@ -41,6 +44,11 @@ public class DataTypeManager {
 		}
 	}
 
+	/**
+	 * Adds a data type mapping, overwriting existing ones with the same name.
+	 * 
+	 * @param dataType
+	 */
 	public void addDataType(DataType dataType){
 		Assert.notNull(dataType);
 		Assert.notNull(dataType.getName());
@@ -48,19 +56,37 @@ public class DataTypeManager {
 		Assert.notNull(dataType.getOptions());
 		dataTypeMap.put(dataType.getName(), dataType);
 	}
-	
+
+	/**
+	 * Adds multiple data type mappings at once.
+	 * 
+	 * @param dataTypes
+	 */
 	public void addDataTypes(Iterable<DataType> dataTypes){
 		for (DataType dataType: dataTypes){
 			this.addDataType(dataType);
 		}
 	}
-	
+
+	/**
+	 * Returns reference to a {@link RecordProcessor} bean class, if one of that type has been mapped
+	 *   to a data set.  Returns null if no mapping exists.
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public Class<? extends RecordProcessor> getProcessorByDataType(String name){
 		if (!dataTypeMap.containsKey(name)) return null;
 		DataType dataType = dataTypeMap.get(name);
 		return dataType.getProcessor();
 	}
-	
+
+	/**
+	 * Tests whether a data type mapping has been registered.
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public boolean isSupportedDataType(String name){
 		return dataTypeMap.containsKey(name);
 	}

@@ -14,13 +14,26 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.input;
+package org.oncoblocks.centromere.core.dataimport.component;
 
 /**
+ * Record processors take all of the individual data import components (reader, writer, validator, 
+ *   and importer), and combines them to handle a single data type's import
+ * 
  * @author woemler
  */
-public class DataImportException extends Exception {
-	public DataImportException(String message) {
-		super(message);
-	}
+public interface RecordProcessor {
+
+	/**
+	 * Executes before the {@code run} method.  Can be configured to handle tasks, such as data set 
+	 *   pre-processing.
+	 */
+	void doBefore();
+
+	/**
+	 * Executes after the {@code run} method.  Can be configured to handle tasks, such as record
+	 *   post-processing.
+	 */
+	void doAfter();
+	void run(String path) throws DataImportException;
 }

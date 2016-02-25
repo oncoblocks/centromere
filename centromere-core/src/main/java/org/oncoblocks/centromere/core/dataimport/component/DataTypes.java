@@ -14,39 +14,16 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.input.pipeline;
+package org.oncoblocks.centromere.core.dataimport.component;
+
+import java.lang.annotation.*;
 
 /**
+ * Identifies an annotated {@link RecordProcessor} as the primary handler of the specified data types.
  * @author woemler
  */
-public class InputFile {
-	
-	private String path;
-	private String dataType;
-	private String dataSet;
-
-	public String getPath() {
-		return path;
-	}
-
-	public void setPath(String path) {
-		this.path = path;
-	}
-
-	public String getDataType() {
-		return dataType;
-	}
-
-	public void setDataType(String dataType) {
-		this.dataType = dataType;
-	}
-
-	public String getDataSet() {
-		return dataSet;
-	}
-
-	public void setDataSet(String dataSet) {
-		this.dataSet = dataSet;
-	}
-
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface DataTypes {
+	String[] value();
 }

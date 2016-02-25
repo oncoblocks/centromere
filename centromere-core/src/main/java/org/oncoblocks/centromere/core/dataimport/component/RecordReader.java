@@ -14,16 +14,39 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.input.reader;
+package org.oncoblocks.centromere.core.dataimport.component;
 
-import org.oncoblocks.centromere.core.input.DataImportException;
 import org.oncoblocks.centromere.core.model.Model;
 
 /**
+ * Data impoer component class.  Reads from a data source and returns {@link Model} class instances.
+ * 
  * @author woemler
  */
 public interface RecordReader<T extends Model<?>> {
+
+	/**
+	 * Generates and returns a single {@link Model} entity from the input data source.
+	 * 
+	 * @return
+	 * @throws DataImportException
+	 */
 	T readRecord() throws DataImportException;
+
+	/**
+	 * To be executed before the {@code readRecord} method is called.  Can be configured to handle 
+	 *   tasks like opening a file.
+	 * 
+	 * @param input
+	 * @throws DataImportException
+	 */
 	void doBefore(String input) throws DataImportException;
+
+	/**
+	 * To be executed after the last {@code readRecord} call.  Can be configured to handle tasks such
+	 *   as closing an input file object.
+	 * 
+	 * @throws DataImportException
+	 */
 	void doAfter() throws DataImportException;
 }

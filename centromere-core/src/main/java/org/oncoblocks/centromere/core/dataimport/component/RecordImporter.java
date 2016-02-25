@@ -14,13 +14,21 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.input.pipeline;
-
-import org.oncoblocks.centromere.core.input.DataImportException;
+package org.oncoblocks.centromere.core.dataimport.component;
 
 /**
+ * Data import component designed to take a temporary record file and import it directly into the 
+ *   database, via a specified utility (eg. MySQLImport of MongoImport).  
+ * 
  * @author woemler
  */
-public interface JobFileParser {
-	ImportJob parseJobFile(String inputPath) throws DataImportException;
+public interface RecordImporter {
+
+	/**
+	 * Runs the data import on the specified temp file.
+	 * 
+	 * @param filePath
+	 * @throws DataImportException
+	 */
+	void importFile(String filePath) throws DataImportException;
 }

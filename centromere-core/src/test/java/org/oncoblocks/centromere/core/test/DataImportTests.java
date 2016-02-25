@@ -20,8 +20,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.oncoblocks.centromere.core.input.pipeline.*;
-import org.oncoblocks.centromere.core.input.writer.RepositoryRecordWriter;
+import org.oncoblocks.centromere.core.dataimport.pipeline.*;
+import org.oncoblocks.centromere.core.dataimport.component.RepositoryRecordWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -133,7 +133,7 @@ public class DataImportTests {
 		ImportOptions options = mapper.readValue(json, BasicImportOptions.class);
 		Assert.notNull(options);
 		Assert.notNull(options.getTempDirectoryPath());
-		Assert.isTrue(options.getTempDirectoryPath().equals("/tmp"));
+		Assert.isTrue("/tmp".equals(options.getTempDirectoryPath()));
 		Assert.isTrue(options.failOnDataImportException());
 		Assert.isTrue(!options.failOnMissingFile());
 	}
@@ -144,8 +144,8 @@ public class DataImportTests {
 		InputFile inputFile = mapper.readValue(json, InputFile.class);
 		Assert.notNull(inputFile);
 		Assert.isTrue(inputFile.getPath().endsWith("file.txt"));
-		Assert.isTrue(inputFile.getDataType().equals("ENTREZ_GENE"));
-		Assert.isTrue(inputFile.getDataSet().equals("metadata"));
+		Assert.isTrue("ENTREZ_GENE".equals(inputFile.getDataType()));
+		Assert.isTrue("metadata".equals(inputFile.getDataSet()));
 	}
 	
 	@Test

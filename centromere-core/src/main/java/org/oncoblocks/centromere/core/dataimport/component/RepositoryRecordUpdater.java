@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.input.writer;
+package org.oncoblocks.centromere.core.dataimport.component;
 
-import org.oncoblocks.centromere.core.input.DataImportException;
 import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.repository.RepositoryOperations;
 
 import java.io.Serializable;
 
 /**
+ * Simple implementation of {@link RecordWriter}, that updates existing database records
+ *   using a {@link RepositoryOperations} implementation.
+ *   
+ * 
  * @author woemler
  */
 public class RepositoryRecordUpdater<T extends Model<ID>, ID extends Serializable> implements RecordWriter<T> {

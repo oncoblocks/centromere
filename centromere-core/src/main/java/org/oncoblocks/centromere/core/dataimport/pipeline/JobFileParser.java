@@ -14,15 +14,21 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.input.processor;
+package org.oncoblocks.centromere.core.dataimport.pipeline;
 
-import org.oncoblocks.centromere.core.input.DataImportException;
+import org.oncoblocks.centromere.core.dataimport.component.DataImportException;
 
 /**
+ * Interface for classes that parse a job-description file and output an {@link ImportJob} object.
+ * 
  * @author woemler
  */
-public interface RecordProcessor {
-	void doBefore();
-	void doAfter();
-	void run(String path) throws DataImportException;
+public interface JobFileParser {
+	/**
+	 * Reads an input file and converts its contents to an {@link ImportJob} object.
+	 * @param inputPath Path to the job description file.
+	 * @return {@link ImportJob}
+	 * @throws DataImportException
+	 */
+	ImportJob parseJobFile(String inputPath) throws DataImportException;
 }

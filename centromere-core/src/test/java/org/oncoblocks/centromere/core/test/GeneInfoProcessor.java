@@ -16,9 +16,9 @@
 
 package org.oncoblocks.centromere.core.test;
 
-import org.oncoblocks.centromere.core.input.pipeline.ImportOptions;
-import org.oncoblocks.centromere.core.input.processor.GenericRecordProcessor;
-import org.oncoblocks.centromere.core.input.writer.RepositoryRecordWriter;
+import org.oncoblocks.centromere.core.dataimport.pipeline.ImportOptions;
+import org.oncoblocks.centromere.core.dataimport.component.GenericRecordProcessor;
+import org.oncoblocks.centromere.core.dataimport.component.RepositoryRecordWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Validator;

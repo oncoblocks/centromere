@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.input.pipeline;
+package org.oncoblocks.centromere.core.dataimport.pipeline;
 
-import org.oncoblocks.centromere.core.input.processor.RecordProcessor;
+import org.oncoblocks.centromere.core.dataimport.component.RecordProcessor;
 
 /**
+ * Simple POJO that maps a user-defined data type name to a {@link RecordProcessor} bean and an
+ *   instance of {@link ImportOptions} to dictate job parameters.  This object can be generated
+ *   by import job description file parsing, or by {@link org.oncoblocks.centromere.core.dataimport.component.DataTypes}
+ *   annotation inspection at runtime.
+ * 
  * @author woemler
  */
 public class DataType {

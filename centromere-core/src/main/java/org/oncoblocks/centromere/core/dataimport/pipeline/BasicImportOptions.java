@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.input.pipeline;
+package org.oncoblocks.centromere.core.dataimport.pipeline;
 
 /**
+ * Basic implementation of {@link ImportOptions}, with most boolean flags defaulting to true.
+ * 
  * @author woemler
  */
 public class BasicImportOptions implements ImportOptions {

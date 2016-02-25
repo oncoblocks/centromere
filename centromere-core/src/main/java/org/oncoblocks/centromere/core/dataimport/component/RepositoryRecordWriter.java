@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.input.writer;
+package org.oncoblocks.centromere.core.dataimport.component;
 
-import org.oncoblocks.centromere.core.input.DataImportException;
 import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.repository.RepositoryOperations;
 
 /**
+ * Simple implementation of {@link RecordWriter}, that writes all records directly to the database
+ *   using a {@link RepositoryOperations} implementation.
+ * 
  * @author woemler
  */
 public class RepositoryRecordWriter<T extends Model<?>> implements RecordWriter<T> {

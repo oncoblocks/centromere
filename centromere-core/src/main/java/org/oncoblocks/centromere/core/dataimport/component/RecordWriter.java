@@ -14,16 +14,40 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.input.writer;
+package org.oncoblocks.centromere.core.dataimport.component;
 
-import org.oncoblocks.centromere.core.input.DataImportException;
 import org.oncoblocks.centromere.core.model.Model;
 
 /**
+ * Data import component class for writing imported {@link Model} records to a temporary file or
+ *   {@link org.oncoblocks.centromere.core.repository.RepositoryOperations} implementation.
+ * 
  * @author woemler
  */
 public interface RecordWriter<T extends Model<?>> {
+
+	/**
+	 * Writes a single {@link Model} entity to the target destination.
+	 * 
+	 * @param record
+	 * @throws DataImportException
+	 */
 	void writeRecord(T record) throws DataImportException;
+
+	/**
+	 * Executes before the first {@code writeRecord} method call.  Can be configured to perform tasks,
+	 *   such as opening an output file object.
+	 * 
+	 * @param destination
+	 * @throws DataImportException
+	 */
 	void doBefore(String destination) throws DataImportException;
+
+	/**
+	 * Executes after the last {@code writeRecord} call.  Can be configured to perform tasks, such as 
+	 *   closing output file objects.
+	 * 
+	 * @throws DataImportException
+	 */
 	void doAfter() throws DataImportException;
 }

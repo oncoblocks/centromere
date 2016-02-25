@@ -14,14 +14,9 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.input.processor;
+package org.oncoblocks.centromere.core.dataimport.component;
 
-import org.oncoblocks.centromere.core.input.DataImportException;
-import org.oncoblocks.centromere.core.input.importer.RecordImporter;
-import org.oncoblocks.centromere.core.input.pipeline.ImportOptions;
-import org.oncoblocks.centromere.core.input.pipeline.ProcessorConfig;
-import org.oncoblocks.centromere.core.input.reader.RecordReader;
-import org.oncoblocks.centromere.core.input.writer.RecordWriter;
+import org.oncoblocks.centromere.core.dataimport.pipeline.ImportOptions;
 import org.oncoblocks.centromere.core.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,8 +26,11 @@ import org.springframework.validation.Validator;
 import java.io.File;
 
 /**
- * Basic {@link RecordProcessor} implementation, which can be constructed using metadata from a 
- *   {@link ProcessorConfig} instance.
+ * Basic {@link RecordProcessor} implementation, which can be used to handle most file import jobs.
+ *   The {@code doBefore} and {@code doAfter} methods can be overridden to handle data set or data
+ *   file metadata persistence, pre/post-processing, or other maintenance tasks.  Uses a basic
+ *   {@link ImportOptions} instance to set import parameters, and identify the directory to store
+ *   all temporary files.
  * 
  * @author woemler
  */
@@ -45,12 +43,38 @@ public class GenericRecordProcessor<T extends Model<?>> implements RecordProcess
 	private ImportOptions importOptions;
 	private static final Logger logger = LoggerFactory.getLogger(GenericRecordProcessor.class);
 
+	public GenericRecordProcessor() { }
+
+	public GenericRecordProcessor(
+			RecordReader<T> reader, 
+			Validator validator,
+			RecordWriter<T> writer,
+			RecordImporter importer,
+			ImportOptions importOptions) {
+		this.reader = reader;
+		this.validator = validator;
+		this.writer = writer;
+		this.importer = importer;
+		this.importOptions = importOptions;
+	}
+
+	/**
+	 * {@link RecordProcessor#doBefore()}
+	 */
 	@Override public void doBefore() {
 	}
 
+	/**
+	 * {@link RecordProcessor#doAfter()}
+	 */
 	@Override public void doAfter() {
 	}
 
+	/**
+	 * {@link RecordProcessor#run(String)}
+	 * @param inputFilePath
+	 * @throws DataImportException
+	 */
 	@Override public void run(String inputFilePath) throws DataImportException {
 		reader.doBefore(inputFilePath);
 		writer.doBefore(this.getTempFilePath(inputFilePath));
@@ -73,7 +97,14 @@ public class GenericRecordProcessor<T extends Model<?>> implements RecordProcess
 			importer.importFile(this.getTempFilePath(inputFilePath));
 		}
 	}
-	
+
+	/**
+	 * Returns the path of the temporary file to be written, if necessary.  Uses the input file's name
+	 *   and the pre-determined temp file directory to generate the name, so as to overwrite previous
+	 *   jobs' temp file.
+	 * @param inputFilePath
+	 * @return
+	 */
 	private String getTempFilePath(String inputFilePath){
 		File tempDir = new File(importOptions.getTempDirectoryPath());
 		String fileName = new File(inputFilePath).getName() + ".tmp";
