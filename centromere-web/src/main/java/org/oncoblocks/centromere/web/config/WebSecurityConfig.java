@@ -38,7 +38,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
- * Default security configuration for Centromere web services.  
+ * Default security configuration for Centromere web services. Secures API endpoints, based upon
+ *   predefined or user-submitted parameters, and applies more liberal security for all other
+ *   endpoints.  Requires user to implement {@link UserDetailsService} and controller method to 
+ *   handle user authentication.
  * 
  * @author woemler
  */

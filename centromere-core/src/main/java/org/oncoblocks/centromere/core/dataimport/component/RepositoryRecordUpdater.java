@@ -54,10 +54,10 @@ public class RepositoryRecordUpdater<T extends Model<ID>, ID extends Serializabl
 	}
 
 	@Override public void doBefore(String destination) throws DataImportException {
-		
+		return;
 	}
 
 	@Override public void doAfter() throws DataImportException {
-
+		return;
 	}
 }

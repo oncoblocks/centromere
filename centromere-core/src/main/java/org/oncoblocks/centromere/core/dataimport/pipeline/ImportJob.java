@@ -17,6 +17,7 @@
 package org.oncoblocks.centromere.core.dataimport.pipeline;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Simple POJO representation of an import job configuration.  Provides basic job metadata, lists
@@ -31,7 +32,8 @@ public class ImportJob {
 	
 	private String name;
 	private String notes;
-	private List<Object> dataSets;
+	private ImportOptions options;
+	private List<DataSetMetadata> dataSets;
 	private List<DataType> dataTypes;
 	private List<InputFile> files;
 
@@ -51,11 +53,11 @@ public class ImportJob {
 		this.notes = notes;
 	}
 
-	public List<Object> getDataSets() {
+	public List<DataSetMetadata> getDataSets() {
 		return dataSets;
 	}
 
-	public void setDataSets(List<Object> dataSets) {
+	public void setDataSets(List<DataSetMetadata> dataSets) {
 		this.dataSets = dataSets;
 	}
 
@@ -77,4 +79,11 @@ public class ImportJob {
 		this.files = files;
 	}
 
+	public ImportOptions getOptions() {
+		return options;
+	}
+
+	public void setOptions(Map<String, String> options) {
+		this.options = new ImportOptions(options);
+	}
 }

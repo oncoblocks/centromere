@@ -16,17 +16,17 @@
 
 package org.oncoblocks.centromere.web.test.repository;
 
+import org.oncoblocks.centromere.core.repository.ModelRepository;
 import org.oncoblocks.centromere.mongodb.GenericMongoRepository;
 import org.oncoblocks.centromere.web.test.security.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.stereotype.Repository;
 
 /**
  * @author woemler
  */
 
-@Repository
+@ModelRepository(User.class)
 public class UserRepository extends GenericMongoRepository<User, String> {
 	@Autowired
 	public UserRepository(MongoTemplate mongoTemplate) {

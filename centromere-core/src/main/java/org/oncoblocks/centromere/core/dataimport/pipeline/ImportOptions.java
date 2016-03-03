@@ -16,41 +16,47 @@
 
 package org.oncoblocks.centromere.core.dataimport.pipeline;
 
-import org.oncoblocks.centromere.core.dataimport.component.DataImportException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Defines basic parameters required for a data import pipeline.
+ * Captures basic parameters required for a data import pipeline.
  * 
  * @author woemler
  */
-public interface ImportOptions {
+public class ImportOptions {
 
-	/**
-	 * The temp directory is the location that all temp files will be written to.  This should be 
-	 *   precondifured.
-	 * @return
-	 */
-	String getTempDirectoryPath();
+	private Map<String,String> options = new HashMap<>();
+	
+	public ImportOptions(){ }
 
-	/**
-	 * When true, the pipeline will throw an exception if a record fails validation.
-	 * 
-	 * @return
-	 */
-	boolean failOnInvalidRecord();
+	public ImportOptions(Map<String, String> options) {
+		this.options = options;
+	}
+	
+	public Map<String,String> getOptionsMap(){
+		return options;
+	}
+	
+	public String getString(String name){
+		return options.containsKey(name) ? options.get(name) : null;
+	}
+	
+	public boolean getBoolean(String name){
+		if (!options.containsKey(name)) throw new NullPointerException("Invalid option: " + name);
+		return Boolean.parseBoolean(options.get(name));
+	}
+	
+	public void setOption(String name, String value){
+		options.put(name, value);
+	}
+	
+	public void setOptions(Map<String,String> options){
+		this.options.putAll(options);
+	}
+	
+	public boolean hasOption(String name){
+		return options.containsKey(name);
+	}
 
-	/**
-	 * WHen true, the data import peipleine will halt on any thrown 
-	 *   {@link DataImportException}.
-	 * 
-	 * @return
-	 */
-	boolean failOnDataImportException();
-
-	/**
-	 * When true, will throw an exception if the dataimport file cannot be found or is not readable.
-	 * 
-	 * @return
-	 */
-	boolean failOnMissingFile();
 }

@@ -35,7 +35,7 @@ public class MySqlImportTempFileImporter implements RecordImporter {
 	private boolean dropCollection = false;
 	private String columns;
 
-	final static Logger logger = LoggerFactory.getLogger(MySqlImportTempFileImporter.class);
+	private final static Logger logger = LoggerFactory.getLogger(MySqlImportTempFileImporter.class);
 
 	public MySqlImportTempFileImporter(DatabaseCredentials credentials, String columns){
 		this.credentials = credentials;

@@ -16,14 +16,13 @@
 
 package org.oncoblocks.centromere.mongodb.test;
 
-import org.oncoblocks.centromere.core.repository.support.EntrezGeneRepositoryOperations;
+import org.oncoblocks.centromere.core.repository.ModelRepository;
 import org.oncoblocks.centromere.mongodb.GenericMongoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -31,9 +30,8 @@ import java.util.List;
  * @author woemler
  */
 
-@Repository
-public class EntrezGeneRepository extends GenericMongoRepository<EntrezGene, Long> 
-		implements EntrezGeneRepositoryOperations<EntrezGene, Long> {
+@ModelRepository(EntrezGene.class)
+public class EntrezGeneRepository extends GenericMongoRepository<EntrezGene, Long> {
 	
 	@Autowired
 	public EntrezGeneRepository(MongoTemplate mongoTemplate) {

@@ -16,6 +16,8 @@
 
 package org.oncoblocks.centromere.core.dataimport.pipeline;
 
+import java.util.Map;
+
 /**
  * Simple representation of a file to be imported.  The {@code dataType} attribute should map to
  *   a corresponding {@link DataType} definition, which links the file to the {@link org.oncoblocks.centromere.core.dataimport.component.RecordProcessor}
@@ -28,6 +30,7 @@ public class InputFile {
 	private String path;
 	private String dataType;
 	private String dataSet;
+	private ImportOptions options = new ImportOptions();
 
 	public String getPath() {
 		return path;
@@ -53,4 +56,11 @@ public class InputFile {
 		this.dataSet = dataSet;
 	}
 
+	public ImportOptions getOptions() {
+		return options;
+	}
+
+	public void setOptions(Map<String,String> options) {
+		this.options = new ImportOptions(options);
+	}
 }

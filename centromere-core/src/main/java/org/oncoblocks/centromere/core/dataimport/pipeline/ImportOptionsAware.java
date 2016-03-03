@@ -14,20 +14,11 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.repository.support;
-
-import org.oncoblocks.centromere.core.model.support.DataFileMetadata;
-import org.oncoblocks.centromere.core.repository.RepositoryOperations;
-
-import java.io.Serializable;
-import java.util.List;
+package org.oncoblocks.centromere.core.dataimport.pipeline;
 
 /**
  * @author woemler
  */
-public interface DataFileRepositoryOperations<T extends DataFileMetadata<ID>, ID extends Serializable> 
-		extends RepositoryOperations<T, ID> {
-	T getByFilePath(String filePath);
-	List<T> findByDataSetId(ID dataSetId);
-	List<T> findByDataType(String dataType);
+public interface ImportOptionsAware {
+	void setImportOptions(ImportOptions importOptions);
 }

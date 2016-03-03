@@ -29,20 +29,17 @@ import org.oncoblocks.centromere.core.dataimport.component.RecordProcessor;
 public class DataType {
 	
 	private String name;
-	private Class<? extends RecordProcessor> processor;
-	private ImportOptions options = new BasicImportOptions();
+	private String processor;
+	private ImportOptions options = new ImportOptions();
 
 	public DataType() { }
 
-	public DataType(String name,
-			Class<? extends RecordProcessor> processor) {
+	public DataType(String name, String processor) {
 		this.name = name;
 		this.processor = processor;
 	}
 
-	public DataType(String name,
-			Class<? extends RecordProcessor> processor,
-			ImportOptions options) {
+	public DataType(String name, String processor, ImportOptions options) {
 		this.name = name;
 		this.processor = processor;
 		this.options = options;
@@ -56,12 +53,11 @@ public class DataType {
 		this.name = name;
 	}
 
-	public Class<? extends RecordProcessor> getProcessor() {
+	public String getProcessor() {
 		return processor;
 	}
 
-	public void setProcessor(
-			Class<? extends RecordProcessor> processor) {
+	public void setProcessor(String processor) {
 		this.processor = processor;
 	}
 

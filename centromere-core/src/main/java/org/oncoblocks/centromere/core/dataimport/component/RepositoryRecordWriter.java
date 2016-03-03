@@ -51,10 +51,10 @@ public class RepositoryRecordWriter<T extends Model<?>> implements RecordWriter<
 	}
 
 	@Override public void doBefore(String destination) throws DataImportException {
-		
+		return;
 	}
 
 	@Override public void doAfter() throws DataImportException {
-
+		return;
 	}
 }

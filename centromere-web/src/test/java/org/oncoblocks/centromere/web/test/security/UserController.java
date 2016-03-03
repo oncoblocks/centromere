@@ -36,7 +36,7 @@ import java.util.Date;
 @RequestMapping(value = "/authenticate")
 public class UserController {
 
-	@Autowired TokenOperations tokenUtils;
+	@Autowired private TokenOperations tokenUtils;
 	
 	@RequestMapping(value = "", method = RequestMethod.POST)
 	public @ResponseBody TokenDetails createToken(@AuthenticationPrincipal User user){

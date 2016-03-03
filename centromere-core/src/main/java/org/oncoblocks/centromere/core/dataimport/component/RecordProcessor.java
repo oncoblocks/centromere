@@ -35,5 +35,12 @@ public interface RecordProcessor {
 	 *   post-processing.
 	 */
 	void doAfter();
+
+	/**
+	 * Executes the pipeline and processes the input through the individual components.
+	 * 
+	 * @param path
+	 * @throws DataImportException
+	 */
 	void run(String path) throws DataImportException;
 }

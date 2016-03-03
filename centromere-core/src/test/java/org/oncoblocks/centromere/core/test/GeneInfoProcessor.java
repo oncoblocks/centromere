@@ -29,7 +29,7 @@ import org.springframework.validation.Validator;
 @Component
 public class GeneInfoProcessor extends GenericRecordProcessor<EntrezGene> {
 	
-	private TestRepository testRepository;
+	private final TestRepository testRepository;
 
 	@Autowired
 	public GeneInfoProcessor(Validator validator, TestRepository testRepository, ImportOptions importOptions) {
@@ -45,6 +45,6 @@ public class GeneInfoProcessor extends GenericRecordProcessor<EntrezGene> {
 	}
 
 	@Override public void doAfter() {
-		
+		return;
 	}
 }

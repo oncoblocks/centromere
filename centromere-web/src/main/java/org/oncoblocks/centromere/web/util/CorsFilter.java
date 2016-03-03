@@ -21,6 +21,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
+ * Simple filter for enabling cross-origin requests.
+ * 
  * @author woemler
  */
 
@@ -40,9 +42,9 @@ public class CorsFilter implements Filter {
 	}
 
 	@Override 
-	public void init(FilterConfig filterConfig) throws ServletException { }
+	public void init(FilterConfig filterConfig) throws ServletException { return; }
 
 	@Override 
-	public void destroy() { }
+	public void destroy() { return; }
 
 }

@@ -26,6 +26,10 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 /**
+ * Extension of Spring HATEOAS's {@link ResourceAssemblerSupport}, which automatically builds self
+ *   links, based upon the {@link Model} class's `getId()` method signature, and by inferring 
+ *   related models by fields annotated with {@link ForeignKey}.
+ * 
  * @author woemler
  */
 public class ModelResourceAssembler<T extends Model<?>> 

@@ -30,7 +30,7 @@ import java.util.Map;
  */
 public class DataTypeManager {
 	
-	private Map<String, DataType> dataTypeMap = new HashMap<>();
+	private final Map<String, DataType> dataTypeMap = new HashMap<>();
 
 	public DataTypeManager() { }
 	
@@ -75,7 +75,7 @@ public class DataTypeManager {
 	 * @param name
 	 * @return
 	 */
-	public Class<? extends RecordProcessor> getProcessorByDataType(String name){
+	public String getProcessorByDataType(String name){
 		if (!dataTypeMap.containsKey(name)) return null;
 		DataType dataType = dataTypeMap.get(name);
 		return dataType.getProcessor();

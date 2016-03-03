@@ -58,7 +58,7 @@ public class SqlBuilderTests {
 		Assert.notEmpty(values);
 		Assert.isTrue(values.size() == 1);
 		String name = (String) values.get(0);
-		Assert.isTrue(name.equals("Joe"));
+		Assert.isTrue("Joe".equals(name));
 
 	}
 
@@ -77,7 +77,7 @@ public class SqlBuilderTests {
 		Assert.notEmpty(values);
 		Assert.isTrue(values.size() == 2);
 		String name = (String) values.get(0);
-		Assert.isTrue(name.equals("Joe"));
+		Assert.isTrue("Joe".equals(name));
 
 	}
 
@@ -96,7 +96,7 @@ public class SqlBuilderTests {
 		Assert.notEmpty(values);
 		Assert.isTrue(values.size() == 2);
 		String name = (String) values.get(0);
-		Assert.isTrue(name.equals("Joe"));
+		Assert.isTrue("Joe".equals(name));
 
 	}
 

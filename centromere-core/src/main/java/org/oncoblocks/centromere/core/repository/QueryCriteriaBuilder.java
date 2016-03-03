@@ -17,9 +17,13 @@
 package org.oncoblocks.centromere.core.repository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
+ * TODO
+ * 
  * QueryCriteriaBuilder.where("symbol").is("AKT1").and("signal").between(3.0, 1.2).build();
  * 
  * 
@@ -33,15 +37,9 @@ public class QueryCriteriaBuilder {
 	public QueryCriteriaBuilder(String field) {
 		this.field = field;
 	}
-
-	public String getField() {
-		return field;
-	}
-
-	public void setField(String field) {
-		this.field = field;
-	}
 	
+	public QueryCriteriaBuilder(){ }
+
 	public List<QueryCriteria> build(){
 		return criterias;
 	}
@@ -52,13 +50,99 @@ public class QueryCriteriaBuilder {
 		return new QueryCriteriaBuilder(field);
 	}
 	
-	public void and(String field){
+	public QueryCriteriaBuilder and(String field){
 		this.field = field;
+		return this;
 	}
 	
-	public void is(Object value){
+	public QueryCriteriaBuilder is(Object value){
 		criterias.add(new QueryCriteria(this.field, value, Evaluation.EQUALS));
+		return this;
 	}
 	
+	public QueryCriteriaBuilder in(Collection<Object> values){
+		criterias.add(new QueryCriteria(this.field, values, Evaluation.IN));
+		return this;
+	}
+	
+	public QueryCriteriaBuilder isNot(Object value){
+		criterias.add(new QueryCriteria(this.field, value, Evaluation.NOT_EQUALS));
+		return this;
+	}
+
+	public QueryCriteriaBuilder notIn(Collection<Object> values){
+		criterias.add(new QueryCriteria(this.field, values, Evaluation.NOT_IN));
+		return this;
+	}
+
+	public QueryCriteriaBuilder like(String value){
+		criterias.add(new QueryCriteria(this.field, value, Evaluation.LIKE));
+		return this;
+	}
+
+	public QueryCriteriaBuilder notLike(String value){
+		criterias.add(new QueryCriteria(this.field, value, Evaluation.NOT_LIKE));
+		return this;
+	}
+
+	public QueryCriteriaBuilder greaterThan(Object value){
+		criterias.add(new QueryCriteria(this.field, value, Evaluation.GREATER_THAN));
+		return this;
+	}
+
+	public QueryCriteriaBuilder greaterThanOrEqual(Object value){
+		criterias.add(new QueryCriteria(this.field, value, Evaluation.GREATER_THAN_EQUALS));
+		return this;
+	}
+
+	public QueryCriteriaBuilder lessThan(Object value){
+		criterias.add(new QueryCriteria(this.field, value, Evaluation.LESS_THAN));
+		return this;
+	}
+
+	public QueryCriteriaBuilder lessThanOrEqual(Object value){
+		criterias.add(new QueryCriteria(this.field, value, Evaluation.LESS_THAN_EQUALS));
+		return this;
+	}
+
+	public QueryCriteriaBuilder between(Object lowValue, Object highValue){
+		criterias.add(new QueryCriteria(this.field, Arrays.asList(lowValue, highValue), Evaluation.BETWEEN));
+		return this;
+	}
+
+	public QueryCriteriaBuilder betweenIncluding(Object lowValue, Object highValue){
+		criterias.add(new QueryCriteria(this.field, Arrays.asList(lowValue, highValue), Evaluation.BETWEEN_INCLUSIVE));
+		return this;
+	}
+
+	public QueryCriteriaBuilder outside(Object lowValue, Object highValue){
+		criterias.add(new QueryCriteria(this.field, Arrays.asList(lowValue, highValue), Evaluation.OUTSIDE));
+		return this;
+	}
+
+	public QueryCriteriaBuilder outsideIncluding(Object lowValue, Object highValue){
+		criterias.add(new QueryCriteria(this.field, Arrays.asList(lowValue, highValue), Evaluation.OUTSIDE_INCLUSIVE));
+		return this;
+	}
+
+	public QueryCriteriaBuilder isNull(Boolean value){
+		criterias.add(new QueryCriteria(this.field, value, Evaluation.IS_NULL));
+		return this;
+	}
+
+	public QueryCriteriaBuilder notNull(Boolean value){
+		criterias.add(new QueryCriteria(this.field, value, Evaluation.NOT_NULL));
+		return this;
+	}
+
+	public QueryCriteriaBuilder isTrue(Boolean value){
+		criterias.add(new QueryCriteria(this.field, value, Evaluation.IS_TRUE));
+		return this;
+	}
+
+	public QueryCriteriaBuilder isFalse(Boolean value){
+		criterias.add(new QueryCriteria(this.field, value, Evaluation.IS_FALSE));
+		return this;
+	}
 	
 }

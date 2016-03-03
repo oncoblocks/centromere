@@ -25,6 +25,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.Assert;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -37,6 +38,7 @@ public class ImportJobRunner implements ApplicationContextAware {
 	private ImportJob importJob;
 	private ApplicationContext applicationContext;
 	private DataTypeManager dataTypeManager;
+	private DataSetManager dataSetManager;
 	private static final Logger logger = LoggerFactory.getLogger(ImportJobRunner.class);
 
 	public ImportJobRunner() { }
@@ -51,33 +53,68 @@ public class ImportJobRunner implements ApplicationContextAware {
 			String dataSetName = inputFile.getDataSet();
 			String dataTypeName = inputFile.getDataType();
 			String inputFilePath = inputFile.getPath();
-			this.processDataSet(dataSetName);
+			DataSetMetadata dataSetMetadata = dataSetManager.getDataSetByName(dataSetName);
+			ImportOptions combinedOptions = mergeImportOptions(inputFile.getOptions(), importJob.getOptions());
+			this.processDataSet(dataSetMetadata, inputFile);
 			RecordProcessor processor = this.getProcessorInstanceByDataType(dataTypeName);
+			if (processor instanceof ImportOptionsAware && inputFile.getOptions() != null) {
+				((ImportOptionsAware) processor).setImportOptions(combinedOptions);
+			}
+			if (processor instanceof DataSetAware){
+				Object dataSetId = this.getDataSetId(dataSetMetadata, inputFile);
+				((DataSetAware) processor).setDataSetId(dataSetId);
+			}
 			logger.info(String.format("[CENTROMERE] Processing dataimport file: dataSet=%s dataType=%s, processor=%s, filePath=%s",
 					dataSetName, dataTypeName, processor.getClass().getName(), inputFilePath));
+			processor.doBefore();
 			processor.run(inputFilePath);
+			processor.doAfter();
 			logger.info(String.format("[CENTROMERE] Completed file processing: %s", inputFilePath));
 		}
-		
+	}
+	
+	protected ImportOptions mergeImportOptions(ImportOptions fileOptions, ImportOptions jobOptions){
+		Map<String,String> options = new HashMap<>(jobOptions.getOptionsMap());
+		options.putAll(new HashMap<>(fileOptions.getOptionsMap()));
+		return new ImportOptions(options);
 	}
 
 	/**
 	 * Runs the required configuration before the import job executes.
 	 */
-	private void jobSetup(){
+	protected void jobSetup(){
 		this.configureDataTypeManager();
+		this.configureDataSetManager();
 	}
-	
-	private void processDataSet(String dataSetName){
-		// TODO
+
+	/**
+	 * Processes the current data set record.  Should be overridden to handle record creation or 
+	 *   manipulation.
+	 * 
+	 * @param dataSet
+	 */
+	protected void processDataSet(DataSetMetadata dataSet, InputFile inputFile) throws DataImportException {
+		return;	
 	}
+
+	/**
+	 * Returns a data set identifier based upon its {@link DataSetMetadata} reference.  This method
+	 *   should be overridden along with {@link #processDataSet(DataSetMetadata, InputFile)}, to handle
+	 *   implementation-specific data sets.
+	 * 
+	 * @param dataSet
+	 * @return
+	 */
+	protected Object getDataSetId(DataSetMetadata dataSet, InputFile inputFile){
+		return null;
+	} 
 
 	/**
 	 * Checks that all necessary configurations have taken place place before the import job runs.
 	 * 
 	 * @throws DataImportException
 	 */
-	private void configurationCheck() throws DataImportException {
+	protected void configurationCheck() throws DataImportException {
 		if (dataTypeManager == null) throw new DataImportException("DataTypeManager has not been configured.");
 	}
 
@@ -86,15 +123,15 @@ public class ImportJobRunner implements ApplicationContextAware {
 	 * 
 	 * @throws DataImportException
 	 */
-	private void validateImportJob() throws DataImportException {
+	protected void validateImportJob() throws DataImportException {
 		try {
 			Assert.notNull(importJob, "ImportJob must not be null");
 			Assert.isTrue(importJob.getFiles() != null && !importJob.getFiles().isEmpty(),
 					"Import file list must not be empty.");
 			Assert.isTrue(importJob.getDataSets() != null && !importJob.getDataSets().isEmpty(),
 					"Data set list must not be empty.");
-			Assert.isTrue(importJob.getDataTypes() != null && !importJob.getDataTypes().isEmpty(),
-					"Data type list must not be empty.");
+//			Assert.isTrue(importJob.getDataTypes() != null && !importJob.getDataTypes().isEmpty(),
+//					"Data type list must not be empty.");
 		} catch (IllegalArgumentException e){
 			e.printStackTrace();
 			throw new DataImportException(e.getMessage());
@@ -105,7 +142,7 @@ public class ImportJobRunner implements ApplicationContextAware {
 	 * Creates and populates a {@link DataTypeManager} to handle mapping data types to 
 	 *   {@link RecordProcessor} beans.
 	 */
-	private void configureDataTypeManager(){
+	protected void configureDataTypeManager(){
 		dataTypeManager = new DataTypeManager();
 		for (Map.Entry entry: applicationContext.getBeansWithAnnotation(DataTypes.class).entrySet()){
 			Object obj = entry.getValue();
@@ -113,11 +150,16 @@ public class ImportJobRunner implements ApplicationContextAware {
 				RecordProcessor p = (RecordProcessor) obj;
 				DataTypes dataTypes = p.getClass().getAnnotation(DataTypes.class);
 				for (String t: dataTypes.value()){
-					dataTypeManager.addDataType(new DataType(t, p.getClass()));
+					dataTypeManager.addDataType(new DataType(t, p.getClass().getName()));
 				}
 			}
 		}
-		dataTypeManager.addDataTypes(importJob.getDataTypes()); // Data type configurations in the job file will override annotations
+		if (importJob.getDataTypes() != null) dataTypeManager.addDataTypes(importJob.getDataTypes()); // Data type configurations in the job file will override annotations
+	}
+
+	protected void configureDataSetManager(){
+		dataSetManager = new DataSetManager();
+		dataSetManager.addDataSets(importJob.getDataSets());
 	}
 
 	/**
@@ -129,21 +171,48 @@ public class ImportJobRunner implements ApplicationContextAware {
 	 * @return
 	 * @throws DataImportException
 	 */
-	private RecordProcessor getProcessorInstanceByDataType(String name) throws DataImportException {
+	protected RecordProcessor getProcessorInstanceByDataType(String name) throws DataImportException {
 		if (!dataTypeManager.isSupportedDataType(name)){
 			throw new DataImportException(String.format("Requested data type is not supported in the " 
 					+ "current configuration: %s", name));
 		}
-		Class<? extends RecordProcessor> processorClass = dataTypeManager.getProcessorByDataType(name);
-		RecordProcessor processor = applicationContext.getBean(processorClass);
+		RecordProcessor processor = null;
+		String processorRef = dataTypeManager.getProcessorByDataType(name);
+		try {
+			Class<? extends RecordProcessor> processorClass = (Class<? extends RecordProcessor>) Class.forName(processorRef);
+			processor = applicationContext.getBean(processorClass);
+		} catch (ClassNotFoundException e){
+			processor = (RecordProcessor) applicationContext.getBean(processorRef);
+		}
+		
 		if (processor == null){
 			throw new DataImportException(String.format("RecordProcessor bean does not exist: %s", 
-					processorClass.getName()));
+					processorRef));
 		}
 		return processor;
 	}
 	
-	/* Setters */
+	/* Getters and setters */
+
+	public ImportJob getImportJob() {
+		return importJob;
+	}
+
+	public ApplicationContext getApplicationContext() {
+		return applicationContext;
+	}
+
+	public DataTypeManager getDataTypeManager() {
+		return dataTypeManager;
+	}
+
+	public DataSetManager getDataSetManager() {
+		return dataSetManager;
+	}
+
+	public static Logger getLogger() {
+		return logger;
+	}
 
 	public void setImportJob(ImportJob importJob) throws DataImportException {
 		this.importJob = importJob;

@@ -53,7 +53,7 @@ public class TokenTests {
 	public void tokenGeneration(){
 		String token = tokenOperations.createToken(user);
 		Assert.notNull(token);
-		Assert.isTrue(!token.equals(""));
+		Assert.isTrue(!"".equals(token));
 		Assert.isTrue(token.startsWith("user"));
 	}
 	

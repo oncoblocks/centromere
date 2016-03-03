@@ -47,31 +47,7 @@ public class MongoImportTempFileImporter implements RecordImporter {
 	public void importFile(String filePath) throws DataImportException {
 
 		Process process;
-
-		StringBuilder sb = new StringBuilder("mongoimport ");
-		if (stopOnError) sb.append(" --stopOnError ");
-		if (dropCollection) sb.append(" --drop ");
-		if (upsertRecords) sb.append(" --upsert ");
-		if (credentials.getUsername() != null) {
-			sb.append(String.format(" --username %s ", credentials.getUsername()));
-		}
-		if (credentials.getPassword() != null){
-			sb.append(String.format(" --password %s ", credentials.getPassword()));
-		}
-		if (credentials.getHost() != null) {
-			if (credentials.getHost().contains(":")) {
-				sb.append(String.format(" --host %s ", credentials.getHost()));
-			} else if (credentials.getPort() != null) {
-				sb.append(String.format(" --host %s:%s ", credentials.getHost(), credentials.getPort()));
-			} else {
-				sb.append(String.format(" --host %s:27017 ", credentials.getHost()));
-			}
-		}
-		sb.append(String.format(" --db %s ", credentials.getDatabase()));
-		sb.append(String.format(" --collection %s ", collection));
-		sb.append(String.format(" --file %s ", filePath));
-
-		String[] commands = new String[]{ "/bin/bash", "-c", sb.toString() }; // TODO: Support for Windows and other shells
+		String[] commands = new String[]{ "/bin/bash", "-c", buildImportCommand(filePath) }; // TODO: Support for Windows and other shells
 		try {
 
 			logger.debug(String.format("[CENTROMERE] Importing file to MongoDB: %s", filePath));
@@ -114,6 +90,32 @@ public class MongoImportTempFileImporter implements RecordImporter {
 			throw new DataImportException(String.format("Unable to import temp file: %s", filePath));
 		}
 		logger.debug(String.format("CENTROMERE: MongoImport complete: %s", filePath));
+	}
+	
+	private String buildImportCommand(String filePath){
+		StringBuilder sb = new StringBuilder("mongoimport ");
+		if (stopOnError) sb.append(" --stopOnError ");
+		if (dropCollection) sb.append(" --drop ");
+		if (upsertRecords) sb.append(" --upsert ");
+		if (credentials.getUsername() != null) {
+			sb.append(String.format(" --username %s ", credentials.getUsername()));
+		}
+		if (credentials.getPassword() != null){
+			sb.append(String.format(" --password %s ", credentials.getPassword()));
+		}
+		if (credentials.getHost() != null) {
+			if (credentials.getHost().contains(":")) {
+				sb.append(String.format(" --host %s ", credentials.getHost()));
+			} else if (credentials.getPort() != null) {
+				sb.append(String.format(" --host %s:%s ", credentials.getHost(), credentials.getPort()));
+			} else {
+				sb.append(String.format(" --host %s:27017 ", credentials.getHost()));
+			}
+		}
+		sb.append(String.format(" --db %s ", credentials.getDatabase()));
+		sb.append(String.format(" --collection %s ", collection));
+		sb.append(String.format(" --file %s ", filePath));
+		return sb.toString();
 	}
 
 	public MongoImportTempFileImporter setStopOnError(boolean stopOnError) {

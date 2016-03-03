@@ -38,6 +38,8 @@ import java.lang.reflect.ParameterizedType;
 import java.util.*;
 
 /**
+ * Helper methods for processing API controller requests.
+ * 
  * @author woemler
  */
 public class RequestUtils {

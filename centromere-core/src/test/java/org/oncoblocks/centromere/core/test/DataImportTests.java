@@ -20,8 +20,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.oncoblocks.centromere.core.dataimport.pipeline.*;
 import org.oncoblocks.centromere.core.dataimport.component.RepositoryRecordWriter;
+import org.oncoblocks.centromere.core.dataimport.pipeline.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -36,9 +36,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.fail;
 
@@ -53,9 +51,10 @@ public class DataImportTests {
 	@Autowired private Validator validator;
 	private final String geneInfoPath = ClassLoader.getSystemClassLoader().getResource("Homo_sapiens.gene_info").getPath();
 	private final String importJobJsonFilePath = ClassLoader.getSystemClassLoader().getResource("example_import.json").getPath();
-	@Autowired GeneInfoProcessor processor;
-	@Autowired TestRepository testRepository;
-	@Autowired ApplicationContext applicationContext;
+	@Autowired private GeneInfoProcessor processor;
+	@Autowired private TestRepository testRepository;
+	@Autowired private ApplicationContext applicationContext;
+	@Autowired private ImportOptions defaultImportOptions;
 	private static final ObjectMapper mapper = new ObjectMapper();
 
 	@Before
@@ -118,6 +117,7 @@ public class DataImportTests {
 		testRepository.deleteAll();
 		System.out.println(String.format("There are %d records in the test repository.", testRepository.count()));
 		Assert.isTrue(testRepository.count() == 0);
+		processor.setImportOptions(defaultImportOptions);
 		processor.run(geneInfoPath);
 		Assert.isTrue(testRepository.count() == 5);
 		EntrezGene gene = testRepository.findOne(1L);
@@ -125,17 +125,6 @@ public class DataImportTests {
 		Assert.isTrue(gene.getId() == 1L);
 		System.out.println(String.format("There are %d records in the test repository.", testRepository.count()));
 		System.out.println(gene.toString());
-	}
-	
-	@Test
-	public void mapImportOptionsTest() throws Exception {
-		String json = "{\"tempDirectoryPath\": \"/tmp\", \"failOnMissingFile\": false}";
-		ImportOptions options = mapper.readValue(json, BasicImportOptions.class);
-		Assert.notNull(options);
-		Assert.notNull(options.getTempDirectoryPath());
-		Assert.isTrue("/tmp".equals(options.getTempDirectoryPath()));
-		Assert.isTrue(options.failOnDataImportException());
-		Assert.isTrue(!options.failOnMissingFile());
 	}
 	
 	@Test
@@ -191,28 +180,15 @@ public class DataImportTests {
 		parser.setObjectMapper(mapper);
 		ImportJob job = parser.parseJobFile(importJobJsonFilePath);
 		Assert.notNull(job);
+		Assert.notNull(job.getOptions());
 		ImportJobRunner jobRunner = new ImportJobRunner(applicationContext);
 		jobRunner.setImportJob(job);
 		Calendar calendar = Calendar.getInstance();
-		Date start = calendar.getTime();
 		jobRunner.runImport();
-		Date end = calendar.getTime();
-		System.out.println(String.format("Elapsed time: %s", formatInterval(end.getTime() - start.getTime())));
 		Assert.isTrue(testRepository.count() == 5);
 	}
 
 
-	/**
-	 * From http://stackoverflow.com/a/6710604/1458983
-	 * @param l
-	 * @return
-	 */
-	private static String formatInterval(final long l) {
-		final long hr = TimeUnit.MILLISECONDS.toHours(l);
-		final long min = TimeUnit.MILLISECONDS.toMinutes(l - TimeUnit.HOURS.toMillis(hr));
-		final long sec = TimeUnit.MILLISECONDS.toSeconds(l - TimeUnit.HOURS.toMillis(hr) - TimeUnit.MINUTES.toMillis(min));
-		final long ms = TimeUnit.MILLISECONDS.toMillis(l - TimeUnit.HOURS.toMillis(hr) - TimeUnit.MINUTES.toMillis(min) - TimeUnit.SECONDS.toMillis(sec));
-		return String.format("%02d:%02d:%02d.%03d", hr, min, sec, ms);
-	}
+	
 	
 }

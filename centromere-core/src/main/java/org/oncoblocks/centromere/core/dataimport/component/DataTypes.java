@@ -23,7 +23,7 @@ import java.lang.annotation.*;
  * @author woemler
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE, ElementType.METHOD})
 public @interface DataTypes {
 	String[] value();
 }

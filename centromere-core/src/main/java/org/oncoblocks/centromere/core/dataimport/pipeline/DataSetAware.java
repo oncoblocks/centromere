@@ -14,23 +14,11 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.repository.support;
-
-import org.oncoblocks.centromere.core.model.Model;
-import org.oncoblocks.centromere.core.repository.RepositoryOperations;
-
-import java.io.Serializable;
-import java.util.List;
+package org.oncoblocks.centromere.core.dataimport.pipeline;
 
 /**
- * Required operations for Subject repositories.
- * 
  * @author woemler
  */
-public interface SubjectRepositoryOperations<T extends Model<ID>, ID extends Serializable>
-		extends RepositoryOperations<T, ID> {
-	List<T> findByName(String name);
-	List<T> findByDiseaseId(ID diseaseId);
-	List<T> findByAlias(String alias);
-	List<T> guessSubject(String keyword);
+public interface DataSetAware {
+	void setDataSetId(Object dataSetId);
 }

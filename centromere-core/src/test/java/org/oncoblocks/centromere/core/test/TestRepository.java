@@ -35,7 +35,7 @@ import java.util.*;
 @Component
 public class TestRepository implements RepositoryOperations<EntrezGene, Long> {
 
-	Map<Long, EntrezGene> geneMap;
+	private Map<Long, EntrezGene> geneMap;
 
 	public TestRepository() {
 		geneMap = new HashMap<>();

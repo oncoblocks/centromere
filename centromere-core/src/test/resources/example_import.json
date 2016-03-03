@@ -1,6 +1,11 @@
 {
   "name": "Example import job",
   "notes": "This is an example data import job configuration file.",
+  "options": {
+    "tempDirectoryPath": "/tmp",
+    "failOnMissingSample": "true",
+    "failOnMissingFile": "true"
+  },
   "dataSets": [
     {"name": "Test"}
   ],

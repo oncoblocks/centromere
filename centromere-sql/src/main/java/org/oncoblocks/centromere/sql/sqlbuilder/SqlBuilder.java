@@ -83,7 +83,7 @@ public class SqlBuilder {
 	private LinkedHashMap<String, SortOrder> sorts;
 	private List<Object> queryParameterValues;
 
-	final static Logger logger = LoggerFactory.getLogger(SqlBuilder.class);
+	private final static Logger logger = LoggerFactory.getLogger(SqlBuilder.class);
 	
 	public SqlBuilder(ComplexTableDescription tableDescription){
 		

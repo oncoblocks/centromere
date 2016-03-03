@@ -21,6 +21,8 @@ import org.springframework.context.annotation.Import;
 import java.lang.annotation.*;
 
 /**
+ * Automatically enables basic security configuration.
+ * 
  * @author woemler
  */
 

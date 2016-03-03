@@ -14,21 +14,39 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.repository.support;
-
-import org.oncoblocks.centromere.core.model.Model;
-import org.oncoblocks.centromere.core.repository.RepositoryOperations;
-
-import java.io.Serializable;
-import java.util.List;
+package org.oncoblocks.centromere.core.dataimport.pipeline;
 
 /**
  * @author woemler
  */
-public interface EntrezGeneRepositoryOperations<T extends Model<ID>, ID extends Serializable>
-		extends RepositoryOperations<T, ID> {
-	T findByEntrezGeneId(Long entrezGeneId);
-	List<T> findByPrimaryGeneSymbol(String primaryGeneSymbol);
-	List<T> findByAlias(String alias);
-	List<T> guessGene(String keyword);
+public class DataSetMetadata {
+	
+	private String name;
+	private String source;
+	private String notes;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+	
 }

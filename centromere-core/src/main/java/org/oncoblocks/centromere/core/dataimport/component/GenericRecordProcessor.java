@@ -16,10 +16,13 @@
 
 package org.oncoblocks.centromere.core.dataimport.component;
 
+import org.oncoblocks.centromere.core.dataimport.pipeline.DataSetAware;
 import org.oncoblocks.centromere.core.dataimport.pipeline.ImportOptions;
+import org.oncoblocks.centromere.core.dataimport.pipeline.ImportOptionsAware;
 import org.oncoblocks.centromere.core.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Validator;
 
@@ -34,13 +37,15 @@ import java.io.File;
  * 
  * @author woemler
  */
-public class GenericRecordProcessor<T extends Model<?>> implements RecordProcessor {
+public class GenericRecordProcessor<T extends Model<?>> 
+		implements RecordProcessor, ImportOptionsAware, DataSetAware {
 
 	private RecordReader<T> reader;
 	private Validator validator;
 	private RecordWriter<T> writer;
 	private RecordImporter importer;
-	private ImportOptions importOptions;
+	private ImportOptions options;
+	private Object dataSetId;
 	private static final Logger logger = LoggerFactory.getLogger(GenericRecordProcessor.class);
 
 	public GenericRecordProcessor() { }
@@ -50,24 +55,44 @@ public class GenericRecordProcessor<T extends Model<?>> implements RecordProcess
 			Validator validator,
 			RecordWriter<T> writer,
 			RecordImporter importer,
-			ImportOptions importOptions) {
+			ImportOptions options) {
 		this.reader = reader;
 		this.validator = validator;
 		this.writer = writer;
 		this.importer = importer;
-		this.importOptions = importOptions;
+		this.options = options;
 	}
 
 	/**
 	 * {@link RecordProcessor#doBefore()}
 	 */
-	@Override public void doBefore() {
+	public void doBefore() {
+		this.checkImportOptions();
+		if (writer != null && writer instanceof ImportOptionsAware) {
+			((ImportOptionsAware) writer).setImportOptions(options);
+		}
+		if (reader != null && reader instanceof ImportOptionsAware) {
+			((ImportOptionsAware) reader).setImportOptions(options);
+		}
+		if (importer != null && importer instanceof ImportOptionsAware) {
+			((ImportOptionsAware) importer).setImportOptions(options);
+		}
+		if (writer != null && writer instanceof DataSetAware) {
+			((DataSetAware) writer).setDataSetId(dataSetId);
+		}
+		if (reader != null && reader instanceof DataSetAware) {
+			((DataSetAware) reader).setDataSetId(dataSetId);
+		}
+		if (importer != null && importer instanceof DataSetAware) {
+			((DataSetAware) importer).setDataSetId(dataSetId);
+		}
 	}
 
 	/**
 	 * {@link RecordProcessor#doAfter()}
 	 */
-	@Override public void doAfter() {
+	public void doAfter() {
+		return;
 	}
 
 	/**
@@ -75,16 +100,17 @@ public class GenericRecordProcessor<T extends Model<?>> implements RecordProcess
 	 * @param inputFilePath
 	 * @throws DataImportException
 	 */
-	@Override public void run(String inputFilePath) throws DataImportException {
+	public void run(String inputFilePath) throws DataImportException {
 		reader.doBefore(inputFilePath);
 		writer.doBefore(this.getTempFilePath(inputFilePath));
 		T record = reader.readRecord();
 		while (record != null) {
+			if (record instanceof DataSetAware) ((DataSetAware) record).setDataSetId(dataSetId);
 			if (validator != null) {
 				BeanPropertyBindingResult bindingResult
 						= new BeanPropertyBindingResult(record, record.getClass().getName());
 				validator.validate(record, bindingResult);
-				if (bindingResult.hasErrors() && importOptions.failOnInvalidRecord()){
+				if (bindingResult.hasErrors() && options.getBoolean("failOnInvalidRecord")){
 					throw new DataImportException(bindingResult.toString());
 				}
 			}
@@ -97,6 +123,11 @@ public class GenericRecordProcessor<T extends Model<?>> implements RecordProcess
 			importer.importFile(this.getTempFilePath(inputFilePath));
 		}
 	}
+	
+	protected void checkImportOptions(){
+		Assert.isTrue(options.hasOption("failOnInvalidRecord"), "Missing required option: failOnInvalidRecord");
+		Assert.isTrue(options.hasOption("tempDirectoryPath"), "Missing required option: tempDirectoryPath");
+	}
 
 	/**
 	 * Returns the path of the temporary file to be written, if necessary.  Uses the input file's name
@@ -106,7 +137,7 @@ public class GenericRecordProcessor<T extends Model<?>> implements RecordProcess
 	 * @return
 	 */
 	private String getTempFilePath(String inputFilePath){
-		File tempDir = new File(importOptions.getTempDirectoryPath());
+		File tempDir = new File(options.getString("tempDirectoryPath"));
 		String fileName = new File(inputFilePath).getName() + ".tmp";
 		File tempFile = new File(tempDir, fileName);
 		return tempFile.getPath();
@@ -145,11 +176,18 @@ public class GenericRecordProcessor<T extends Model<?>> implements RecordProcess
 	}
 
 	public ImportOptions getImportOptions() {
-		return importOptions;
+		return options;
 	}
 
-	public void setImportOptions(
-			ImportOptions importOptions) {
-		this.importOptions = importOptions;
+	public void setImportOptions(ImportOptions options) {
+		this.options = options;
+	}
+
+	public Object getDataSetId() {
+		return dataSetId;
+	}
+
+	public void setDataSetId(Object dataSetId) {
+		this.dataSetId = dataSetId;
 	}
 }
