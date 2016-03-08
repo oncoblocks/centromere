@@ -22,6 +22,7 @@ import org.oncoblocks.centromere.core.model.Ignored;
 import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.repository.Evaluation;
 import org.oncoblocks.centromere.core.repository.QueryCriteria;
+import org.oncoblocks.centromere.core.repository.QueryParameterDescriptor;
 import org.oncoblocks.centromere.web.exceptions.InvalidParameterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +46,7 @@ import java.util.*;
 public class RequestUtils {
 
 	private static final Logger logger = LoggerFactory.getLogger(RequestUtils.class);
+	private static final List<String> excludedParameters = Arrays.asList("fields", "exclude", "page", "size", "sort", "field");
 
 	/**
 	 * Extracts request parameters and matches them to available database query parameters, as defined
@@ -56,48 +58,58 @@ public class RequestUtils {
 	public static List<QueryCriteria> getQueryCriteriaFromRequest(
 			Class<? extends Model<?>> model, HttpServletRequest request
 	){
-		logger.debug(String.format("Generating QueryCriteria for request parameters: model=%s params=%s",
+		logger.info(String.format("Generating QueryCriteria for request parameters: model=%s params=%s",
 				model.getName(), request.getQueryString()));
-		List<QueryCriteria> criterias = new ArrayList<>();
+		List<QueryCriteria> criteriaList = new ArrayList<>();
+		Map<String, QueryParameterDescriptor> paramMap = getAvailableQueryParameters(model);
 		for (Map.Entry entry: request.getParameterMap().entrySet()){
-			QueryCriteria criteria = null;
 			String paramName = (String) entry.getKey();
 			String[] paramValue = ((String[]) entry.getValue())[0].split(",");
-			Class<?> type;
-			for (Field field: model.getDeclaredFields()){
-				if (Collection.class.isAssignableFrom(field.getType())){
-					ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
-					type = (Class<?>) parameterizedType.getActualTypeArguments()[0];
+			if (!excludedParameters.contains(paramName)) {
+				if (paramMap.containsKey(paramName)) {
+					QueryParameterDescriptor descriptor = paramMap.get(paramName);
+					QueryCriteria criteria = createCriteriaFromRequestParameter(descriptor.getFieldName(),
+							paramValue, descriptor.getType(), descriptor.getEvaluation());
+					criteriaList.add(criteria);
 				} else {
-					type = field.getType();
-				}
-				String fieldName = field.getName();
-				if (field.isAnnotationPresent(Ignored.class)) continue;
-				if (field.getName().equals(paramName)) {
-					if (paramValue.length > 1){
-						criteria = createCriteriaFromRequestParameter(fieldName, paramValue, type, Evaluation.IN);
-					} else {
-						criteria = createCriteriaFromRequestParameter(fieldName, paramValue, type, Evaluation.EQUALS);
-					}
-				} else if (field.isAnnotationPresent(Aliases.class)){
-					Aliases aliases = field.getAnnotation(Aliases.class);
-					for (Alias alias: aliases.value()){
-						if (alias.value().equals(paramName)){
-							if (!alias.fieldName().equals("")) fieldName = alias.fieldName();
-							criteria = createCriteriaFromRequestParameter(fieldName, paramValue, type, alias.evaluation());
-						}
-					}
-				} else if (field.isAnnotationPresent(Alias.class)){
-					Alias alias = field.getAnnotation(Alias.class);
-					if (alias.value().equals(paramName)){
-						if (!alias.fieldName().equals("")) fieldName = alias.fieldName();
-						criteria = createCriteriaFromRequestParameter(fieldName, paramValue, type, alias.evaluation());
-					}
+					logger.warn(String
+							.format("Unable to map request parameter to available model parameters: %s",
+									paramName));
+					throw new InvalidParameterException("Invalid request parameter: " + paramName);
 				}
 			}
-			if (criteria != null) criterias.add(criteria);
 		}
-		return criterias;
+		logger.info(String.format("Generated QueryCriteria for request: %s", criteriaList.toString()));
+		return criteriaList;
+	}
+	
+	public static Map<String,QueryParameterDescriptor> getAvailableQueryParameters(Class<? extends Model<?>> model){
+		Map<String,QueryParameterDescriptor> paramMap = new HashMap<>();
+		for (Field field: model.getDeclaredFields()){
+			String fieldName = field.getName();
+			Class<?> type = field.getType();
+			if (Collection.class.isAssignableFrom(field.getType())){
+				ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
+				type = (Class<?>) parameterizedType.getActualTypeArguments()[0];
+			} 
+			if (field.isAnnotationPresent(Ignored.class)) {
+				continue;
+			} else {
+				paramMap.put(fieldName, new QueryParameterDescriptor(fieldName, fieldName, type, Evaluation.EQUALS));
+			}
+			if (field.isAnnotationPresent(Aliases.class)){
+				Aliases aliases = field.getAnnotation(Aliases.class);
+				for (Alias alias: aliases.value()){
+					paramMap.put(alias.value(), new QueryParameterDescriptor(alias.value(), 
+							alias.fieldName().equals("") ? fieldName : alias.fieldName(), type, alias.evaluation()));
+				}
+			} else if (field.isAnnotationPresent(Alias.class)){
+				Alias alias = field.getAnnotation(Alias.class);
+				paramMap.put(alias.value(), new QueryParameterDescriptor(alias.value(), 
+						alias.fieldName().equals("") ? fieldName : alias.fieldName(), type, alias.evaluation()));
+			}
+		}
+		return paramMap;
 	}
 	
 	/**
@@ -113,6 +125,7 @@ public class RequestUtils {
 	public static QueryCriteria createCriteriaFromRequestParameter(String param, Object[] values, Class<?> type, Evaluation evaluation){
 		logger.debug(String.format("Generating QueryCriteria object for query string parameter: "
 				+ "param=%s values=%s type=%s eval=%s", param, values.toString(), type.getName(), evaluation.toString()));
+		if (evaluation.equals(Evaluation.EQUALS) && values.length > 1) evaluation = Evaluation.IN;
 		switch (evaluation){
 			case EQUALS:
 				return new QueryCriteria(param, convertParameter(values[0], type), Evaluation.EQUALS);
@@ -150,6 +163,10 @@ public class RequestUtils {
 			case OUTSIDE_INCLUSIVE:
 				return new QueryCriteria(param, Arrays.asList(convertParameter(values[0], type),
 						convertParameter(values[1], type)), Evaluation.OUTSIDE_INCLUSIVE);
+			case STARTS_WITH:
+				return new QueryCriteria(param, convertParameter(values[0], type), Evaluation.STARTS_WITH);
+			case ENDS_WITH:
+				return new QueryCriteria(param, convertParameter(values[0], type), Evaluation.ENDS_WITH);
 			default:
 				return null;
 		}
@@ -170,7 +187,7 @@ public class RequestUtils {
 				return conversionService.convert(param, type);
 			} catch (ConversionFailedException e){
 				e.printStackTrace();
-				throw new InvalidParameterException();
+				throw new InvalidParameterException("Unable to convert String to " + type.getName());
 			}
 		} else {
 			return param;

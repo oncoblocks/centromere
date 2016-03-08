@@ -416,4 +416,40 @@ public class GenericMongoRepositoryTests {
 		Assert.isTrue(genes.get(1).getEntrezGeneId().equals(4L));
 	}
 	
+	@Test
+	public void findByLikeTest() throws Exception {
+		List<QueryCriteria> criterias = new ArrayList<>();
+		criterias.add(new QueryCriteria("primaryGeneSymbol", "eC", Evaluation.LIKE));
+		List<EntrezGene> genes = geneRepository.find(criterias);
+		Assert.notNull(genes);
+		Assert.notEmpty(genes);
+		Assert.isTrue(genes.size() == 1);
+		EntrezGene gene = genes.get(0);
+		Assert.isTrue("GeneC".equals(gene.getPrimaryGeneSymbol()));
+	}
+
+	@Test
+	public void findByStartsWithTest() throws Exception {
+		List<QueryCriteria> criterias = new ArrayList<>();
+		criterias.add(new QueryCriteria("geneType", "protein", Evaluation.STARTS_WITH));
+		List<EntrezGene> genes = geneRepository.find(criterias);
+		Assert.notNull(genes);
+		Assert.notEmpty(genes);
+		Assert.isTrue(genes.size() == 3);
+		EntrezGene gene = genes.get(0);
+		Assert.isTrue("GeneA".equals(gene.getPrimaryGeneSymbol()));
+	}
+
+	@Test
+	public void findByEndsWithTest() throws Exception {
+		List<QueryCriteria> criterias = new ArrayList<>();
+		criterias.add(new QueryCriteria("primaryGeneSymbol", "neD", Evaluation.ENDS_WITH));
+		List<EntrezGene> genes = geneRepository.find(criterias);
+		Assert.notNull(genes);
+		Assert.notEmpty(genes);
+		Assert.isTrue(genes.size() == 1);
+		EntrezGene gene = genes.get(0);
+		Assert.isTrue("GeneD".equals(gene.getPrimaryGeneSymbol()));
+	}
+	
 }

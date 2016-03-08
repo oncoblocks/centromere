@@ -244,15 +244,13 @@ public class AbstractControllerIntegrationTests {
 	@Test
 	public void findByInvalidParameter() throws Exception {
 		mockMvc.perform(get(BASE_URL + "?bad=param")) // Invalid parameters are ignored by default
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$", hasSize(5)));
+				.andExpect(status().is4xxClientError());
 	}
 
 	@Test
 	public void findByIgnoredParameter() throws Exception {
 		mockMvc.perform(get(BASE_URL + "?flag=N")) // Would expect one record, but the field is marked as ignored.
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$", hasSize(5)));
+				.andExpect(status().is4xxClientError());
 	}
 
 	@Test

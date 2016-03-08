@@ -23,6 +23,8 @@ import com.mongodb.DBObject;
 import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.repository.QueryCriteria;
 import org.oncoblocks.centromere.core.repository.RepositoryOperations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -47,6 +49,7 @@ public class GenericMongoRepository<T extends Model<ID>, ID extends Serializable
 	
 	private final MongoOperations mongoOperations;
 	private final Class<T> model;
+	private static final Logger logger = LoggerFactory.getLogger(GenericMongoRepository.class);
 
 	/**
 	 * Creates a new {@link GenericMongoRepository} instance.
@@ -287,6 +290,7 @@ public class GenericMongoRepository<T extends Model<ID>, ID extends Serializable
 	 * @return {@link Criteria} representation of the dataimport.
 	 */
 	protected Criteria getQueryFromQueryCriteria(Iterable<QueryCriteria> queryCriterias){
+		logger.info(String.format("Converting QueryCriteria: %s", queryCriterias.toString()));
 		List<Criteria> criteriaList = new ArrayList<>();
 		for (QueryCriteria queryCriteria: queryCriterias){
 			Criteria criteria = null;
@@ -342,13 +346,25 @@ public class GenericMongoRepository<T extends Model<ID>, ID extends Serializable
 								Criteria.where(queryCriteria.getKey()).lte(((List) queryCriteria.getValue()).get(0)),
 								Criteria.where(queryCriteria.getKey()).gte(((List) queryCriteria.getValue()).get(1)));
 						break;
+					case LIKE:
+						criteria = new Criteria(queryCriteria.getKey()).regex((String) queryCriteria.getValue());
+						break;
+					case NOT_LIKE:
+						// TODO
+						break;
+					case STARTS_WITH:
+						criteria = new Criteria(queryCriteria.getKey()).regex("^" + queryCriteria.getValue());
+						break;
+					case ENDS_WITH:
+						criteria = new Criteria(queryCriteria.getKey()).regex(queryCriteria.getValue() + "$");
+						break;
 					default:
 						criteria = new Criteria(queryCriteria.getKey()).is(queryCriteria.getValue());
 				}
 				criteriaList.add(criteria);
 			}
 		}
-
+		logger.info(String.format("Generated Criteria query from QueryCriteria: %s", criteriaList.toString()));
 		return criteriaList.size() > 0 ? 
 				new Criteria().andOperator(criteriaList.toArray(new Criteria[]{})) : null;
 	}

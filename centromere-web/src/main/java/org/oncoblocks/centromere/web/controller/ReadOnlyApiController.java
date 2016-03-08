@@ -53,7 +53,7 @@ public class ReadOnlyApiController<T extends Model<ID>, ID extends Serializable>
 	 *
 	 * @return updated representation of the submitted entity
 	 */
-	@RequestMapping(value = {"", "/**" }, method = RequestMethod.POST,
+	@RequestMapping(value = "" , method = RequestMethod.POST,
 			produces = { MediaType.APPLICATION_JSON_VALUE, ApiMediaTypes.APPLICATION_HAL_JSON_VALUE,
 					ApiMediaTypes.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE,
 					MediaType.TEXT_PLAIN_VALUE})
@@ -68,7 +68,7 @@ public class ReadOnlyApiController<T extends Model<ID>, ID extends Serializable>
 	 *
 	 * @return updated representation of the submitted entity.
 	 */
-	@RequestMapping(value = {"", "/**", "/{id}" }, method = RequestMethod.PUT,
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT,
 			produces = { MediaType.APPLICATION_JSON_VALUE, ApiMediaTypes.APPLICATION_HAL_JSON_VALUE,
 					ApiMediaTypes.APPLICATION_HAL_XML_VALUE, MediaType.APPLICATION_XML_VALUE,
 					MediaType.TEXT_PLAIN_VALUE})
@@ -82,7 +82,7 @@ public class ReadOnlyApiController<T extends Model<ID>, ID extends Serializable>
 	 *
 	 * @return {@link org.springframework.http.HttpStatus} indicating success or failure.
 	 */
-	@RequestMapping(value = {"", "/**", "/{id}" }, method = RequestMethod.DELETE)
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public HttpEntity<?> delete(@PathVariable ID id, HttpServletRequest request) {
 		throw new MethodNotAllowedException();
 	}

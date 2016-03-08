@@ -25,7 +25,7 @@ import org.springframework.http.HttpStatus;
  */
 public class InvalidParameterException extends
 		org.oncoblocks.centromere.web.exceptions.RestException {
-	public InvalidParameterException() {
-		super(HttpStatus.BAD_REQUEST, 40001, "Invalid query string parameter.", "", "");
+	public InvalidParameterException(String message) {
+		super(HttpStatus.BAD_REQUEST, 40001, message, "", "");
 	}
 }
