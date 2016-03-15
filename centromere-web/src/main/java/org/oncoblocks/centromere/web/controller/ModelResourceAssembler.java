@@ -46,7 +46,12 @@ public class ModelResourceAssembler<T extends Model<?>>
 		this.entityLinks = entityLinks;
 	}
 
-	@Override 
+	/**
+	 * Converts a {@link Model} object into a {@link FilterableResource}, adding the appropriate links.
+	 * 
+ 	 * @param t
+	 * @return
+	 */
 	public FilterableResource toResource(T t) {
 		FilterableResource<T> resource = new FilterableResource<>(t);
 		resource.add(entityLinks.linkToSingleResource(model, t.getId()).withSelfRel());
@@ -55,7 +60,14 @@ public class ModelResourceAssembler<T extends Model<?>>
 		resource.add(links);
 		return resource;
 	}
-	
+
+	/**
+	 * Inspects the target {@link Model} class for {@link ForeignKey} annotations, and creates links
+	 *   based upon the inferred relationship and field names.
+	 * 
+	 * @param t
+	 * @return
+	 */
 	private List<Link> addForeignKeyLinks(T t){
 		List<Link> links = new ArrayList<>();
 		for (Field field: model.getDeclaredFields()){

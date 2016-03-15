@@ -22,6 +22,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Helper class for {@link ImportJobRunner}, which stores and retrieves references to {@link DataSetMetadata}
+ *   for the current pipeline job.
+ * 
  * @author woemler
  */
 public class DataSetManager {
@@ -33,20 +36,36 @@ public class DataSetManager {
 	public DataSetManager(Iterable<DataSetMetadata> dataSets){
 		this.addDataSets(dataSets);
 	}
-	
+
+	/**
+	 * Adds or overwrites a {@link DataSetMetadata} record to the internal map.
+	 * 
+	 * @param dataSet
+	 */
 	public void addDataSet(DataSetMetadata dataSet){
 		Assert.notNull(dataSet);
 		Assert.notNull(dataSet.getName());
 		dataSetMap.put(dataSet.getName(), dataSet);
 	}
-	
+
+	/**
+	 * Adds or overwrites multiple {@link DataSetMetadata} records to the map.
+	 * 
+	 * @param dataSets
+	 */
 	public void addDataSets(Iterable<DataSetMetadata> dataSets){
 		Assert.notNull(dataSets);
 		for (DataSetMetadata dataSet: dataSets){
 			this.addDataSet(dataSet);
 		}
 	}
-	
+
+	/**
+	 * Retireves a {@link DataSetMetadata} record by name, as stored in the internal map.
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public DataSetMetadata getDataSetByName(String name){
 		DataSetMetadata dataSet = null;
 		if (dataSetMap.containsKey(name)){

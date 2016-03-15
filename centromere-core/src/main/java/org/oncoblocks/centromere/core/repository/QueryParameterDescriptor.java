@@ -17,6 +17,9 @@
 package org.oncoblocks.centromere.core.repository;
 
 /**
+ * POJO that describes a model query parameter, used when reflecting {@link org.oncoblocks.centromere.core.model.Model}
+ *   classes and mapping HTTP requests to {@link QueryCriteria}.
+ * 
  * @author woemler
  */
 public class QueryParameterDescriptor {

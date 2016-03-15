@@ -31,15 +31,17 @@ Database-specific implementations of the core repository interfaces and data imp
 
 The web module contains all components of the REST web services, including security and API documentation tools.
 
+## Quick Start
+Please see each individual module's README for instructions on getting started.
+
 ## Contact
 
-For questions about the Oncoblocks projects or if you would like to contribute to Centromere, please contact:
+For questions about Centromere, or if you are interested in contributing, please contact:
   - [Will Oemler](mailto:woemler@blueprintmedicines.com), Blueprint Medicines
-  - [Ethan Cerami](mailto:cerami@jimmy.harvard.edu), Dana Farber Cancer Institute
 
 ## License
 
-Copyright 2015 William Oemler, Blueprint Medicines
+Copyright 2016 William Oemler, Blueprint Medicines
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

@@ -22,6 +22,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Marks a {@link Model} field as ignored when mapping query string parameters from HTTP requests.
+ * 
  * @author woemler
  */
 

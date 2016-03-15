@@ -17,6 +17,10 @@
 package org.oncoblocks.centromere.core.repository;
 
 /**
+ * List of constants, representing database query evaluations, to be supported by each repository
+ *   implementation.  Each operation's implementation will vary by database technology, but should
+ *   be expected to behave the same.
+ * 
 * @author woemler
 */
 public enum Evaluation {

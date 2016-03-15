@@ -17,6 +17,9 @@
 package org.oncoblocks.centromere.core.dataimport.pipeline;
 
 /**
+ * Simple representation of a data set being processed and imported into the warehouse.  Captures
+ *   only the most basic information required for describing the data set.
+ * 
  * @author woemler
  */
 public class DataSetMetadata {

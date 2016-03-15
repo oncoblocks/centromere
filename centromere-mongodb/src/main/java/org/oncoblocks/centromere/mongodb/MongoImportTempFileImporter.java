@@ -26,6 +26,9 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 /**
+ * Implementation of {@link RecordImporter} that uses MongoImport to load JSON data directly into
+ *   a MongoDB collection.
+ * 
  * @author woemler
  */
 public class MongoImportTempFileImporter implements RecordImporter {
@@ -43,7 +46,12 @@ public class MongoImportTempFileImporter implements RecordImporter {
 		this.collection = collection;
 	}
 
-	@Override
+	/**
+	 * Performs the temporary file import and captures all output.
+	 * 
+	 * @param filePath
+	 * @throws DataImportException
+	 */
 	public void importFile(String filePath) throws DataImportException {
 
 		Process process;
@@ -91,7 +99,13 @@ public class MongoImportTempFileImporter implements RecordImporter {
 		}
 		logger.debug(String.format("CENTROMERE: MongoImport complete: %s", filePath));
 	}
-	
+
+	/**
+	 * Creates the command string for the import, based upon parametrization.
+	 * 
+	 * @param filePath
+	 * @return
+	 */
 	private String buildImportCommand(String filePath){
 		StringBuilder sb = new StringBuilder("mongoimport ");
 		if (stopOnError) sb.append(" --stopOnError ");

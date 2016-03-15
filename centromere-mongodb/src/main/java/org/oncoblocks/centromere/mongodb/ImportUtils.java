@@ -22,6 +22,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.convert.MongoConverter;
 
 /**
+ * Utility class for data imports using MongoDB.
+ * 
  * @author woemler
  */
 public class ImportUtils {
@@ -32,6 +34,12 @@ public class ImportUtils {
 		this.mongoTemplate = mongoTemplate;
 	}
 
+	/**
+	 * Serializes an object into a string format that can be inserted into a MongoDB collection.
+	 * 
+	 * @param entity
+	 * @return
+	 */
 	public String convertEntityToJson(Object entity){
 		MongoConverter converter = mongoTemplate.getConverter();
 		DBObject dbObject = new BasicDBObject();

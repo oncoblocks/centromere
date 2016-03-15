@@ -19,6 +19,8 @@ package org.oncoblocks.centromere.mongodb;
 import org.oncoblocks.centromere.core.dataimport.component.DatabaseCredentials;
 
 /**
+ * Subclass of {@link DatabaseCredentials}, with specific configurations for MongoDB instances.
+ * 
  * @author woemler
  */
 public class MongoCredentials implements DatabaseCredentials {

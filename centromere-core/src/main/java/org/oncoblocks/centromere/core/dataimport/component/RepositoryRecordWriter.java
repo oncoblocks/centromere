@@ -36,7 +36,11 @@ public class RepositoryRecordWriter<T extends Model<?>> implements RecordWriter<
 		this.repository = repository;
 	}
 
-	@Override 
+	/**
+	 * Writes the input {@link Model} record to the target {@link RepositoryOperations} implementation,
+	 *   using an insert operation.
+	 * @param entity
+	 */ 
 	public void writeRecord(T entity) {
 		repository.insert(entity);	
 	}
@@ -50,11 +54,22 @@ public class RepositoryRecordWriter<T extends Model<?>> implements RecordWriter<
 		this.repository = repository;
 	}
 
-	@Override public void doBefore(String destination) throws DataImportException {
+	/**
+	 * Performs no action.
+	 * 
+	 * @param destination
+	 * @throws DataImportException
+	 */
+	public void doBefore(String destination) throws DataImportException {
 		return;
 	}
 
-	@Override public void doAfter() throws DataImportException {
+	/**
+	 * Performs no action.
+	 * 
+	 * @throws DataImportException
+	 */
+	public void doAfter() throws DataImportException {
 		return;
 	}
 }

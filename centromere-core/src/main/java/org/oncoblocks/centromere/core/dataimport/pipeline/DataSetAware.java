@@ -17,6 +17,9 @@
 package org.oncoblocks.centromere.core.dataimport.pipeline;
 
 /**
+ * Data import components that implement this interface are assumed to have the identifier of the 
+ *   currently processed data set assigned to them, for annotating processed records.
+ * 
  * @author woemler
  */
 public interface DataSetAware {

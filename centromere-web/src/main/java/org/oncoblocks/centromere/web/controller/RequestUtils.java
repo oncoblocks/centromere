@@ -82,7 +82,14 @@ public class RequestUtils {
 		logger.info(String.format("Generated QueryCriteria for request: %s", criteriaList.toString()));
 		return criteriaList;
 	}
-	
+
+	/**
+	 * Inspects a {@link Model} class and returns all of the available and acceptable query parameter
+	 *   definitions, as a map of parameter names and {@link QueryParameterDescriptor} objects.
+	 * 
+	 * @param model
+	 * @return
+	 */
 	public static Map<String,QueryParameterDescriptor> getAvailableQueryParameters(Class<? extends Model<?>> model){
 		Map<String,QueryParameterDescriptor> paramMap = new HashMap<>();
 		for (Field field: model.getDeclaredFields()){

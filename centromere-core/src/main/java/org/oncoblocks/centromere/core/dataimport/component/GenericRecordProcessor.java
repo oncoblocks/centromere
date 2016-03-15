@@ -110,8 +110,11 @@ public class GenericRecordProcessor<T extends Model<?>>
 				BeanPropertyBindingResult bindingResult
 						= new BeanPropertyBindingResult(record, record.getClass().getName());
 				validator.validate(record, bindingResult);
-				if (bindingResult.hasErrors() && options.getBoolean("failOnInvalidRecord")){
-					throw new DataImportException(bindingResult.toString());
+				if (bindingResult.hasErrors()){
+					logger.warn(String.format("Record failed validation: %s", record.toString()));
+					if (options.getBoolean("failOnInvalidRecord")){
+						throw new DataImportException(bindingResult.toString());
+					}
 				}
 			}
 			writer.writeRecord(record);

@@ -17,6 +17,9 @@
 package org.oncoblocks.centromere.core.dataimport.pipeline;
 
 /**
+ * Data import components that implement this interface are assumed to reference the {@link ImportOptions}
+ *   for the containing data file or data set processing components.
+ * 
  * @author woemler
  */
 public interface ImportOptionsAware {

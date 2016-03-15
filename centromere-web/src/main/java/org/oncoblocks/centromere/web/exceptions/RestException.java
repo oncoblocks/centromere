@@ -20,6 +20,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.util.Assert;
 
 /**
+ * Base exception class for web services.  Generates a {@link RestError} object, that will be returned
+ *   in the HTTP response when the exception is thrown.
+ * 
  * @author woemler
  */
 public class RestException extends RuntimeException {
@@ -55,7 +58,7 @@ public class RestException extends RuntimeException {
 		this.code = code;
 	}
 
-	@Override public String getMessage() {
+	public String getMessage() {
 		return message;
 	}
 
@@ -79,8 +82,8 @@ public class RestException extends RuntimeException {
 		this.moreInfoUrl = moreInfoUrl;
 	}
 
-	public org.oncoblocks.centromere.web.exceptions.RestError getRestError(){
-		return new org.oncoblocks.centromere.web.exceptions.RestError(this.status, this.code, this.message, this.developerMessage, this.moreInfoUrl);
+	public RestError getRestError(){
+		return new RestError(this.status, this.code, this.message, this.developerMessage, this.moreInfoUrl);
 	}
 	
 }

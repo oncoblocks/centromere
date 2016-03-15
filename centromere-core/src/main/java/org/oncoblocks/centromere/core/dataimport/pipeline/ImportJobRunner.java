@@ -46,7 +46,12 @@ public class ImportJobRunner implements ApplicationContextAware {
 	public ImportJobRunner(ApplicationContext applicationContext) {
 		this.applicationContext = applicationContext;
 	}
-	
+
+	/**
+	 * Executes the import pipeline and processes all of the files in the {@link ImportJob}.
+	 * 
+	 * @throws DataImportException
+	 */
 	public void runImport() throws DataImportException {
 		this.configurationCheck();
 		for (InputFile inputFile: importJob.getFiles()){
@@ -72,7 +77,15 @@ public class ImportJobRunner implements ApplicationContextAware {
 			logger.info(String.format("[CENTROMERE] Completed file processing: %s", inputFilePath));
 		}
 	}
-	
+
+	/**
+	 * Merges the data set-level {@link ImportOptions} with the file-level options.  File-level options
+	 *   are given precendence over data set-level options, in case a file requires special handling.
+	 * 
+	 * @param fileOptions
+	 * @param jobOptions
+	 * @return
+	 */
 	protected ImportOptions mergeImportOptions(ImportOptions fileOptions, ImportOptions jobOptions){
 		Map<String,String> options = new HashMap<>(jobOptions.getOptionsMap());
 		options.putAll(new HashMap<>(fileOptions.getOptionsMap()));

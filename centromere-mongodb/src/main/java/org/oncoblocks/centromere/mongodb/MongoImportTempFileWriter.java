@@ -25,6 +25,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
+ * Implementation of {@link org.oncoblocks.centromere.core.dataimport.component.RecordWriter} that 
+ *   creates temporary files with {@link Model} records formatted in JSON, for importing via 
+ *   MongoImport.
+ * 
  * @author woemler
  */
 public class MongoImportTempFileWriter<T extends Model<?>> extends AbstractRecordFileWriter<T> {
@@ -39,7 +43,12 @@ public class MongoImportTempFileWriter<T extends Model<?>> extends AbstractRecor
 		this.importUtils = new ImportUtils(mongoTemplate);
 	}
 
-	@Override
+	/**
+	 * Writes a {@link Model} record to a temp file, formatted into JSON using {@link ImportUtils#convertEntityToJson(Object)}.
+	 * 
+	 * @param record
+	 * @throws DataImportException
+	 */
 	public void writeRecord(T record) throws DataImportException {
 		FileWriter writer = this.getWriter();
 		try {

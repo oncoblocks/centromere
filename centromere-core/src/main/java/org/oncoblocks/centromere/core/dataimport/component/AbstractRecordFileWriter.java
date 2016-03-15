@@ -34,16 +34,31 @@ public abstract class AbstractRecordFileWriter<T extends Model<?>> implements Re
 	private FileWriter writer;
 	private static final Logger logger = LoggerFactory.getLogger(AbstractRecordFileWriter.class);
 
-	@Override 
+	/**
+	 * Opens a new output file for writing.
+	 * 
+ 	 * @param destination
+	 * @throws DataImportException
+	 */
 	public void doBefore(String destination) throws DataImportException {
 		this.open(destination);
 	}
 
-	@Override 
+	/**
+	 * Closes the open file writer.
+	 * 
+ 	 * @throws DataImportException
+	 */
 	public void doAfter() throws DataImportException {
 		this.close();
 	}
 
+	/**
+	 * Creates or overwrites an output file, creates a {@link FileWriter} for writing records to the file.
+	 * 
+	 * @param outputFilePath
+	 * @throws DataImportException
+	 */
 	public void open(String outputFilePath) throws DataImportException{
 		this.close();
 		try {
@@ -53,7 +68,10 @@ public abstract class AbstractRecordFileWriter<T extends Model<?>> implements Re
 			throw new DataImportException(String.format("Cannot open output file: %s", outputFilePath));
 		}
 	}
-	
+
+	/**
+	 * Flushes outstanding records to the output file and then closes the file and its writer object.
+	 */
 	public void close(){
 		try {
 			writer.flush();

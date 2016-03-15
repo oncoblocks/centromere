@@ -40,7 +40,9 @@ public class BasicTokenUtils implements TokenOperations {
 		this.key = key;
 	}
 
-	@Override
+	/**
+	 * {@link TokenOperations#createToken(UserDetails)}
+	 */
 	public String createToken(UserDetails userDetails){
 		
 		long expires = System.currentTimeMillis() + tokenLifespan;
@@ -54,8 +56,10 @@ public class BasicTokenUtils implements TokenOperations {
 		return tokenBuilder.toString();
 		
 	}
-	
-	@Override
+
+	/**
+	 * {@link TokenOperations#computeSignature(UserDetails, long)}
+	 */
 	public String computeSignature(UserDetails userDetails, long expires){
 		
 		StringBuilder signatureBuilder = new StringBuilder();
@@ -77,8 +81,10 @@ public class BasicTokenUtils implements TokenOperations {
 		return new String(Hex.encodeHex(digest.digest(signatureBuilder.toString().getBytes())));
 		
 	}
-	
-	@Override
+
+	/**
+	 * {@link TokenOperations#getUserNameFromToken(String)}
+	 */
 	public String getUserNameFromToken(String authToken){
 		
 		if (null == authToken){
@@ -88,8 +94,10 @@ public class BasicTokenUtils implements TokenOperations {
 		return bits[0];
 		
 	}
-	
-	@Override
+
+	/**
+	 * {@link TokenOperations#validateToken(String, UserDetails)}
+	 */
 	public boolean validateToken(String authToken, UserDetails userDetails){
 		
 		String[] bits = authToken.split(":");
@@ -103,19 +111,35 @@ public class BasicTokenUtils implements TokenOperations {
 		return signature.equals(computeSignature(userDetails, expires));
 		
 	}
-	
+
+	/**
+	 * Sets the lifespan of the token in a time period defined by days.
+	 * 
+	 * @param days
+	 */
 	public void setTokenLifespanDays(Long days){
 		Assert.notNull(days, "Number of days must not be null.");
 		if (days < 1) throw new IllegalArgumentException("Number of days must be greater than zero.");
 		tokenLifespan = 1000L * 60 * 60 * 24 * days;
 	}
 
+	/**
+	 * Sets the lifespan of the token in a time period defined by hours.
+	 * 
+	 * @param hours
+	 */
 	public void setTokenLifespanHours(Long hours){
 		Assert.notNull(hours, "Number of hours must not be null.");
 		if (hours < 1) throw new IllegalArgumentException("Number of hours must be greater than zero.");
 		tokenLifespan = 1000L * 60 * 60 * hours;
 	}
-	
+
+	/**
+	 * Creates a {@link TokenDetails} object, based upon submitted {@link UserDetails}.
+	 * 
+	 * @param userDetails
+	 * @return
+	 */
 	public TokenDetails createTokenAndDetails(UserDetails userDetails){
 		String token = this.createToken(userDetails);
 		Calendar calendar = Calendar.getInstance();

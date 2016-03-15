@@ -36,15 +36,31 @@ public abstract class AbstractRecordFileReader<T extends Model<?>> implements Re
 	private BufferedReader reader;
 	private static final Logger logger = LoggerFactory.getLogger(AbstractRecordFileReader.class);
 
-	@Override public void doBefore(String input) throws DataImportException{
+	/**
+	 * Closes any open readers and opens the new target file.
+	 * 
+	 * @param input
+	 * @throws DataImportException
+	 */
+	public void doBefore(String input) throws DataImportException{
 		this.close();
 		this.open(input);
 	}
 
-	@Override public void doAfter() {
+	/**
+	 * Calls the close method on the reader.
+	 */
+	public void doAfter() {
 		this.close();
 	}
 
+	/**
+	 * Opens the target file and creates a {@link BufferedReader}, which can be referenced via its
+	 *   getter method.
+	 * 
+	 * @param inputFilePath
+	 * @throws DataImportException
+	 */
 	public void open(String inputFilePath) throws DataImportException{
 		File file = new File(inputFilePath);
 		if (!file.canRead() || !file.isFile()){
@@ -61,7 +77,10 @@ public abstract class AbstractRecordFileReader<T extends Model<?>> implements Re
 			throw new DataImportException(String.format("Cannot read dataimport file: %s", inputFilePath));
 		}
 	}
-	
+
+	/**
+	 * Closes the target file, if a reader exists.
+	 */
 	public void close(){
 		if (reader != null){
 			try {
