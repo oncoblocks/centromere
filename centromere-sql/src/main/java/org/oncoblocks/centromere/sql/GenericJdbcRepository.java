@@ -105,7 +105,7 @@ public class GenericJdbcRepository<T extends Model<ID>, ID extends Serializable>
 	/**
 	 * Creates a new {@link SqlBuilder} instance.
 	 * 
-	 * @return
+	 * @return {@link SqlBuilder}
 	 */
 	protected SqlBuilder getSqlBuilder(){
 		return new SqlBuilder(tableDescription);
@@ -365,8 +365,8 @@ public class GenericJdbcRepository<T extends Model<ID>, ID extends Serializable>
 	/**
 	 * Converts an {@code ID} instance into a collection of objects.
 	 * 
-	 * @param id
-	 * @return
+	 * @param id primary key ID object
+	 * @return list of objects comprising the primary key
 	 */
 	protected static <ID> List<Object> idToObjectList(ID id) {
 		if (id instanceof Object[])

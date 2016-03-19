@@ -23,15 +23,17 @@
     
     <groupId>org.oncoblocks.centromere</groupId>
     <artifactId>centromere-parent</artifactId>
-    <version>0.3.0-SNAPSHOT</version>
+    <version>0.3.0</version>
     <name>Oncoblocks: Centromere Parent</name>
     <packaging>pom</packaging>
+    
+    <description>Genomic data warehouse and RESTful web services framework. Parent POM file.</description>
+    <url>https://github.com/oncoblocks/centromere</url>
     
     <modules>
         <module>../centromere-core</module>
         <module>../centromere-mongodb</module>
         <module>../centromere-sql</module>
-        <!--<module>../centromere-data-import</module>-->
         <module>../centromere-web</module>
     </modules>
 
@@ -57,6 +59,17 @@
         <url>git@github.com:oncoblocks/centromere.git</url>
     </scm>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
     <properties>
         <spring.platform.version>2.0.1.RELEASE</spring.platform.version>
     </properties>
@@ -79,9 +92,22 @@
     </dependencies>
 
     <build>
-        <finalName>centromere-parent</finalName>
+        <finalName>${project.artifactId}-${project.version}</finalName>
         <plugins>
-            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 

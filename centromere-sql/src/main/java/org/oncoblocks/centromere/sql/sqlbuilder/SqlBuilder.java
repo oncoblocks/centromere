@@ -60,7 +60,7 @@ import java.util.*;
  *   ORDER BY name ASC, address DESC
  *   LIMIT 10, 50
  *   
- *  List<Object> parameters = sqlBuilder.getQueryParameterValues;
+ *  sqlBuilder.getQueryParameterValues;
  * 
  *  Should return a list with { 'active', 'Joe' }
  * 

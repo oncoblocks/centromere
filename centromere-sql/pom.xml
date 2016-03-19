@@ -24,13 +24,16 @@
     <parent>
         <groupId>org.oncoblocks.centromere</groupId>
         <artifactId>centromere-parent</artifactId>
-        <version>0.3.0-SNAPSHOT</version>
+        <version>0.3.0</version>
         <relativePath>../centromere-parent</relativePath>
     </parent>
     
     <artifactId>centromere-sql</artifactId>
     <name>Oncoblocks: Centromere SQL</name>
     <packaging>jar</packaging>
+
+    <description>Genomic data warehouse and RESTful web services framework.  Repository integration for SQL databases.</description>
+    <url>https://github.com/oncoblocks/centromere</url>
 
     <licenses>
         <license>
@@ -54,13 +57,24 @@
         <url>git@github.com:oncoblocks/centromere.git</url>
     </scm>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
     <dependencies>
         
         <!-- Centromere -->
         <dependency>
             <groupId>org.oncoblocks.centromere</groupId>
             <artifactId>centromere-core</artifactId>
-            <version>0.3.0-SNAPSHOT</version>
+            <version>0.3.0</version>
         </dependency>
 
         <!-- JdbcRepository -->
@@ -88,7 +102,7 @@
     </dependencies>
 
     <build>
-        <finalName>centromere-sql</finalName>
+        <finalName>${project.artifactId}-${project.version}</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -106,6 +120,44 @@
                         <include>**/*Tests.java</include>
                     </includes>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
