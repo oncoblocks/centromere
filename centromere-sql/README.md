@@ -4,6 +4,20 @@ Repository implementations for SQL databases.
 
 ## Quick Start
 
+### Maven
+
+You can get the latest release build of the Centromere SQL module from Maven Central Repository:
+
+```xml
+<dependency>
+    <groupId>org.oncoblocks.centromere</groupId>
+    <artifactId>centromere-sql</artifactId>
+    <version>0.3.0</version>
+</dependency>
+```
+
+### Creating Repositories
+
 The `GenericJdbcRepository` is the JDBC SQL database implementation of `RepositoryOperations`.  This repository implementation is based on  `com.nurkiewicz.jdbcrepository.JdbcRepository`, but uses a more complex version of the `TableDescription` class, and a custom SQL generation class, `SqlBuilder`.  Much like with `JdbcRepository`, you define a `GenericJdbcRepository` using a `ComplexTableDescription`, `RowMapper`, and optional `RowUnmapper`.  For example:
 
 ```java

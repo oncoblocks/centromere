@@ -4,6 +4,18 @@ Components for creating database repositories for Centromere data warehouses.  T
 
 ## Quick Start
 
+### Maven
+
+You can get the latest release build of the Centromere Core module from Maven Central Repository:
+
+```xml
+<dependency>
+    <groupId>org.oncoblocks.centromere</groupId>
+    <artifactId>centromere-core</artifactId>
+    <version>0.3.0</version>
+</dependency>
+```
+
 ### Creating a Data Model
 
 The first step in implementing a data warehouse with Centromere is to design a data model and create representational Java classes for each entity.  Once implemented, a single model class will be used for each web service endpoint, so model classes should be considered to be atomic, normalized entities.  All data model entity classes should implement the `Model` interface:

@@ -4,6 +4,18 @@ Components for creating REST web services that sit on top of a Centromere data w
 
 ## Quick Start
 
+### Maven
+
+You can get the latest release build of the Centromere Web module from Maven Central Repository:
+
+```xml
+<dependency>
+    <groupId>org.oncoblocks.centromere</groupId>
+    <artifactId>centromere-web</artifactId>
+    <version>0.3.0</version>
+</dependency>
+```
+
 ### Configuration
 
 The easiest way to configure Centromere is to use the available auto-configuration annotations in a Spring Boot application class or supporting configuration class: `@AutoConfigureWebServices`, `@AutoConfigureWebSecurity`, and `@AutoConfigureApiDocumentation`.  This will handle all of the required web context configuration and bean registration for the web services, API documentation, and security features:

@@ -4,6 +4,18 @@ Repository class implementations for MongoDB.
 
 ## Quick Start
 
+### Maven
+
+You can get the latest release build of the Centromere MongoDb module from Maven Central Repository:
+
+```xml
+<dependency>
+    <groupId>org.oncoblocks.centromere</groupId>
+    <artifactId>centromere-mongodb</artifactId>
+    <version>0.3.0</version>
+</dependency>
+```
+
 ### Creating Repositories
 
 The `GenericMongoRepository` is the MongoDB implementation of `RepositoryOperations`, utilizing Spring Data MongoDB's `MongoTemplate` for query execution and object mapping.  Before creating repository classes, you should configure your database connection:
@@ -13,7 +25,7 @@ The `GenericMongoRepository` is the MongoDB implementation of `RepositoryOperati
 @Configuration
 @PropertySource({ "classpath:mongodb-data-source.properties" })
 public class MongoConfig extends AbstractMongoConfiguration {
-	
+
 	@Autowired private Environment env;
 
 	@Override
@@ -33,7 +45,7 @@ public class MongoConfig extends AbstractMongoConfiguration {
 		));
 		return new MongoClient(serverAddress, credentials);
 	}
-	
+
 }
 ```
 

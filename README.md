@@ -32,7 +32,33 @@ Database-specific implementations of the core repository interfaces and data imp
 The web module contains all components of the REST web services, including security and API documentation tools.
 
 ## Quick Start
-Please see each individual module's README for instructions on getting started.
+Please see each individual module's README for instructions on getting started.  Artifacts for Centromere release builds are available from the Maven Central Repository:
+
+```xml
+<dependency>
+    <groupId>org.oncoblocks.centromere</groupId>
+    <artifactId>centromere-core</artifactId>
+    <version>0.3.0</version>
+</dependency>
+
+<dependency>
+    <groupId>org.oncoblocks.centromere</groupId>
+    <artifactId>centromere-mongodb</artifactId>
+    <version>0.3.0</version>
+</dependency>
+
+<dependency>
+    <groupId>org.oncoblocks.centromere</groupId>
+    <artifactId>centromere-sql</artifactId>
+    <version>0.3.0</version>
+</dependency>
+
+<dependency>
+    <groupId>org.oncoblocks.centromere</groupId>
+    <artifactId>centromere-web</artifactId>
+    <version>0.3.0</version>
+</dependency>
+```
 
 ## Contact
 
