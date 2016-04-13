@@ -54,7 +54,7 @@ public class DataImportTests {
 	@Autowired private GeneInfoProcessor processor;
 	@Autowired private TestRepository testRepository;
 	@Autowired private ApplicationContext applicationContext;
-	@Autowired private ImportOptions defaultImportOptions;
+	@Autowired private BasicImportOptions defaultImportOptions;
 	private static final ObjectMapper mapper = new ObjectMapper();
 
 	@Before

@@ -16,13 +16,17 @@
 
 package org.oncoblocks.centromere.core.dataimport.component;
 
+import org.oncoblocks.centromere.core.dataimport.pipeline.ImportOptions;
+import org.oncoblocks.centromere.core.model.Model;
+import org.springframework.validation.Validator;
+
 /**
  * Record processors take all of the individual data import components (reader, writer, validator, 
  *   and importer), and combines them to handle a single data type's import
  * 
  * @author woemler
  */
-public interface RecordProcessor {
+public interface RecordProcessor<T extends Model<?>> {
 
 	/**
 	 * Executes before the {@code run} method.  Can be configured to handle tasks, such as data set 
@@ -43,4 +47,29 @@ public interface RecordProcessor {
 	 * @throws DataImportException
 	 */
 	void run(String path) throws DataImportException;
+	
+	void setReader(RecordReader<T> reader);
+	
+	RecordReader<T> getReader();
+	
+	void setValidator(Validator validator);
+	
+	Validator getValidator();
+	
+	void setWriter(RecordWriter<T> writer);
+	
+	RecordWriter<T> getWriter();
+	
+	void setImporter(RecordImporter importer);
+	
+	RecordImporter getImporter();
+	
+	void setModel(Class<T> model);
+	
+	Class<T> getModel();
+	
+	void setImportOptions(ImportOptions importOptions);
+	
+	ImportOptions getImportOptions();
+	
 }

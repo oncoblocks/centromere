@@ -32,7 +32,7 @@ public class ImportJob {
 	
 	private String name;
 	private String notes;
-	private ImportOptions options;
+	private BasicImportOptions options;
 	private List<DataSetMetadata> dataSets;
 	private List<DataType> dataTypes;
 	private List<InputFile> files;
@@ -79,11 +79,11 @@ public class ImportJob {
 		this.files = files;
 	}
 
-	public ImportOptions getOptions() {
+	public BasicImportOptions getOptions() {
 		return options;
 	}
 
 	public void setOptions(Map<String, String> options) {
-		this.options = new ImportOptions(options);
+		this.options = new BasicImportOptions(options);
 	}
 }

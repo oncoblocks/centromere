@@ -30,7 +30,7 @@ public class DataType {
 	
 	private String name;
 	private String processor;
-	private ImportOptions options = new ImportOptions();
+	private ImportOptions options = new BasicImportOptions();
 
 	public DataType() { }
 

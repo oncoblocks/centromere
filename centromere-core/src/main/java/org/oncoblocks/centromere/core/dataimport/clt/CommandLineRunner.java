@@ -14,14 +14,35 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.pipeline;
+package org.oncoblocks.centromere.core.dataimport.clt;
+
+import com.beust.jcommander.JCommander;
 
 /**
- * Data import components that implement this interface are assumed to reference the {@link BasicImportOptions}
- *   for the containing data file or data set processing components.
- * 
  * @author woemler
  */
-public interface ImportOptionsAware {
-	void setImportOptions(ImportOptions importOptions);
+public class CommandLineRunner {
+	
+	public void main(String[] args) throws Exception {
+		
+		ImportCommandArguments importArguments = new ImportCommandArguments();
+		AddCommandArguments addArguments = new AddCommandArguments();
+		JCommander jc = new JCommander();
+		jc.addCommand("import", importArguments);
+		jc.addCommand("add", addArguments);
+		jc.parse(args);
+		
+		switch (jc.getParsedCommand()){
+			case "import":
+				// do stuff
+				break;
+			case "add":
+				// do stuff
+				break;
+			default:
+				jc.usage();
+		}
+		
+	}
+	
 }

@@ -125,10 +125,10 @@ Response:
 	{
 		sampleId: 123,
 		entrezGeneId: 207,
-		dataFileId: 43,
+		dataSetId: 43,
 		value: 103.12
 		links: [
-			{ rel: "self", href: "http://myapp/hgu133/rma?sampleId=123&entrezGeneId=207&dataFileId=43"  },
+			{ rel: "self", href: "http://myapp/hgu133/rma?sampleId=123&entrezGeneId=207&dataSetId=43"  },
 			{ rel: "sample", href: "http://myapp/samples/123"  },
 			{ rel: "gene", href: "http://myapp/genes/207"  },
 			{ rel: "data_file", href: "http://myapp/datafiles/43"  }

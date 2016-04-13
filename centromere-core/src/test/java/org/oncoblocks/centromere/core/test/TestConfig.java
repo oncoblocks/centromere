@@ -16,7 +16,7 @@
 
 package org.oncoblocks.centromere.core.test;
 
-import org.oncoblocks.centromere.core.dataimport.pipeline.ImportOptions;
+import org.oncoblocks.centromere.core.dataimport.pipeline.BasicImportOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -42,8 +42,8 @@ public class TestConfig {
 	}
 	
 	@Bean(name = "defaultImportOptions")
-	public ImportOptions importOptions(){
-		ImportOptions importOptions = new ImportOptions();
+	public BasicImportOptions importOptions(){
+		BasicImportOptions importOptions = new BasicImportOptions();
 		importOptions.setOption("tempDirectoryPath",environment.getRequiredProperty("tmp.dir"));
 		importOptions.setOption("failOnInvalidRecord", "false");
 		return importOptions;

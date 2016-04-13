@@ -16,13 +16,13 @@
 
 package org.oncoblocks.centromere.core.dataimport.component;
 
+import org.oncoblocks.centromere.core.dataimport.pipeline.BasicImportOptions;
 import org.oncoblocks.centromere.core.dataimport.pipeline.DataSetAware;
 import org.oncoblocks.centromere.core.dataimport.pipeline.ImportOptions;
 import org.oncoblocks.centromere.core.dataimport.pipeline.ImportOptionsAware;
 import org.oncoblocks.centromere.core.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Validator;
 
@@ -32,30 +32,33 @@ import java.io.File;
  * Basic {@link RecordProcessor} implementation, which can be used to handle most file import jobs.
  *   The {@code doBefore} and {@code doAfter} methods can be overridden to handle data set or data
  *   file metadata persistence, pre/post-processing, or other maintenance tasks.  Uses a basic
- *   {@link ImportOptions} instance to set import parameters, and identify the directory to store
+ *   {@link BasicImportOptions} instance to set import parameters, and identify the directory to store
  *   all temporary files.
  * 
  * @author woemler
  */
 public class GenericRecordProcessor<T extends Model<?>> 
-		implements RecordProcessor, ImportOptionsAware, DataSetAware {
+		implements RecordProcessor<T>, ImportOptionsAware, DataSetAware {
 
+	private Class<T> model;
 	private RecordReader<T> reader;
 	private Validator validator;
 	private RecordWriter<T> writer;
 	private RecordImporter importer;
-	private ImportOptions options;
+	private BasicImportOptions options;
 	private Object dataSetId;
 	private static final Logger logger = LoggerFactory.getLogger(GenericRecordProcessor.class);
 
 	public GenericRecordProcessor() { }
 
 	public GenericRecordProcessor(
+			Class<T> model,
 			RecordReader<T> reader, 
 			Validator validator,
 			RecordWriter<T> writer,
 			RecordImporter importer,
-			ImportOptions options) {
+			BasicImportOptions options) {
+		this.model = model;
 		this.reader = reader;
 		this.validator = validator;
 		this.writer = writer;
@@ -67,7 +70,6 @@ public class GenericRecordProcessor<T extends Model<?>>
 	 * {@link RecordProcessor#doBefore()}
 	 */
 	public void doBefore() {
-		this.checkImportOptions();
 		if (writer != null && writer instanceof ImportOptionsAware) {
 			((ImportOptionsAware) writer).setImportOptions(options);
 		}
@@ -92,7 +94,7 @@ public class GenericRecordProcessor<T extends Model<?>>
 	 * {@link RecordProcessor#doAfter()}
 	 */
 	public void doAfter() {
-		return;
+		
 	}
 
 	/**
@@ -112,7 +114,7 @@ public class GenericRecordProcessor<T extends Model<?>>
 				validator.validate(record, bindingResult);
 				if (bindingResult.hasErrors()){
 					logger.warn(String.format("Record failed validation: %s", record.toString()));
-					if (options.getBoolean("failOnInvalidRecord")){
+					if (!options.isSkipInvalidRecords()){
 						throw new DataImportException(bindingResult.toString());
 					}
 				}
@@ -126,11 +128,7 @@ public class GenericRecordProcessor<T extends Model<?>>
 			importer.importFile(this.getTempFilePath(inputFilePath));
 		}
 	}
-	
-	protected void checkImportOptions(){
-		Assert.isTrue(options.hasOption("failOnInvalidRecord"), "Missing required option: failOnInvalidRecord");
-		Assert.isTrue(options.hasOption("tempDirectoryPath"), "Missing required option: tempDirectoryPath");
-	}
+
 
 	/**
 	 * Returns the path of the temporary file to be written, if necessary.  Uses the input file's name
@@ -140,10 +138,18 @@ public class GenericRecordProcessor<T extends Model<?>>
 	 * @return
 	 */
 	private String getTempFilePath(String inputFilePath){
-		File tempDir = new File(options.getString("tempDirectoryPath"));
+		File tempDir = new File(options.getTempDirectoryPath());
 		String fileName = new File(inputFilePath).getName() + ".tmp";
 		File tempFile = new File(tempDir, fileName);
 		return tempFile.getPath();
+	}
+
+	public Class<T> getModel() {
+		return model;
+	}
+
+	public void setModel(Class<T> model) {
+		this.model = model;
 	}
 
 	public RecordReader<T> getReader() {
@@ -183,6 +189,10 @@ public class GenericRecordProcessor<T extends Model<?>>
 	}
 
 	public void setImportOptions(ImportOptions options) {
+		this.options = new BasicImportOptions(options);
+	}
+	
+	public void setImportOptions(BasicImportOptions options){
 		this.options = options;
 	}
 

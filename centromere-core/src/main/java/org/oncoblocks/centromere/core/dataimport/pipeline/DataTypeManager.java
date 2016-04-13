@@ -16,7 +16,10 @@
 
 package org.oncoblocks.centromere.core.dataimport.pipeline;
 
+import org.oncoblocks.centromere.core.dataimport.component.DataImportException;
+import org.oncoblocks.centromere.core.dataimport.component.DataTypes;
 import org.oncoblocks.centromere.core.dataimport.component.RecordProcessor;
+import org.springframework.context.ApplicationContext;
 import org.springframework.util.Assert;
 
 import java.util.HashMap;
@@ -30,18 +33,50 @@ import java.util.Map;
  */
 public class DataTypeManager {
 	
-	private final Map<String, DataType> dataTypeMap = new HashMap<>();
+	private final Map<String, RecordProcessor> dataTypeMap = new HashMap<>();
+	private final ApplicationContext applicationContext;
 
-	public DataTypeManager() { }
-	
-	public DataTypeManager(Iterable<DataType> dataTypes){
-		this.addDataTypes(dataTypes);
+	public DataTypeManager(ApplicationContext applicationContext) { 
+		this.applicationContext = applicationContext;
+		for (Map.Entry entry: applicationContext.getBeansWithAnnotation(DataTypes.class).entrySet()){
+			Object obj = entry.getValue();
+			if (obj instanceof RecordProcessor){
+				RecordProcessor p = (RecordProcessor) obj;
+				DataTypes dataTypes = p.getClass().getAnnotation(DataTypes.class);
+				for (String t: dataTypes.value()){
+					dataTypeMap.put(t, p);
+				}
+			}
+		}
 	}
 	
-	public DataTypeManager(DataType... dataTypes){
-		for (DataType dataType: dataTypes){
-			this.addDataType(dataType);
+	private RecordProcessor getProcessorByName(String processorBeanName) throws DataImportException{
+		RecordProcessor processor = null;
+		try {
+			Class<? extends RecordProcessor> processorClass
+					= (Class<? extends RecordProcessor>) Class.forName(processorBeanName);
+			processor = applicationContext.getBean(processorClass);
+		} catch (ClassNotFoundException e){
+			processor = (RecordProcessor) applicationContext.getBean(processorBeanName);
 		}
+		if (processor == null){
+			throw new DataImportException(String.format("RecordProcessor bean does not exist: %s",
+					processorBeanName));
+		}
+		return processor;
+	}
+
+	/**
+	 * Adds a data type mapping, using the data type name to find a 
+	 * 
+	 * @param dataTypeName
+	 */
+	public void addDataType(String dataTypeName, String processorBeanName) throws DataImportException {
+		dataTypeMap.put(dataTypeName, this.getProcessorByName(processorBeanName));
+	}
+	
+	public void addDataType(String dataTypeName, RecordProcessor processor){
+		dataTypeMap.put(dataTypeName, processor);
 	}
 
 	/**
@@ -49,12 +84,12 @@ public class DataTypeManager {
 	 * 
 	 * @param dataType
 	 */
-	public void addDataType(DataType dataType){
+	public void addDataType(DataType dataType) throws DataImportException{
 		Assert.notNull(dataType);
 		Assert.notNull(dataType.getName());
 		Assert.notNull(dataType.getProcessor());
 		Assert.notNull(dataType.getOptions());
-		dataTypeMap.put(dataType.getName(), dataType);
+		this.addDataType(dataType.getName(), dataType.getProcessor());
 	}
 
 	/**
@@ -62,7 +97,7 @@ public class DataTypeManager {
 	 * 
 	 * @param dataTypes
 	 */
-	public void addDataTypes(Iterable<DataType> dataTypes){
+	public void addDataTypes(Iterable<DataType> dataTypes) throws DataImportException{
 		for (DataType dataType: dataTypes){
 			this.addDataType(dataType);
 		}
@@ -75,10 +110,9 @@ public class DataTypeManager {
 	 * @param name
 	 * @return
 	 */
-	public String getProcessorByDataType(String name){
+	public RecordProcessor getProcessorByDataType(String name){
 		if (!dataTypeMap.containsKey(name)) return null;
-		DataType dataType = dataTypeMap.get(name);
-		return dataType.getProcessor();
+		return dataTypeMap.get(name);
 	}
 
 	/**
@@ -90,5 +124,6 @@ public class DataTypeManager {
 	public boolean isSupportedDataType(String name){
 		return dataTypeMap.containsKey(name);
 	}
+
 	
 }

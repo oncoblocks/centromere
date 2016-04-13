@@ -30,7 +30,7 @@ public class InputFile {
 	private String path;
 	private String dataType;
 	private String dataSet;
-	private ImportOptions options = new ImportOptions();
+	private BasicImportOptions options = new BasicImportOptions();
 
 	public String getPath() {
 		return path;
@@ -56,11 +56,11 @@ public class InputFile {
 		this.dataSet = dataSet;
 	}
 
-	public ImportOptions getOptions() {
+	public BasicImportOptions getOptions() {
 		return options;
 	}
 
 	public void setOptions(Map<String,String> options) {
-		this.options = new ImportOptions(options);
+		this.options = new BasicImportOptions(options);
 	}
 }

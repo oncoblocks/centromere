@@ -16,47 +16,36 @@
 
 package org.oncoblocks.centromere.core.dataimport.pipeline;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Captures basic parameters required for a data import pipeline.
+ * Simple interface for allowing the passing of key-value string parameters between data import 
+ *   components.
  * 
  * @author woemler
  */
-public class ImportOptions {
+public interface ImportOptions {
 
-	private Map<String,String> options = new HashMap<>();
-	
-	public ImportOptions(){ }
+	/**
+	 * Returns the string value of the given option, if it exists.
+	 * 
+	 * @param name Key name of the option.
+	 * @return String value of the option.
+	 */
+	String getOption(String name);
 
-	public ImportOptions(Map<String, String> options) {
-		this.options = options;
-	}
-	
-	public Map<String,String> getOptionsMap(){
-		return options;
-	}
-	
-	public String getString(String name){
-		return options.containsKey(name) ? options.get(name) : null;
-	}
-	
-	public boolean getBoolean(String name){
-		if (!options.containsKey(name)) throw new NullPointerException("Invalid option: " + name);
-		return Boolean.parseBoolean(options.get(name));
-	}
-	
-	public void setOption(String name, String value){
-		options.put(name, value);
-	}
-	
-	public void setOptions(Map<String,String> options){
-		this.options.putAll(options);
-	}
-	
-	public boolean hasOption(String name){
-		return options.containsKey(name);
-	}
+	/**
+	 * Returns all of the key-value option pairs in the object.
+	 * 
+	 * @return {@link Map} of string options.
+	 */
+	Map<String, String> getOptions();
 
+	/**
+	 * Tests whether the option is present in the object's key-value map.
+	 * 
+	 * @param name Key name of the option.
+	 * @return true if the option exists, false otherwise.
+	 */
+	boolean hasOption(String name);
 }

@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.pipeline;
+package org.oncoblocks.centromere.core.dataimport.clt;
 
 import org.oncoblocks.centromere.core.dataimport.component.DataImportException;
 import org.oncoblocks.centromere.core.dataimport.component.RecordProcessor;
+import org.oncoblocks.centromere.core.dataimport.pipeline.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -32,19 +33,24 @@ import java.util.Map;
  * 
  * @author woemler
  */
-public class ImportJobRunner implements ApplicationContextAware {
+public class RecordProcessorRunner implements ApplicationContextAware {
 	
 	private ImportJob importJob;
 	private ApplicationContext applicationContext;
 	private DataTypeManager dataTypeManager;
 	private DataSetManager dataSetManager;
-	private static final Logger logger = LoggerFactory.getLogger(ImportJobRunner.class);
+	private static final Logger logger = LoggerFactory.getLogger(RecordProcessorRunner.class);
 
-	public ImportJobRunner() { }
+	public RecordProcessorRunner() { }
 
-	public ImportJobRunner(ApplicationContext applicationContext) {
+	public RecordProcessorRunner(ApplicationContext applicationContext) {
 		this.applicationContext = applicationContext;
 	}
+	
+	public void parseInput(String[] args) throws Exception {
+		
+	}
+	
 
 	/**
 	 * Executes the import pipeline and processes all of the files in the {@link ImportJob}.
@@ -53,28 +59,7 @@ public class ImportJobRunner implements ApplicationContextAware {
 	 */
 	public void runImport() throws DataImportException {
 		this.configurationCheck();
-		for (InputFile inputFile: importJob.getFiles()){
-			String dataSetName = inputFile.getDataSet();
-			String dataTypeName = inputFile.getDataType();
-			String inputFilePath = inputFile.getPath();
-			DataSetMetadata dataSetMetadata = dataSetManager.getDataSetByName(dataSetName);
-			BasicImportOptions combinedOptions = mergeImportOptions(inputFile.getOptions(), importJob.getOptions());
-			this.processDataSet(dataSetMetadata, inputFile);
-			RecordProcessor processor = dataTypeManager.getProcessorByDataType(dataTypeName);
-			if (processor instanceof ImportOptionsAware && inputFile.getOptions() != null) {
-				((ImportOptionsAware) processor).setImportOptions(combinedOptions);
-			}
-			if (processor instanceof DataSetAware){
-				Object dataSetId = this.getDataSetId(dataSetMetadata, inputFile);
-				((DataSetAware) processor).setDataSetId(dataSetId);
-			}
-			logger.info(String.format("[CENTROMERE] Processing dataimport file: dataSet=%s dataType=%s, processor=%s, filePath=%s",
-					dataSetName, dataTypeName, processor.getClass().getName(), inputFilePath));
-			processor.doBefore();
-			processor.run(inputFilePath);
-			processor.doAfter();
-			logger.info(String.format("[CENTROMERE] Completed file processing: %s", inputFilePath));
-		}
+		
 	}
 
 	/**
@@ -94,7 +79,7 @@ public class ImportJobRunner implements ApplicationContextAware {
 	/**
 	 * Runs the required configuration before the import job executes.
 	 */
-	protected void jobSetup() throws DataImportException{
+	protected void jobSetup() throws DataImportException {
 		this.configureDataTypeManager();
 		this.configureDataSetManager();
 	}
@@ -128,6 +113,7 @@ public class ImportJobRunner implements ApplicationContextAware {
 	 */
 	protected void configurationCheck() throws DataImportException {
 		if (dataTypeManager == null) throw new DataImportException("DataTypeManager has not been configured.");
+		if (dataSetManager == null) throw new DataImportException("DataSetManager has not been configured.");
 	}
 
 	/**
@@ -155,7 +141,6 @@ public class ImportJobRunner implements ApplicationContextAware {
 	 *   {@link RecordProcessor} beans.
 	 */
 	protected void configureDataTypeManager() throws DataImportException{
-		dataTypeManager = new DataTypeManager(applicationContext);
 		if (importJob.getDataTypes() != null) dataTypeManager.addDataTypes(importJob.getDataTypes()); // Data type configurations in the job file will override annotations
 	}
 
