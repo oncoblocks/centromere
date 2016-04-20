@@ -18,6 +18,7 @@ package org.oncoblocks.centromere.web.test.controller;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.oncoblocks.centromere.core.repository.Evaluation;
 import org.oncoblocks.centromere.core.repository.QueryParameterDescriptor;
 import org.oncoblocks.centromere.web.controller.RequestUtils;
 import org.oncoblocks.centromere.web.test.config.TestMongoConfig;
@@ -47,8 +48,13 @@ public class RequestUtilTests {
 		Assert.notNull(params);
 		Assert.notEmpty(params);
 		for (Map.Entry entry: params.entrySet()){
-			System.out.println(String.format("Param: %s, Type: %s", entry.getKey(), ((QueryParameterDescriptor) entry.getValue()).toString()));
+			System.out.println(String.format("Param: %s, Type: %s", entry.getKey(), (entry.getValue()).toString()));
 		}
+		Assert.isTrue(params.containsKey("geneId"));
+		Assert.isTrue(params.containsKey("gene.aliases"));
+		Assert.isTrue(params.containsKey("gene"));
+		Assert.isTrue(params.containsKey("signalOutside"));
+		Assert.isTrue(params.get("signalOutside").getEvaluation().equals(Evaluation.OUTSIDE_INCLUSIVE));
 	}
 	
 }

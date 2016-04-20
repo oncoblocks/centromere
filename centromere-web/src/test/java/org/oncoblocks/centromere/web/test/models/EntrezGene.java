@@ -33,7 +33,6 @@ public class EntrezGene implements Model<Long> {
 	@Id 
 	private Long entrezGeneId;
 	
-	
 	@Alias("geneSymbol") 
 	private String primaryGeneSymbol;
 	

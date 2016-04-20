@@ -30,6 +30,7 @@ import java.io.IOException;
  * 
  * @author woemler
  */
+@Deprecated
 public class JsonJobFileParser implements JobFileParser {
 	
 	private ObjectMapper objectMapper;

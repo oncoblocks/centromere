@@ -26,6 +26,7 @@ import org.oncoblocks.centromere.core.dataimport.component.RecordProcessor;
  * 
  * @author woemler
  */
+@Deprecated
 public class DataType {
 	
 	private String name;

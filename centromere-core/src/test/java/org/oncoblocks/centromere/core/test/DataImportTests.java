@@ -21,7 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.oncoblocks.centromere.core.dataimport.component.RepositoryRecordWriter;
-import org.oncoblocks.centromere.core.dataimport.pipeline.*;
+import org.oncoblocks.centromere.core.dataimport.pipeline.BasicImportOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -31,11 +31,7 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.Validator;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import static org.junit.Assert.fail;
@@ -127,66 +123,66 @@ public class DataImportTests {
 		System.out.println(gene.toString());
 	}
 	
-	@Test
-	public void mapInputFileTest() throws Exception {
-		String json = "{\"path\": \"/path/to/file.txt\", \"dataType\": \"ENTREZ_GENE\", \"dataSet\":\"metadata\"}";
-		InputFile inputFile = mapper.readValue(json, InputFile.class);
-		Assert.notNull(inputFile);
-		Assert.isTrue(inputFile.getPath().endsWith("file.txt"));
-		Assert.isTrue("ENTREZ_GENE".equals(inputFile.getDataType()));
-		Assert.isTrue("metadata".equals(inputFile.getDataSet()));
-	}
+//	@Test
+//	public void mapInputFileTest() throws Exception {
+//		String json = "{\"path\": \"/path/to/file.txt\", \"dataType\": \"ENTREZ_GENE\", \"dataSet\":\"metadata\"}";
+//		InputFile inputFile = mapper.readValue(json, InputFile.class);
+//		Assert.notNull(inputFile);
+//		Assert.isTrue(inputFile.getPath().endsWith("file.txt"));
+//		Assert.isTrue("ENTREZ_GENE".equals(inputFile.getDataType()));
+//		Assert.isTrue("metadata".equals(inputFile.getDataSet()));
+//	}
 	
-	@Test
-	public void mapImportJobTest() throws Exception {
-		StringBuilder sb = new StringBuilder();
-		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new FileReader(importJobJsonFilePath));
-			String line = br.readLine();
-			while (line != null){
-				sb.append(line);
-				line = br.readLine();
-			}
-		} finally {
-			if (br != null) br.close();
-		}
-		ImportJob job = mapper.readValue(sb.toString(), ImportJob.class);
-		Assert.notNull(job);
-		Assert.notNull(job.getDataTypes());
-		Assert.notEmpty(job.getDataTypes());
-		Assert.notNull(job.getFiles());
-		Assert.notEmpty(job.getFiles());
-	}
-
-	@Test
-	public void jsonJobFileParserTest() throws Exception {
-		JsonJobFileParser parser = new JsonJobFileParser();
-		parser.setObjectMapper(mapper);
-		ImportJob job = parser.parseJobFile(importJobJsonFilePath);
-		Assert.notNull(job);
-		Assert.notNull(job.getDataTypes());
-		Assert.notEmpty(job.getDataTypes());
-		Assert.notNull(job.getFiles());
-		Assert.notEmpty(job.getFiles());
-	}
-	
-	@Test
-	public void jobRunnerTest() throws Exception {
-		testRepository.deleteAll();
-		System.out.println(new File(".").getCanonicalPath());
-		Assert.isTrue(testRepository.count() == 0);
-		JsonJobFileParser parser = new JsonJobFileParser();
-		parser.setObjectMapper(mapper);
-		ImportJob job = parser.parseJobFile(importJobJsonFilePath);
-		Assert.notNull(job);
-		Assert.notNull(job.getOptions());
-		ImportJobRunner jobRunner = new ImportJobRunner(applicationContext);
-		jobRunner.setImportJob(job);
-		Calendar calendar = Calendar.getInstance();
-		jobRunner.runImport();
-		Assert.isTrue(testRepository.count() == 5);
-	}
+//	@Test
+//	public void mapImportJobTest() throws Exception {
+//		StringBuilder sb = new StringBuilder();
+//		BufferedReader br = null;
+//		try {
+//			br = new BufferedReader(new FileReader(importJobJsonFilePath));
+//			String line = br.readLine();
+//			while (line != null){
+//				sb.append(line);
+//				line = br.readLine();
+//			}
+//		} finally {
+//			if (br != null) br.close();
+//		}
+//		ImportJob job = mapper.readValue(sb.toString(), ImportJob.class);
+//		Assert.notNull(job);
+//		Assert.notNull(job.getDataTypes());
+//		Assert.notEmpty(job.getDataTypes());
+//		Assert.notNull(job.getFiles());
+//		Assert.notEmpty(job.getFiles());
+//	}
+//
+//	@Test
+//	public void jsonJobFileParserTest() throws Exception {
+//		JsonJobFileParser parser = new JsonJobFileParser();
+//		parser.setObjectMapper(mapper);
+//		ImportJob job = parser.parseJobFile(importJobJsonFilePath);
+//		Assert.notNull(job);
+//		Assert.notNull(job.getDataTypes());
+//		Assert.notEmpty(job.getDataTypes());
+//		Assert.notNull(job.getFiles());
+//		Assert.notEmpty(job.getFiles());
+//	}
+//	
+//	@Test
+//	public void jobRunnerTest() throws Exception {
+//		testRepository.deleteAll();
+//		System.out.println(new File(".").getCanonicalPath());
+//		Assert.isTrue(testRepository.count() == 0);
+//		JsonJobFileParser parser = new JsonJobFileParser();
+//		parser.setObjectMapper(mapper);
+//		ImportJob job = parser.parseJobFile(importJobJsonFilePath);
+//		Assert.notNull(job);
+//		Assert.notNull(job.getOptions());
+//		ImportJobRunner jobRunner = new ImportJobRunner(applicationContext);
+//		jobRunner.setImportJob(job);
+//		Calendar calendar = Calendar.getInstance();
+//		jobRunner.runImport();
+//		Assert.isTrue(testRepository.count() == 5);
+//	}
 
 
 	

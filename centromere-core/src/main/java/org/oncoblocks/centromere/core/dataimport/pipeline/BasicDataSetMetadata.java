@@ -18,15 +18,58 @@ package org.oncoblocks.centromere.core.dataimport.pipeline;
 
 /**
  * Simple representation of a data set being processed and imported into the warehouse.  Captures
- *   only the most basic information required for describing the data set.  The {@code dataSetId} 
+ *   only the most basic information required for describing the data set.  The {@code dataSetId}
  *   value represents the primary key ID value the record is represented by in the database 
  *   implementation.
  * 
  * @author woemler
  */
-public interface DataSetMetadata {
-	String getLabel();
-	Object getDataSetId();
-	String getName();
-	String getSource();
+public class BasicDataSetMetadata implements DataSetMetadata {
+
+	private String label;
+	private Object dataSetId;
+	private String name;
+	private String source;
+	private String notes;
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	public Object getDataSetId() {
+		return dataSetId;
+	}
+
+	public void setDataSetId(Object dataSetId) {
+		this.dataSetId = dataSetId;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+
 }

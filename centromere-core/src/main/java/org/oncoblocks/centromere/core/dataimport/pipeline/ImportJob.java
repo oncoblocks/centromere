@@ -28,6 +28,7 @@ import java.util.Map;
  * 
  * @author woemler
  */
+@Deprecated
 public class ImportJob {
 	
 	private String name;

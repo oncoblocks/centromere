@@ -16,10 +16,7 @@
 
 package org.oncoblocks.centromere.web.controller;
 
-import org.oncoblocks.centromere.core.model.Alias;
-import org.oncoblocks.centromere.core.model.Aliases;
-import org.oncoblocks.centromere.core.model.Ignored;
-import org.oncoblocks.centromere.core.model.Model;
+import org.oncoblocks.centromere.core.model.*;
 import org.oncoblocks.centromere.core.repository.Evaluation;
 import org.oncoblocks.centromere.core.repository.QueryCriteria;
 import org.oncoblocks.centromere.core.repository.QueryParameterDescriptor;
@@ -90,7 +87,8 @@ public class RequestUtils {
 	 * @param model
 	 * @return
 	 */
-	public static Map<String,QueryParameterDescriptor> getAvailableQueryParameters(Class<? extends Model<?>> model){
+	public static Map<String,QueryParameterDescriptor> getAvailableQueryParameters(
+			Class<? extends Model<?>> model, boolean recursive){
 		Map<String,QueryParameterDescriptor> paramMap = new HashMap<>();
 		for (Field field: model.getDeclaredFields()){
 			String fieldName = field.getName();
@@ -103,6 +101,17 @@ public class RequestUtils {
 				continue;
 			} else {
 				paramMap.put(fieldName, new QueryParameterDescriptor(fieldName, fieldName, type, Evaluation.EQUALS));
+			}
+			if (field.isAnnotationPresent(ForeignKey.class)){
+				if (!recursive) continue;
+				ForeignKey foreignKey = field.getAnnotation(ForeignKey.class);
+				String relField = !"".equals(foreignKey.rel()) ? foreignKey.rel() : fieldName;
+				Map<String,QueryParameterDescriptor> foreignModelMap = getAvailableQueryParameters(foreignKey.model(), false);
+				for(QueryParameterDescriptor descriptor: foreignModelMap.values()){
+					String newParamName = relField + "." + descriptor.getParamName();
+					descriptor.setParamName(newParamName);
+					paramMap.put(newParamName, descriptor);
+				}
 			}
 			if (field.isAnnotationPresent(Aliases.class)){
 				Aliases aliases = field.getAnnotation(Aliases.class);
@@ -117,6 +126,10 @@ public class RequestUtils {
 			}
 		}
 		return paramMap;
+	}
+
+	public static Map<String,QueryParameterDescriptor> getAvailableQueryParameters(Class<? extends Model<?>> model) {
+		return getAvailableQueryParameters(model, true);
 	}
 	
 	/**
@@ -200,7 +213,10 @@ public class RequestUtils {
 			return param;
 		}
 	}
-	
+
+	/**
+	 * {@link RequestUtils#convertParameter(Object, Class, ConversionService)}
+	 */
 	public static Object convertParameter(Object param, Class<?> type){
 		ConversionService conversionService = new DefaultConversionService();
 		return convertParameter(param, type, conversionService);

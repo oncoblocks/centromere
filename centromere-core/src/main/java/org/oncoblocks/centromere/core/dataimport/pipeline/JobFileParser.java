@@ -23,6 +23,7 @@ import org.oncoblocks.centromere.core.dataimport.component.DataImportException;
  * 
  * @author woemler
  */
+@Deprecated
 public interface JobFileParser {
 	/**
 	 * Reads an input file and converts its contents to an {@link ImportJob} object.

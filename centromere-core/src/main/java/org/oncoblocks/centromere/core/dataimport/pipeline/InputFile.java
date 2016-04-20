@@ -25,12 +25,13 @@ import java.util.Map;
  * 
  * @author woemler
  */
+@Deprecated
 public class InputFile {
 	
 	private String path;
 	private String dataType;
 	private String dataSet;
-	private BasicImportOptions options = new BasicImportOptions();
+	private ImportOptions options = new BasicImportOptions();
 
 	public String getPath() {
 		return path;
@@ -56,11 +57,15 @@ public class InputFile {
 		this.dataSet = dataSet;
 	}
 
-	public BasicImportOptions getOptions() {
+	public ImportOptions getOptions() {
 		return options;
 	}
 
 	public void setOptions(Map<String,String> options) {
 		this.options = new BasicImportOptions(options);
+	}
+	
+	public void setOptions(ImportOptions importOptions){
+		this.options = importOptions;
 	}
 }

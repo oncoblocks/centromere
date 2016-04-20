@@ -14,20 +14,28 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.clt;
+package org.oncoblocks.centromere.dataimport.cli;
 
 import com.beust.jcommander.Parameter;
-
-import java.util.List;
+import org.oncoblocks.centromere.core.dataimport.pipeline.BasicImportOptions;
 
 /**
  * @author woemler
  */
-public class AddCommandArguments {
+public class ImportCommandArguments {
 	
-	@Parameter(description = "List of records to be added")
-	private List<String> records;
-
+	@Parameter(names = { "-i", "--input" }, required = true, description = "")
+	private String inputFilePath;
+	
+	@Parameter(names = { "-t", "--data-type" }, required = true, description = "")
+	private String dataType;
+	
+	@Parameter(names = { "-d", "--data-set" }, required = true, description = "")
+	private String dataSet;
+	
+	@Parameter(names = { "-T", "--temp-dir" }, description = "")
+	private String tempFilePath = "/tmp";
+	
 	@Parameter(names = {"--skip-invalid-records"}, description = "")
 	private boolean skipInvalidRecords = false;
 
@@ -40,12 +48,36 @@ public class AddCommandArguments {
 	@Parameter(names = {"--skip-invalid-data-sets"}, description = "")
 	private boolean skipInvalidDataSets = false;
 
-	public List<String> getRecords() {
-		return records;
+	public String getInputFilePath() {
+		return inputFilePath;
 	}
 
-	public void setRecords(List<String> records) {
-		this.records = records;
+	public void setInputFilePath(String inputFilePath) {
+		this.inputFilePath = inputFilePath;
+	}
+
+	public String getDataType() {
+		return dataType;
+	}
+
+	public void setDataType(String dataType) {
+		this.dataType = dataType;
+	}
+
+	public String getDataSet() {
+		return dataSet;
+	}
+
+	public void setDataSet(String dataSet) {
+		this.dataSet = dataSet;
+	}
+
+	public String getTempFilePath() {
+		return tempFilePath;
+	}
+
+	public void setTempFilePath(String tempFilePath) {
+		this.tempFilePath = tempFilePath;
 	}
 
 	public boolean isSkipInvalidRecords() {
@@ -79,4 +111,15 @@ public class AddCommandArguments {
 	public void setSkipInvalidDataSets(boolean skipInvalidDataSets) {
 		this.skipInvalidDataSets = skipInvalidDataSets;
 	}
+	
+	public BasicImportOptions getImportOptions(){
+		BasicImportOptions options = new BasicImportOptions();
+		options.setSkipInvalidDataSets(this.skipInvalidDataSets);
+		options.setSkipInvalidGenes(this.skipInvalidGenes);
+		options.setSkipInvalidRecords(this.skipInvalidRecords);
+		options.setSkipInvalidSamples(this.skipInvalidSamples);
+		options.setTempDirectoryPath(this.tempFilePath);
+		return options;
+	}
+	
 }

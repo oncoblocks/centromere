@@ -113,6 +113,36 @@ public class BasicImportOptions implements ImportOptions {
 		return skipInvalidRecords;
 	}
 
+	public void setSkipInvalidSamples(boolean skipInvalidSamples) {
+		this.skipInvalidSamples = skipInvalidSamples;
+		this.options.put("skipInvalidSamples", Boolean.toString(skipInvalidSamples));
+	}
+
+	public void setSkipInvalidDataSets(boolean skipInvalidDataSets) {
+		this.skipInvalidDataSets = skipInvalidDataSets;
+		this.options.put("skipInvalidDataSets", Boolean.toString(skipInvalidDataSets));
+	}
+
+	public void setSkipInvalidGenes(boolean skipInvalidGenes) {
+		this.skipInvalidGenes = skipInvalidGenes;
+		this.options.put("skipInvalidGenes", Boolean.toString(skipInvalidGenes));
+	}
+
+	public void setSkipInvalidMetadata(boolean skipInvalidMetadata) {
+		this.skipInvalidMetadata = skipInvalidMetadata;
+		this.options.put("skipInvalidMetadata", Boolean.toString(skipInvalidMetadata));
+	}
+
+	public void setSkipInvalidRecords(boolean skipInvalidRecords) {
+		this.skipInvalidRecords = skipInvalidRecords;
+		this.options.put("skipInvalidRecords", Boolean.toString(skipInvalidRecords));
+	}
+
+	public void setTempDirectoryPath(String tempDirectoryPath) {
+		this.tempDirectoryPath = tempDirectoryPath;
+		this.options.put("tempDirectoryPath", tempDirectoryPath);
+	}
+
 	public String getTempDirectoryPath() {
 		return tempDirectoryPath;
 	}

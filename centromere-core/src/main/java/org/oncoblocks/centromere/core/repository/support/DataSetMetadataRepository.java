@@ -14,35 +14,19 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.clt;
+package org.oncoblocks.centromere.core.repository.support;
 
-import com.beust.jcommander.JCommander;
+import org.oncoblocks.centromere.core.dataimport.pipeline.DataSetMetadata;
+import org.oncoblocks.centromere.core.repository.RepositoryOperations;
+
+import java.io.Serializable;
 
 /**
  * @author woemler
  */
-public class CommandLineRunner {
-	
-	public void main(String[] args) throws Exception {
-		
-		ImportCommandArguments importArguments = new ImportCommandArguments();
-		AddCommandArguments addArguments = new AddCommandArguments();
-		JCommander jc = new JCommander();
-		jc.addCommand("import", importArguments);
-		jc.addCommand("add", addArguments);
-		jc.parse(args);
-		
-		switch (jc.getParsedCommand()){
-			case "import":
-				// do stuff
-				break;
-			case "add":
-				// do stuff
-				break;
-			default:
-				jc.usage();
-		}
-		
-	}
-	
+public interface DataSetMetadataRepository<T, ID extends Serializable> 
+		extends RepositoryOperations<T, ID> {
+	DataSetMetadata getMetadataById(ID id);
+	Iterable<DataSetMetadata> getAllMetadata();
+	void createFromMetdata(DataSetMetadata metadata);
 }

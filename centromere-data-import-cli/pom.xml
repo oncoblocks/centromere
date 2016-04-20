@@ -18,21 +18,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
     <modelVersion>4.0.0</modelVersion>
-    
+
     <parent>
         <groupId>org.oncoblocks.centromere</groupId>
         <artifactId>centromere-parent</artifactId>
-        <version>0.4.0-SNAPSHOT</version>
+        <version>0.3.1-SNAPSHOT</version>
         <relativePath>../centromere-parent</relativePath>
     </parent>
     
-    <artifactId>centromere-core</artifactId>
-    <name>Oncoblocks: Centromere Core</name>
+    <artifactId>centromere-data-import-cli</artifactId>
+    <name>Oncoblocks: Centromere Command Line Importer</name>
     <packaging>jar</packaging>
 
-    <description>Genomic data warehouse and RESTful web services framework.  Core components for creating data models, repository interfaces, and data import pipelines.</description>
+    <description>Genomic data warehouse and RESTful web services framework.  Utility classes for command line data import.</description>
     <url>https://github.com/oncoblocks/centromere</url>
 
     <licenses>
@@ -71,73 +70,15 @@
     <properties>
         <centromere.version>0.4.0-SNAPSHOT</centromere.version>
     </properties>
-
+    
     <dependencies>
-        
-        <!-- Spring -->
 
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-commons</artifactId>
-        </dependency>
-
-        <!-- Jackson -->
-        
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
+            <groupId>org.oncoblocks.centromere</groupId>
+            <artifactId>centromere-core</artifactId>
+            <version>${centromere.version}</version>
         </dependency>
         
-        <!-- CLT -->
-        
-        <dependency>
-            <groupId>com.beust</groupId>
-            <artifactId>jcommander</artifactId>
-            <version>1.48</version>
-        </dependency>
-
-        <!-- Logging -->
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-        </dependency>
-
-        <!-- Testing -->
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
 
     <build>
@@ -200,5 +141,6 @@
             </plugin>
         </plugins>
     </build>
+
 
 </project>

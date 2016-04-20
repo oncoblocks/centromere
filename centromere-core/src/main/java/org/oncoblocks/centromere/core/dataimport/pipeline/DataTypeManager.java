@@ -16,41 +16,39 @@
 
 package org.oncoblocks.centromere.core.dataimport.pipeline;
 
-import org.oncoblocks.centromere.core.dataimport.component.DataImportException;
 import org.oncoblocks.centromere.core.dataimport.component.DataTypes;
 import org.oncoblocks.centromere.core.dataimport.component.RecordProcessor;
 import org.springframework.context.ApplicationContext;
-import org.springframework.util.Assert;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Simple object that handles mapping of user-defined data types to {@link RecordProcessor} beans,
- *   as defined by {@link DataType} instances.
+ * Simple object that handles mapping of user-defined data types to {@link RecordProcessor} beans.
  * 
  * @author woemler
  */
 public class DataTypeManager {
 	
-	private final Map<String, RecordProcessor> dataTypeMap = new HashMap<>();
+	private final Map<String, RecordProcessor> dataTypeMap;
 	private final ApplicationContext applicationContext;
-
-	public DataTypeManager(ApplicationContext applicationContext) { 
+	
+	public DataTypeManager(ApplicationContext applicationContext){
 		this.applicationContext = applicationContext;
+		this.dataTypeMap = new HashMap<>();
 		for (Map.Entry entry: applicationContext.getBeansWithAnnotation(DataTypes.class).entrySet()){
 			Object obj = entry.getValue();
 			if (obj instanceof RecordProcessor){
 				RecordProcessor p = (RecordProcessor) obj;
 				DataTypes dataTypes = p.getClass().getAnnotation(DataTypes.class);
 				for (String t: dataTypes.value()){
-					dataTypeMap.put(t, p);
+					this.dataTypeMap.put(t, p);
 				}
 			}
 		}
 	}
 	
-	private RecordProcessor getProcessorByName(String processorBeanName) throws DataImportException{
+	public void addDataType(String label, String processorBeanName) {
 		RecordProcessor processor = null;
 		try {
 			Class<? extends RecordProcessor> processorClass
@@ -59,70 +57,38 @@ public class DataTypeManager {
 		} catch (ClassNotFoundException e){
 			processor = (RecordProcessor) applicationContext.getBean(processorBeanName);
 		}
-		if (processor == null){
-			throw new DataImportException(String.format("RecordProcessor bean does not exist: %s",
-					processorBeanName));
-		}
-		return processor;
+		this.dataTypeMap.put(label, processor);
 	}
 
 	/**
-	 * Adds a data type mapping, using the data type name to find a 
+	 * Adds a data type mapping, using the data type name and {@link RecordProcessor} bean reference.
 	 * 
-	 * @param dataTypeName
+	 * @param label
 	 */
-	public void addDataType(String dataTypeName, String processorBeanName) throws DataImportException {
-		dataTypeMap.put(dataTypeName, this.getProcessorByName(processorBeanName));
-	}
-	
-	public void addDataType(String dataTypeName, RecordProcessor processor){
-		dataTypeMap.put(dataTypeName, processor);
-	}
-
-	/**
-	 * Adds a data type mapping, overwriting existing ones with the same name.
-	 * 
-	 * @param dataType
-	 */
-	public void addDataType(DataType dataType) throws DataImportException{
-		Assert.notNull(dataType);
-		Assert.notNull(dataType.getName());
-		Assert.notNull(dataType.getProcessor());
-		Assert.notNull(dataType.getOptions());
-		this.addDataType(dataType.getName(), dataType.getProcessor());
-	}
-
-	/**
-	 * Adds multiple data type mappings at once.
-	 * 
-	 * @param dataTypes
-	 */
-	public void addDataTypes(Iterable<DataType> dataTypes) throws DataImportException{
-		for (DataType dataType: dataTypes){
-			this.addDataType(dataType);
-		}
+	public void addDataType(String label, RecordProcessor processor){
+		dataTypeMap.put(label, processor);
 	}
 
 	/**
 	 * Returns reference to a {@link RecordProcessor} bean class, if one of that type has been mapped
 	 *   to a data set.  Returns null if no mapping exists.
 	 * 
-	 * @param name
+	 * @param label
 	 * @return
 	 */
-	public RecordProcessor getProcessorByDataType(String name){
-		if (!dataTypeMap.containsKey(name)) return null;
-		return dataTypeMap.get(name);
+	public RecordProcessor getProcessorByDataType(String label){
+		if (!dataTypeMap.containsKey(label)) return null;
+		return dataTypeMap.get(label);
 	}
 
 	/**
 	 * Tests whether a data type mapping has been registered.
 	 * 
-	 * @param name
+	 * @param label
 	 * @return
 	 */
-	public boolean isSupportedDataType(String name){
-		return dataTypeMap.containsKey(name);
+	public boolean isSupportedDataType(String label){
+		return dataTypeMap.containsKey(label);
 	}
 
 	

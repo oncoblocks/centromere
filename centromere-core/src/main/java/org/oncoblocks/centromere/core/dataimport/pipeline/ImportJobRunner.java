@@ -32,6 +32,7 @@ import java.util.Map;
  * 
  * @author woemler
  */
+@Deprecated
 public class ImportJobRunner implements ApplicationContextAware {
 	
 	private ImportJob importJob;
@@ -57,8 +58,8 @@ public class ImportJobRunner implements ApplicationContextAware {
 			String dataSetName = inputFile.getDataSet();
 			String dataTypeName = inputFile.getDataType();
 			String inputFilePath = inputFile.getPath();
-			DataSetMetadata dataSetMetadata = dataSetManager.getDataSetByName(dataSetName);
-			BasicImportOptions combinedOptions = mergeImportOptions(inputFile.getOptions(), importJob.getOptions());
+			DataSetMetadata dataSetMetadata = dataSetManager.getDataSet(dataSetName);
+			BasicImportOptions combinedOptions = mergeImportOptions(new BasicImportOptions(inputFile.getOptions()), importJob.getOptions());
 			this.processDataSet(dataSetMetadata, inputFile);
 			RecordProcessor processor = dataTypeManager.getProcessorByDataType(dataTypeName);
 			if (processor instanceof ImportOptionsAware && inputFile.getOptions() != null) {
@@ -156,12 +157,15 @@ public class ImportJobRunner implements ApplicationContextAware {
 	 */
 	protected void configureDataTypeManager() throws DataImportException{
 		dataTypeManager = new DataTypeManager(applicationContext);
-		if (importJob.getDataTypes() != null) dataTypeManager.addDataTypes(importJob.getDataTypes()); // Data type configurations in the job file will override annotations
+		if (importJob.getDataTypes() != null) {
+			for (DataType dataType: importJob.getDataTypes()){
+				dataTypeManager.addDataType(dataType.getName(), dataType.getProcessor());
+			}
+		}
 	}
 
 	protected void configureDataSetManager(){
-		dataSetManager = new DataSetManager();
-		dataSetManager.addDataSets(importJob.getDataSets());
+		dataSetManager.addDataSetMappings(importJob.getDataSets());
 	}
 
 	

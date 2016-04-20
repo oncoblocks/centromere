@@ -16,13 +16,14 @@
 
 package org.oncoblocks.centromere.core.dataimport.pipeline;
 
+import org.oncoblocks.centromere.core.repository.support.DataSetMetadataRepository;
 import org.springframework.util.Assert;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Helper class for {@link ImportJobRunner}, which stores and retrieves references to {@link DataSetMetadata}
+ * Helper class for data import, which stores and retrieves references to {@link DataSetMetadata}
  *   for the current pipeline job.
  * 
  * @author woemler
@@ -30,11 +31,22 @@ import java.util.Map;
 public class DataSetManager {
 	
 	private final Map<String,DataSetMetadata> dataSetMap = new HashMap<>();
+	private final DataSetMetadataRepository<?, ?> repository;
 	
-	public DataSetManager(){ }
-	
-	public DataSetManager(Iterable<DataSetMetadata> dataSets){
-		this.addDataSets(dataSets);
+	public DataSetManager(DataSetMetadataRepository<?, ?> repository){
+		this.repository = repository;
+		this.addDataSetMappings(repository.getAllMetadata());
+	}
+
+	/**
+	 * Creates a new record in the data warehouse for the {@link DataSetMetadata} record and then adds
+	 *   the mapping.
+	 * 
+	 * @param dataSet
+	 */
+	public void createDataSet(DataSetMetadata dataSet){
+		repository.createFromMetdata(dataSet);
+		this.addDataSetMapping(dataSet);
 	}
 
 	/**
@@ -42,10 +54,11 @@ public class DataSetManager {
 	 * 
 	 * @param dataSet
 	 */
-	public void addDataSet(DataSetMetadata dataSet){
+	public void addDataSetMapping(DataSetMetadata dataSet){
 		Assert.notNull(dataSet);
-		Assert.notNull(dataSet.getName());
-		dataSetMap.put(dataSet.getName(), dataSet);
+		Assert.notNull(dataSet.getLabel());
+		Assert.notNull(dataSet.getDataSetId());
+		dataSetMap.put(dataSet.getLabel(), dataSet);
 	}
 
 	/**
@@ -53,25 +66,34 @@ public class DataSetManager {
 	 * 
 	 * @param dataSets
 	 */
-	public void addDataSets(Iterable<DataSetMetadata> dataSets){
+	public void addDataSetMappings(Iterable<DataSetMetadata> dataSets){
 		Assert.notNull(dataSets);
 		for (DataSetMetadata dataSet: dataSets){
-			this.addDataSet(dataSet);
+			this.addDataSetMapping(dataSet);
 		}
 	}
 
 	/**
 	 * Retireves a {@link DataSetMetadata} record by name, as stored in the internal map.
 	 * 
-	 * @param name
+	 * @param label
 	 * @return
 	 */
-	public DataSetMetadata getDataSetByName(String name){
+	public DataSetMetadata getDataSet(String label){
 		DataSetMetadata dataSet = null;
-		if (dataSetMap.containsKey(name)){
-			dataSet = dataSetMap.get(name);
+		if (dataSetMap.containsKey(label)){
+			dataSet = dataSetMap.get(label);
 		}
 		return dataSet;
+	}
+	
+	public Object getDataSetId(String label){
+		Object dataSetId = null;
+		if (dataSetMap.containsKey(label)){
+			DataSetMetadata dataSet = dataSetMap.get(label);
+			dataSetId = dataSet.getDataSetId();
+		}
+		return dataSetId;
 	}
 	
 }

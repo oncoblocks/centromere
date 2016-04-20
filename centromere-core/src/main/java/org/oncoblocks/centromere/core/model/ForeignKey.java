@@ -35,7 +35,7 @@ public @interface ForeignKey {
 	 * The {@link Model} class that the foreign key field is referencing.
 	 * @return
 	 */
-	Class<?> model();
+	Class<? extends Model<?>> model();
 
 	/**
 	 * {@link Relationship} value that represents the entity relationship to the referenced class.
