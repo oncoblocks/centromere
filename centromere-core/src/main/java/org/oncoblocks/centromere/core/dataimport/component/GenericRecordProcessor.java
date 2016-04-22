@@ -16,11 +16,10 @@
 
 package org.oncoblocks.centromere.core.dataimport.component;
 
-import org.oncoblocks.centromere.core.dataimport.pipeline.BasicImportOptions;
-import org.oncoblocks.centromere.core.dataimport.pipeline.DataSetAware;
-import org.oncoblocks.centromere.core.dataimport.pipeline.ImportOptions;
-import org.oncoblocks.centromere.core.dataimport.pipeline.ImportOptionsAware;
+import org.oncoblocks.centromere.core.dataimport.pipeline.*;
 import org.oncoblocks.centromere.core.model.Model;
+import org.oncoblocks.centromere.core.model.support.DataFileMetadata;
+import org.oncoblocks.centromere.core.model.support.DataSetMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -38,7 +37,7 @@ import java.io.File;
  * @author woemler
  */
 public class GenericRecordProcessor<T extends Model<?>> 
-		implements RecordProcessor<T>, ImportOptionsAware, DataSetAware {
+		implements RecordProcessor<T>, ImportOptionsAware, DataSetAware, DataFileAware {
 
 	private Class<T> model;
 	private RecordReader<T> reader;
@@ -46,7 +45,8 @@ public class GenericRecordProcessor<T extends Model<?>>
 	private RecordWriter<T> writer;
 	private RecordImporter importer;
 	private BasicImportOptions options;
-	private Object dataSetId;
+	private DataSetMetadata<?> dataSet;
+	private DataFileMetadata<?> dataFile;
 	private static final Logger logger = LoggerFactory.getLogger(GenericRecordProcessor.class);
 
 	public GenericRecordProcessor() { }
@@ -80,13 +80,22 @@ public class GenericRecordProcessor<T extends Model<?>>
 			((ImportOptionsAware) importer).setImportOptions(options);
 		}
 		if (writer != null && writer instanceof DataSetAware) {
-			((DataSetAware) writer).setDataSetId(dataSetId);
+			((DataSetAware) writer).setDataSetMetadata(dataSet);
 		}
 		if (reader != null && reader instanceof DataSetAware) {
-			((DataSetAware) reader).setDataSetId(dataSetId);
+			((DataSetAware) reader).setDataSetMetadata(dataSet);
 		}
 		if (importer != null && importer instanceof DataSetAware) {
-			((DataSetAware) importer).setDataSetId(dataSetId);
+			((DataSetAware) importer).setDataSetMetadata(dataSet);
+		}
+		if (writer != null && writer instanceof DataFileAware) {
+			((DataFileAware) writer).setDataFileMetadata(dataFile);
+		}
+		if (reader != null && reader instanceof DataFileAware) {
+			((DataFileAware) reader).setDataFileMetadata(dataFile);
+		}
+		if (importer != null && importer instanceof DataFileAware) {
+			((DataFileAware) importer).setDataFileMetadata(dataFile);
 		}
 	}
 
@@ -107,7 +116,7 @@ public class GenericRecordProcessor<T extends Model<?>>
 		writer.doBefore(this.getTempFilePath(inputFilePath));
 		T record = reader.readRecord();
 		while (record != null) {
-			if (record instanceof DataSetAware) ((DataSetAware) record).setDataSetId(dataSetId);
+			if (record instanceof DataSetAware) ((DataSetAware) record).setDataSetMetadata(dataSet);
 			if (validator != null) {
 				BeanPropertyBindingResult bindingResult
 						= new BeanPropertyBindingResult(record, record.getClass().getName());
@@ -196,11 +205,20 @@ public class GenericRecordProcessor<T extends Model<?>>
 		this.options = options;
 	}
 
-	public Object getDataSetId() {
-		return dataSetId;
+	public DataSetMetadata getDataSet() {
+		return dataSet;
 	}
 
-	public void setDataSetId(Object dataSetId) {
-		this.dataSetId = dataSetId;
+	public void setDataSetMetadata(DataSetMetadata<?> dataSet) {
+		this.dataSet = dataSet;
 	}
+
+	public void setDataFileMetadata(DataFileMetadata<?> dataFileMetadata) {
+		this.dataFile = dataFileMetadata;
+	}
+	
+	public DataFileMetadata<?> getDataFile(){
+		return dataFile;
+	}
+	
 }

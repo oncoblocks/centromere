@@ -17,9 +17,7 @@
 package org.oncoblocks.centromere.dataimport.cli;
 
 import org.oncoblocks.centromere.core.dataimport.component.DataImportException;
-import org.oncoblocks.centromere.core.dataimport.pipeline.DataSetManager;
-import org.oncoblocks.centromere.core.dataimport.pipeline.DataTypeManager;
-import org.oncoblocks.centromere.core.dataimport.pipeline.DataSetMetadata;
+import org.oncoblocks.centromere.core.model.support.DataSetMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -29,23 +27,15 @@ import org.springframework.util.Assert;
  */
 public class AddCommandRunner {
 	
-	private DataTypeManager dataTypeManager;
-	private DataSetManager dataSetManager;
+	private final DataImportManager manager;
 	
 	private static final Logger logger = LoggerFactory.getLogger(AddCommandRunner.class);
 
-	public AddCommandRunner() { }
-
-	public AddCommandRunner(
-			DataTypeManager dataTypeManager,
-			DataSetManager dataSetManager) {
-		this.dataTypeManager = dataTypeManager;
-		this.dataSetManager = dataSetManager;
+	public AddCommandRunner(DataImportManager manager) {
+		this.manager = manager;
 	}
 
 	public void run(AddCommandArguments arguments) throws Exception {
-		Assert.notNull(dataTypeManager, "DataTypeManager must not be null!");
-		Assert.notNull(dataSetManager, "DataSetManager must not be null");
 		Assert.notNull(arguments, "AddCommandArguments must not be null!");
 		switch (arguments.getCategory().toLowerCase()){
 			case "data_type":
@@ -66,28 +56,11 @@ public class AddCommandRunner {
 	}
 	
 	private void addDataType(String dataType, String processorRef) throws DataImportException{
-		dataTypeManager.addDataType(dataType, processorRef);
+		manager.addDataTypeMapping(dataType, processorRef);
 	} 
 	
 	private void addDataSet(DataSetMetadata dataSetMetadata){
-		dataSetManager.createDataSet(dataSetMetadata);
+		manager.createNewDataSet(dataSetMetadata);
 	}
 
-	public DataTypeManager getDataTypeManager() {
-		return dataTypeManager;
-	}
-
-	public void setDataTypeManager(
-			DataTypeManager dataTypeManager) {
-		this.dataTypeManager = dataTypeManager;
-	}
-
-	public DataSetManager getDataSetManager() {
-		return dataSetManager;
-	}
-
-	public void setDataSetManager(
-			DataSetManager dataSetManager) {
-		this.dataSetManager = dataSetManager;
-	}
 }

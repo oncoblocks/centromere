@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.repository.support;
+package org.oncoblocks.centromere.core.model.support;
 
-import org.oncoblocks.centromere.core.model.support.DataSetMetadata;
-import org.oncoblocks.centromere.core.repository.RepositoryOperations;
+import org.oncoblocks.centromere.core.model.Model;
 
 import java.io.Serializable;
 
 /**
  * @author woemler
  */
-public interface DataSetMetadataRepository<T extends DataSetMetadata<ID>, ID extends Serializable> 
-		extends RepositoryOperations<T, ID> {
-	void createDataSet(DataSetMetadata<ID> dataSetMetadata);
-	T getByLabel(String label);
-	Iterable<T> getByName(String name);
-	Iterable<T> getBySource(String source);
+public interface DataFileMetadata<ID extends Serializable> extends Model<ID> {
+	String getDataType();
+	String getFilePath();
 }

@@ -18,8 +18,8 @@ package org.oncoblocks.centromere.dataimport.cli;
 
 import com.beust.jcommander.Parameter;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.oncoblocks.centromere.core.dataimport.pipeline.BasicDataSetMetadata;
-import org.oncoblocks.centromere.core.dataimport.pipeline.DataSetMetadata;
+import org.oncoblocks.centromere.core.model.support.BasicDataSetMetadata;
+import org.oncoblocks.centromere.core.model.support.DataSetMetadata;
 import org.springframework.util.Assert;
 
 import java.io.IOException;

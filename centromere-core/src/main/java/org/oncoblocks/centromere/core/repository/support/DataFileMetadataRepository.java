@@ -16,6 +16,7 @@
 
 package org.oncoblocks.centromere.core.repository.support;
 
+import org.oncoblocks.centromere.core.model.support.DataFileMetadata;
 import org.oncoblocks.centromere.core.model.support.DataSetMetadata;
 import org.oncoblocks.centromere.core.repository.RepositoryOperations;
 
@@ -24,10 +25,9 @@ import java.io.Serializable;
 /**
  * @author woemler
  */
-public interface DataSetMetadataRepository<T extends DataSetMetadata<ID>, ID extends Serializable> 
+public interface DataFileMetadataRepository<T extends DataFileMetadata<ID>, ID extends Serializable> 
 		extends RepositoryOperations<T, ID> {
-	void createDataSet(DataSetMetadata<ID> dataSetMetadata);
-	T getByLabel(String label);
-	Iterable<T> getByName(String name);
-	Iterable<T> getBySource(String source);
+	void createDataFile(DataFileMetadata<ID> dataFileMetadata, DataSetMetadata<?> dataSetMetadata);
+	Iterable<T> getByDataType(String dataType);
+	T getByFilePath(String filePath);
 }

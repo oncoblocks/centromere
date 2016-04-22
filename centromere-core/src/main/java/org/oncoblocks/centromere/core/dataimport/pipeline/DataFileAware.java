@@ -16,17 +16,14 @@
 
 package org.oncoblocks.centromere.core.dataimport.pipeline;
 
+import org.oncoblocks.centromere.core.model.support.DataFileMetadata;
+
 /**
- * Simple representation of a data set being processed and imported into the warehouse.  Captures
- *   only the most basic information required for describing the data set.  The {@code dataSetId} 
- *   value represents the primary key ID value the record is represented by in the database 
- *   implementation.
- * 
+ * Data import components that implement this interface are assumed to have information about the 
+ *   currently processed data file assigned to them, for annotating processed records.
+ *
  * @author woemler
  */
-public interface DataSetMetadata {
-	String getLabel();
-	Object getDataSetId();
-	String getName();
-	String getSource();
+public interface DataFileAware {
+	void setDataFileMetadata(DataFileMetadata<?> dataFileMetadata);
 }

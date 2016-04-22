@@ -16,49 +16,68 @@
 
 package org.oncoblocks.centromere.dataimport.cli;
 
-import org.oncoblocks.centromere.core.dataimport.pipeline.DataSetManager;
-import org.oncoblocks.centromere.core.dataimport.pipeline.DataTypeManager;
+import org.oncoblocks.centromere.core.dataimport.component.RecordProcessor;
+import org.oncoblocks.centromere.core.model.support.DataSetMetadata;
+import org.oncoblocks.centromere.core.repository.support.DataFileMetadataRepository;
 import org.oncoblocks.centromere.core.repository.support.DataSetMetadataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
+import java.util.Map;
+
 /**
- * Configures required component classes for command line data import tool.
- * 
  * @author woemler
  */
 public abstract class DataImportConfigurer {
 	
 	@Autowired private ApplicationContext applicationContext;
-	
-	@Bean
-	public DataTypeManager dataTypeManager(){
-		return new DataTypeManager(applicationContext);
-	}
+	@Autowired private DataSetMetadataRepository dataSetMetadataRepository;
+	@Autowired private DataFileMetadataRepository dataFileMetadataRepository;
 	
 	@Bean
 	@Autowired
-	public DataSetManager dataSetManager(DataSetMetadataRepository<?, ?> dataSetRepository){
-		return new DataSetManager(dataSetRepository);
-	}
-	
-	@Bean
-	@Autowired
-	public AddCommandRunner addCommandRunner(DataTypeManager dataTypeManager, DataSetManager dataSetManager){
-		return new AddCommandRunner(dataTypeManager, dataSetManager);
-	}
-	
-	@Bean
-	@Autowired
-	public ImportCommandRunner importCommandRunner(DataTypeManager dataTypeManager, DataSetManager dataSetManager){
-		return new ImportCommandRunner(dataTypeManager, dataSetManager);
-	}
-	
-	@Bean
-	@Autowired
-	public CommandLineRunner commandLineRunner(AddCommandRunner addCommandRunner, ImportCommandRunner importCommandRunner){
-		return new CommandLineRunner(addCommandRunner, importCommandRunner);
+	public DataImportManager dataImportManager() {
+		DataImportManager manager = new DataImportManager(applicationContext, dataSetMetadataRepository, 
+				dataFileMetadataRepository);
+		manager.setDataSetMap(this.configureDataSetMappings(manager.getDataSetMap()));
+		manager.setDataTypeMap(this.configureDataTypeMappings(manager.getDataTypeMap()));
+		return manager;
 	}
 
+	/**
+	 * Allows overriding of the default data set mapping to allow custom behavior.
+	 *
+	 * @param dataSetMap
+	 * @return
+	 */
+	public Map<String, DataSetMetadata> configureDataSetMappings(Map<String, DataSetMetadata> dataSetMap){
+		return dataSetMap;
+	}
+
+	/**
+	 * Allows overriding the {@code dataTypeMap} initialization or custom additions to the mappings.
+	 *
+	 * @param dataTypeMap
+	 * @return
+	 */
+	public Map<String, RecordProcessor> configureDataTypeMappings(Map<String, RecordProcessor> dataTypeMap){
+		return dataTypeMap;
+	}
+	
+	@Bean 
+	public CommandLineRunner commandLineRunner(){
+		return new CommandLineRunner(addCommandRunner(), importCommandRunner());
+	}
+	
+	@Bean
+	public ImportCommandRunner importCommandRunner(){
+		return new ImportCommandRunner(dataImportManager());
+	}
+	
+	@Bean
+	public AddCommandRunner addCommandRunner(){
+		return new AddCommandRunner(dataImportManager());
+	}
+	
 }

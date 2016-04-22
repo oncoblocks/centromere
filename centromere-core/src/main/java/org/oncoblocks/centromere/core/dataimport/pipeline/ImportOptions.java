@@ -48,4 +48,13 @@ public interface ImportOptions {
 	 * @return true if the option exists, false otherwise.
 	 */
 	boolean hasOption(String name);
+	
+	String SKIP_INVALID_SAMPLES = "skipInvalidSamples";
+	String SKIP_INVALID_DATA_SETS = "skipInvalidDataSets";
+	String SKIP_INVALID_GENES = "skipInvalidGenes";
+	String SKIP_INVALID_METADATA = "skipInvalidMetadata";
+	String SKIP_INVALID_RECORDS = "skipInvalidRecords";
+	String TEMP_DIRECTORY_PATH = "tempDirectoryPath";
+	String SKIP_EXISTING_FILES = "skipExistingFiles";
+	
 }

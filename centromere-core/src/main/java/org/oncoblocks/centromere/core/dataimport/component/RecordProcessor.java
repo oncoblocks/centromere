@@ -16,7 +16,6 @@
 
 package org.oncoblocks.centromere.core.dataimport.component;
 
-import org.oncoblocks.centromere.core.dataimport.pipeline.ImportOptions;
 import org.oncoblocks.centromere.core.model.Model;
 import org.springframework.validation.Validator;
 
@@ -68,8 +67,8 @@ public interface RecordProcessor<T extends Model<?>> {
 	
 	Class<T> getModel();
 	
-	void setImportOptions(ImportOptions importOptions);
-	
-	ImportOptions getImportOptions();
+//	void setImportOptions(ImportOptions importOptions);
+//	
+//	ImportOptions getImportOptions();
 	
 }

@@ -18,11 +18,15 @@ package org.oncoblocks.centromere.dataimport.cli;
 
 import org.oncoblocks.centromere.core.dataimport.component.DataImportException;
 import org.oncoblocks.centromere.core.dataimport.component.RecordProcessor;
-import org.oncoblocks.centromere.core.dataimport.pipeline.*;
-import org.oncoblocks.centromere.core.dataimport.pipeline.DataSetMetadata;
+import org.oncoblocks.centromere.core.dataimport.pipeline.BasicImportOptions;
+import org.oncoblocks.centromere.core.dataimport.pipeline.DataFileAware;
+import org.oncoblocks.centromere.core.dataimport.pipeline.DataSetAware;
+import org.oncoblocks.centromere.core.dataimport.pipeline.ImportOptionsAware;
+import org.oncoblocks.centromere.core.model.support.BasicDataFileMetadata;
+import org.oncoblocks.centromere.core.model.support.DataFileMetadata;
+import org.oncoblocks.centromere.core.model.support.DataSetMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
 
 import java.io.File;
 
@@ -31,65 +35,74 @@ import java.io.File;
  */
 public class ImportCommandRunner {
 	
-	private DataTypeManager dataTypeManager;
-	private DataSetManager dataSetManager;
+	private final DataImportManager manager;
 	
 	private static final Logger logger = LoggerFactory.getLogger(ImportCommandRunner.class);
 
-	public ImportCommandRunner() { }
-
-	public ImportCommandRunner(
-			DataTypeManager dataTypeManager,
-			DataSetManager dataSetManager) {
-		this.dataTypeManager = dataTypeManager;
-		this.dataSetManager = dataSetManager;
+	public ImportCommandRunner(DataImportManager manager) {
+		this.manager = manager;
 	}
 
 	public void run(ImportCommandArguments arguments) throws Exception {
-		Assert.notNull(dataSetManager, "DataSetManager must not be null!");
-		Assert.notNull(dataTypeManager, "DataTypeManager must not be null!");
-		Assert.notNull(arguments, "arguments must not be null!");
-		RecordProcessor<?> processor = dataTypeManager.getProcessorByDataType(arguments.getDataType());
-		if (processor == null){
-			throw new DataImportException(String.format("Unable to identify appropriate RecordProcessor " 
-					+ "for data type: %s.  This data type may not be registered, or there may not be a bean " 
-					+ "for the required processor instantiated.", arguments.getDataType()));
+		RecordProcessor processor = this.getProcessorByDataType(arguments.getDataType());
+		BasicImportOptions options = arguments.getImportOptions();
+		DataSetMetadata dataSetMetadata = null;
+		DataFileMetadata dataFileMetadata = null;
+		String inputFilePath = arguments.getInputFilePath();
+		File inputFile = new File(inputFilePath);
+		if (!inputFile.exists() || !inputFile.isFile() || !inputFile.canRead()){
+			throw new DataImportException(String.format("Input file is not valid: %s", inputFilePath));
 		}
 		if (processor instanceof DataSetAware){
-			DataSetMetadata dataSet = dataSetManager.getDataSet(arguments.getDataSet());
-			if (dataSet == null){
-				throw new DataImportException(String.format("DataSet for label does not exist: %s",
-						arguments.getDataSet()));
-			} else if (dataSet.getDataSetId() == null){
-				throw new DataImportException(String.format("DataSet record does not have ID, and may not have "
-						+ "been persisted to the database: ", dataSet.getLabel()));
+			dataSetMetadata = this.getDataSetMetadata(arguments.getDataSet());
+			((DataSetAware) processor).setDataSetMetadata(dataSetMetadata);
+		}
+		if (processor instanceof ImportOptionsAware){
+			((ImportOptionsAware) processor).setImportOptions(options);
+		}
+		if (processor instanceof DataFileAware){
+			dataFileMetadata = manager.getDataFileRepository().getByFilePath(inputFilePath);
+			if (dataFileMetadata == null){
+				BasicDataFileMetadata df = new BasicDataFileMetadata();
+				df.setFilePath(inputFilePath);
+				df.setDataType(arguments.getDataType());
+				df.setDataSet(dataSetMetadata);
+				manager.getDataFileRepository().createDataFile(df, dataSetMetadata);
+				dataFileMetadata = manager.getDataFileRepository().getByFilePath(inputFilePath);
+			} else {
+				if (options.isSkipExistingFiles()){
+					logger.info(String.format("[CENTROMERE] Skipping existing data file: %s", arguments.getInputFilePath()));
+					return;
+				} else {
+					logger.warn(String.format("Data file already exists: %s", arguments.getInputFilePath()));
+					throw new DataImportException(String.format("Data file already exists: %s", arguments.getInputFilePath()));
+				}
 			}
-			((DataSetAware) processor).setDataSetId(dataSet.getDataSetId());
+			((DataFileAware) processor).setDataFileMetadata(dataFileMetadata);
 		}
-		ImportOptions options = arguments.getImportOptions();
-		processor.setImportOptions(options);
-		File inputFile = new File(arguments.getInputFilePath());
-		if (!inputFile.exists() || !inputFile.isFile() || !inputFile.canRead()){
-			throw new DataImportException(String.format("Input file is not valid: %s", arguments.getInputFilePath()));
-		}
+		processor.doBefore();
 		processor.run(inputFile.getAbsolutePath());
+		processor.doAfter();
 	}
+	private RecordProcessor getProcessorByDataType(String dataType) throws DataImportException{
+		if (!manager.isSupportedDataType(dataType)){
+			throw new DataImportException(String.format("Unable to identify appropriate RecordProcessor "
+					+ "for data type: %s.  This data type may not be registered, or there may not be a bean "
+					+ "for the required processor instantiated.", dataType));
+		}
+		return manager.getDataTypeProcessor(dataType);
+	}
+	
+	private DataSetMetadata getDataSetMetadata(String label) throws DataImportException {
+		DataSetMetadata dataSet = manager.getDataSet(label);
+		if (dataSet == null){
+			throw new DataImportException(String.format("DataSet for label does not exist: %s", label));
+		} else if (dataSet.getId() == null){
+			throw new DataImportException(String.format("DataSet record does not have ID, and may not have "
+					+ "been persisted to the database: %s", dataSet.getLabel()));
+		}
+		return dataSet;
+	}
+	
 
-	public DataTypeManager getDataTypeManager() {
-		return dataTypeManager;
-	}
-
-	public void setDataTypeManager(
-			DataTypeManager dataTypeManager) {
-		this.dataTypeManager = dataTypeManager;
-	}
-
-	public DataSetManager getDataSetManager() {
-		return dataSetManager;
-	}
-
-	public void setDataSetManager(
-			DataSetManager dataSetManager) {
-		this.dataSetManager = dataSetManager;
-	}
 }

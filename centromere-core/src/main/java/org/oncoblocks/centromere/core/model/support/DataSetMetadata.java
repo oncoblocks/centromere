@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.pipeline;
+package org.oncoblocks.centromere.core.model.support;
 
-import org.oncoblocks.centromere.core.dataimport.component.DataImportException;
+import org.oncoblocks.centromere.core.model.Model;
+
+import java.io.Serializable;
 
 /**
- * Interface for classes that parse a job-description file and output an {@link ImportJob} object.
+ * Simple representation of a data set being processed and imported into the warehouse.  Captures
+ *   only the most basic information required for describing the data set.  The {@code dataSetId} 
+ *   value represents the primary key ID value the record is represented by in the database 
+ *   implementation.
  * 
  * @author woemler
  */
-@Deprecated
-public interface JobFileParser {
-	/**
-	 * Reads an input file and converts its contents to an {@link ImportJob} object.
-	 * @param inputPath Path to the job description file.
-	 * @return {@link ImportJob}
-	 * @throws DataImportException
-	 */
-	ImportJob parseJobFile(String inputPath) throws DataImportException;
+public interface DataSetMetadata<ID extends Serializable> extends Model<ID> {
+	String getLabel();
+	String getName();
+	String getSource();
 }

@@ -16,12 +16,14 @@
 
 package org.oncoblocks.centromere.core.dataimport.pipeline;
 
+import org.oncoblocks.centromere.core.model.support.DataSetMetadata;
+
 /**
- * Data import components that implement this interface are assumed to have the identifier of the 
+ * Data import components that implement this interface are assumed to have information about the 
  *   currently processed data set assigned to them, for annotating processed records.
  * 
  * @author woemler
  */
 public interface DataSetAware {
-	void setDataSetId(Object dataSetId);
+	void setDataSetMetadata(DataSetMetadata<?> dataSetMetadata);
 }

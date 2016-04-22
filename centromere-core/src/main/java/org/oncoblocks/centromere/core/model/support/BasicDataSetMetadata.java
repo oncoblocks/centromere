@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.pipeline;
+package org.oncoblocks.centromere.core.model.support;
 
 /**
  * Simple representation of a data set being processed and imported into the warehouse.  Captures
@@ -24,13 +24,22 @@ package org.oncoblocks.centromere.core.dataimport.pipeline;
  * 
  * @author woemler
  */
-public class BasicDataSetMetadata implements DataSetMetadata {
+public class BasicDataSetMetadata implements DataSetMetadata<String> {
 
+	private String id;
 	private String label;
 	private Object dataSetId;
 	private String name;
 	private String source;
 	private String notes;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public String getLabel() {
 		return label;

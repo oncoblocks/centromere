@@ -14,43 +14,25 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.test;
-
-import org.oncoblocks.centromere.core.model.Model;
+package org.oncoblocks.centromere.core.model.support;
 
 /**
  * @author woemler
  */
-
-public class DataSet implements Model<String> {
+public class BasicDataFileMetadata implements DataFileMetadata<String> {
 	
 	private String id;
-	private String name;
-	private String source;
 	private String dataType;
+	private String filePath;
+	private Object dataFileId;
+	private DataSetMetadata dataSet;
 
-	@Override public String getId() {
+	public String getId() {
 		return id;
 	}
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getSource() {
-		return source;
-	}
-
-	public void setSource(String source) {
-		this.source = source;
 	}
 
 	public String getDataType() {
@@ -59,5 +41,29 @@ public class DataSet implements Model<String> {
 
 	public void setDataType(String dataType) {
 		this.dataType = dataType;
+	}
+
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
+	}
+
+	public Object getDataFileId() {
+		return dataFileId;
+	}
+
+	public void setDataFileId(Object dataFileId) {
+		this.dataFileId = dataFileId;
+	}
+
+	public DataSetMetadata getDataSet() {
+		return dataSet;
+	}
+
+	public void setDataSet(DataSetMetadata dataSet) {
+		this.dataSet = dataSet;
 	}
 }

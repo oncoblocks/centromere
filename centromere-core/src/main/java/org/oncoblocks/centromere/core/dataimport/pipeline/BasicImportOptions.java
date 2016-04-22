@@ -32,6 +32,7 @@ public class BasicImportOptions implements ImportOptions {
 	private boolean skipInvalidGenes = false;
 	private boolean skipInvalidMetadata = false;
 	private boolean skipInvalidRecords = false;
+	private boolean skipExistingFiles = false;
 	private String tempDirectoryPath = "/tmp";
 	
 	public BasicImportOptions(){ }
@@ -46,23 +47,26 @@ public class BasicImportOptions implements ImportOptions {
 	}
 	
 	private void setDefaultParameters(){
-		if (options.containsKey("skipInvalidSamples")){
-			this.skipInvalidSamples = Boolean.parseBoolean(options.get("skipInvalidSamples"));
+		if (options.containsKey(ImportOptions.SKIP_INVALID_SAMPLES)){
+			this.skipInvalidSamples = Boolean.parseBoolean(options.get(ImportOptions.SKIP_INVALID_SAMPLES));
 		}
-		if (options.containsKey("skipInvalidDataSets")){
-			this.skipInvalidDataSets = Boolean.parseBoolean(options.get("skipInvalidDataSets"));
+		if (options.containsKey(ImportOptions.SKIP_INVALID_DATA_SETS)){
+			this.skipInvalidDataSets = Boolean.parseBoolean(options.get(ImportOptions.SKIP_INVALID_DATA_SETS));
 		}
-		if (options.containsKey("skipInvalidGenes")){
-			this.skipInvalidGenes = Boolean.parseBoolean(options.get("skipInvalidGenes"));
+		if (options.containsKey(ImportOptions.SKIP_INVALID_GENES)){
+			this.skipInvalidGenes = Boolean.parseBoolean(options.get(ImportOptions.SKIP_INVALID_GENES));
 		}
-		if (options.containsKey("skipInvalidMetadata")){
-			this.skipInvalidMetadata = Boolean.parseBoolean(options.get("skipInvalidMetadata"));
+		if (options.containsKey(ImportOptions.SKIP_INVALID_METADATA)){
+			this.skipInvalidMetadata = Boolean.parseBoolean(options.get(ImportOptions.SKIP_INVALID_METADATA));
 		}
-		if (options.containsKey("skipInvalidRecords")){
-			this.skipInvalidRecords = Boolean.parseBoolean(options.get("skipInvalidRecords"));
+		if (options.containsKey(ImportOptions.SKIP_INVALID_RECORDS)){
+			this.skipInvalidRecords = Boolean.parseBoolean(options.get(ImportOptions.SKIP_INVALID_RECORDS));
 		}
-		if (options.containsKey("tempDirectoryPath")){
-			this.tempDirectoryPath = options.get("tempDirectoryPath");
+		if (options.containsKey(ImportOptions.SKIP_EXISTING_FILES)){
+			this.skipExistingFiles = Boolean.parseBoolean(options.get(ImportOptions.SKIP_EXISTING_FILES));
+		}
+		if (options.containsKey(ImportOptions.TEMP_DIRECTORY_PATH)){
+			this.tempDirectoryPath = options.get(ImportOptions.TEMP_DIRECTORY_PATH);
 		}
 	}
 	
@@ -115,32 +119,41 @@ public class BasicImportOptions implements ImportOptions {
 
 	public void setSkipInvalidSamples(boolean skipInvalidSamples) {
 		this.skipInvalidSamples = skipInvalidSamples;
-		this.options.put("skipInvalidSamples", Boolean.toString(skipInvalidSamples));
+		this.options.put(ImportOptions.SKIP_INVALID_SAMPLES, Boolean.toString(skipInvalidSamples));
 	}
 
 	public void setSkipInvalidDataSets(boolean skipInvalidDataSets) {
 		this.skipInvalidDataSets = skipInvalidDataSets;
-		this.options.put("skipInvalidDataSets", Boolean.toString(skipInvalidDataSets));
+		this.options.put(ImportOptions.SKIP_INVALID_DATA_SETS, Boolean.toString(skipInvalidDataSets));
 	}
 
 	public void setSkipInvalidGenes(boolean skipInvalidGenes) {
 		this.skipInvalidGenes = skipInvalidGenes;
-		this.options.put("skipInvalidGenes", Boolean.toString(skipInvalidGenes));
+		this.options.put(ImportOptions.SKIP_INVALID_GENES, Boolean.toString(skipInvalidGenes));
 	}
 
 	public void setSkipInvalidMetadata(boolean skipInvalidMetadata) {
 		this.skipInvalidMetadata = skipInvalidMetadata;
-		this.options.put("skipInvalidMetadata", Boolean.toString(skipInvalidMetadata));
+		this.options.put(ImportOptions.SKIP_INVALID_METADATA, Boolean.toString(skipInvalidMetadata));
 	}
 
 	public void setSkipInvalidRecords(boolean skipInvalidRecords) {
 		this.skipInvalidRecords = skipInvalidRecords;
-		this.options.put("skipInvalidRecords", Boolean.toString(skipInvalidRecords));
+		this.options.put(ImportOptions.SKIP_INVALID_RECORDS, Boolean.toString(skipInvalidRecords));
 	}
 
 	public void setTempDirectoryPath(String tempDirectoryPath) {
 		this.tempDirectoryPath = tempDirectoryPath;
-		this.options.put("tempDirectoryPath", tempDirectoryPath);
+		this.options.put(ImportOptions.TEMP_DIRECTORY_PATH, tempDirectoryPath);
+	}
+
+	public boolean isSkipExistingFiles() {
+		return skipExistingFiles;
+	}
+
+	public void setSkipExistingFiles(boolean skipExistingFiles) {
+		this.skipExistingFiles = skipExistingFiles;
+		this.options.put(ImportOptions.SKIP_EXISTING_FILES, Boolean.toString(skipExistingFiles));
 	}
 
 	public String getTempDirectoryPath() {
