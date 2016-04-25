@@ -60,7 +60,7 @@ public class AddCommandRunner {
 	} 
 	
 	private void addDataSet(DataSetMetadata dataSetMetadata){
-		manager.createNewDataSet(dataSetMetadata);
+		manager.addDataSetMapping(dataSetMetadata);
 	}
 
 }

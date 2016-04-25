@@ -53,11 +53,6 @@ public class DataImportManager {
 	
 	/* Data Set and File Management */
 	
-	public void createNewDataSet(DataSetMetadata dataSetMetadata){
-		dataSetRepository.createDataSet(dataSetMetadata);
-		this.addDataSetMapping(dataSetMetadata);
-	}
-
 	/**
 	 * Builds the {@code dataSetMap} that associates data set labels and their corresponding metadata 
 	 *   and database IDs, by pulling the records from the database.

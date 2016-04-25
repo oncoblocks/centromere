@@ -16,6 +16,7 @@
 
 package org.oncoblocks.centromere.dataimport.cli;
 
+import com.google.common.collect.Iterables;
 import org.oncoblocks.centromere.core.dataimport.component.DataImportException;
 import org.oncoblocks.centromere.core.dataimport.component.RecordProcessor;
 import org.oncoblocks.centromere.core.dataimport.pipeline.BasicImportOptions;
@@ -43,6 +44,13 @@ public class ImportCommandRunner {
 		this.manager = manager;
 	}
 
+	/**
+	 * Runs the import of the file provided in the input arguments.  Will choose the appropriate 
+	 *   {@link RecordProcessor} instance, based on the supplied data type.  
+	 * 
+	 * @param arguments
+	 * @throws Exception
+	 */
 	public void run(ImportCommandArguments arguments) throws Exception {
 		RecordProcessor processor = this.getProcessorByDataType(arguments.getDataType());
 		BasicImportOptions options = arguments.getImportOptions();
@@ -61,14 +69,12 @@ public class ImportCommandRunner {
 			((ImportOptionsAware) processor).setImportOptions(options);
 		}
 		if (processor instanceof DataFileAware){
-			dataFileMetadata = manager.getDataFileRepository().getByFilePath(inputFilePath);
-			if (dataFileMetadata == null){
+			if (Iterables.size(manager.getDataFileRepository().getByFilePath(inputFilePath)) == 0){
 				BasicDataFileMetadata df = new BasicDataFileMetadata();
 				df.setFilePath(inputFilePath);
 				df.setDataType(arguments.getDataType());
 				df.setDataSet(dataSetMetadata);
-				manager.getDataFileRepository().createDataFile(df, dataSetMetadata);
-				dataFileMetadata = manager.getDataFileRepository().getByFilePath(inputFilePath);
+				dataFileMetadata = df;
 			} else {
 				if (options.isSkipExistingFiles()){
 					logger.info(String.format("[CENTROMERE] Skipping existing data file: %s", arguments.getInputFilePath()));

@@ -70,6 +70,14 @@ public class GenericRecordProcessor<T extends Model<?>>
 	 * {@link RecordProcessor#doBefore()}
 	 */
 	public void doBefore() {
+		this.configureComponents();
+	}
+
+	/**
+	 * Assigns options and metadata objects to the individual processing components that are expecting
+	 *   them.  Should run in the {@code doBefore()} method.
+	 */
+	protected void configureComponents(){
 		if (writer != null && writer instanceof ImportOptionsAware) {
 			((ImportOptionsAware) writer).setImportOptions(options);
 		}
