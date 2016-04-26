@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.component;
+package org.oncoblocks.centromere.core.dataimport;
+
+import org.oncoblocks.centromere.core.model.support.DataFileMetadata;
 
 /**
- * Defines basic connection information necessary for accessing a database.  Designed for use with 
- *   {@link RecordImporter} implementations that use specific CLT database import utilities.
- *   TODO: Find better existing class to handle this, preferably without storing the password as plain text.
- * 
+ * Data import components that implement this interface are assumed to have information about the 
+ *   currently processed data file assigned to them, for annotating processed records.
+ *
  * @author woemler
  */
-public interface DatabaseCredentials {
-	String getUsername();
-	String getPassword();
-	String getHost();
-	String getPort();
-	String getDatabase();
+public interface DataFileAware {
+	void setDataFileMetadata(DataFileMetadata dataFileMetadata);
 }

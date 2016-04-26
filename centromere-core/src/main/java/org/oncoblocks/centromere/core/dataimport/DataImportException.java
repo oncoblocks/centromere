@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.pipeline;
-
-import org.oncoblocks.centromere.core.model.support.DataFileMetadata;
+package org.oncoblocks.centromere.core.dataimport;
 
 /**
- * Data import components that implement this interface are assumed to have information about the 
- *   currently processed data file assigned to them, for annotating processed records.
- *
+ * Generic exception thrown when a data import component has an unresolvable problem.
+ * 
  * @author woemler
  */
-public interface DataFileAware {
-	void setDataFileMetadata(DataFileMetadata<?> dataFileMetadata);
+public class DataImportException extends Exception {
+	public DataImportException(String message) {
+		super(message);
+	}
 }

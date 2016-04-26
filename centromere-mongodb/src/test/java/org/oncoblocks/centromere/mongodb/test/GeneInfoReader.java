@@ -16,8 +16,8 @@
 
 package org.oncoblocks.centromere.mongodb.test;
 
-import org.oncoblocks.centromere.core.dataimport.component.DataImportException;
-import org.oncoblocks.centromere.core.dataimport.component.AbstractRecordFileReader;
+import org.oncoblocks.centromere.core.dataimport.DataImportException;
+import org.oncoblocks.centromere.core.dataimport.AbstractRecordFileReader;
 
 import java.io.IOException;
 import java.util.Arrays;

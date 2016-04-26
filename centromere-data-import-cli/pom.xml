@@ -79,6 +79,14 @@
             <artifactId>centromere-core</artifactId>
             <version>${centromere.version}</version>
         </dependency>
+
+        <!-- Testing -->
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
         
     </dependencies>
 

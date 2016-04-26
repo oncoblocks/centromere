@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.component;
+package org.oncoblocks.centromere.core.dataimport;
 
 import org.oncoblocks.centromere.core.model.Model;
 import org.slf4j.Logger;

@@ -16,7 +16,7 @@
 
 package org.oncoblocks.centromere.dataimport.cli;
 
-import org.oncoblocks.centromere.core.dataimport.component.RecordProcessor;
+import org.oncoblocks.centromere.core.dataimport.RecordProcessor;
 import org.oncoblocks.centromere.core.model.support.DataSetMetadata;
 import org.oncoblocks.centromere.core.repository.support.DataFileMetadataRepository;
 import org.oncoblocks.centromere.core.repository.support.DataSetMetadataRepository;
@@ -29,6 +29,7 @@ import java.util.Map;
 /**
  * @author woemler
  */
+
 public abstract class DataImportConfigurer {
 	
 	@Autowired private ApplicationContext applicationContext;

@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.pipeline;
+package org.oncoblocks.centromere.core.dataimport;
 
-import org.oncoblocks.centromere.core.model.support.DataSetMetadata;
+import java.lang.annotation.*;
 
 /**
- * Data import components that implement this interface are assumed to have information about the 
- *   currently processed data set assigned to them, for annotating processed records.
- * 
+ * Identifies an annotated {@link RecordProcessor} as the primary handler of the specified data types.
  * @author woemler
  */
-public interface DataSetAware {
-	void setDataSetMetadata(DataSetMetadata<?> dataSetMetadata);
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.METHOD})
+public @interface DataTypes {
+	String[] value();
 }

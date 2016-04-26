@@ -20,9 +20,9 @@ import com.beust.jcommander.Parameter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.oncoblocks.centromere.core.model.support.BasicDataSetMetadata;
 import org.oncoblocks.centromere.core.model.support.DataSetMetadata;
-import org.springframework.util.Assert;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,33 +33,26 @@ import java.util.List;
 public class AddCommandArguments {
 	
 	@Parameter(description = "Positional arguments.  The first should be the ")
-	private List<String> args;
-	private String category;
-	private String label;
-	private String body;
+	private List<String> args = new ArrayList<>();
 
 	public List<String> getArgs() {
 		return args;
 	}
 
 	public void setArgs(List<String> args) {
-		Assert.isTrue(args.size() == 3, "Add command requires exactly three arguments!");
 		this.args = args;
-		this.category = args.get(0);
-		this.label = args.get(1);
-		this.body = args.get(2);
 	}
 
 	public String getCategory() {
-		return category;
+		return args.size() > 0 ? args.get(0) : null;
 	}
 
 	public String getLabel() {
-		return label;
+		return args.size() > 1 ? args.get(1) : null;
 	}
 
 	public String getBody() {
-		return body;
+		return args.size() > 2 ? args.get(2) : null;
 	}
 
 	/**
@@ -72,12 +65,21 @@ public class AddCommandArguments {
 		ObjectMapper mapper = new ObjectMapper();
 		BasicDataSetMetadata metadata = null;
 		try {
-			metadata = mapper.readValue(body, BasicDataSetMetadata.class);
+			metadata = mapper.readValue(this.getBody(), BasicDataSetMetadata.class);
+			metadata.setLabel(this.getLabel());
 		} catch (IOException e){
 			e.printStackTrace();
 		}
 		return metadata;
 	}
-	
-	
+
+	@Override 
+	public String toString() {
+		return "AddCommandArguments{" +
+				"args=" + args +
+				", category='" + (this.getCategory() != null ? this.getCategory() : "") + '\'' +
+				", label='" + (this.getLabel() != null ? this.getLabel() : "") + '\'' +
+				", body='" + (this.getBody() != null ? this.getBody() : "") + '\'' +
+				'}';
+	}
 }

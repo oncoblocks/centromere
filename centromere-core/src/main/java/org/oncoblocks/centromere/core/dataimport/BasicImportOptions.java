@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.pipeline;
+package org.oncoblocks.centromere.core.dataimport;
 
 import java.util.HashMap;
 import java.util.Map;

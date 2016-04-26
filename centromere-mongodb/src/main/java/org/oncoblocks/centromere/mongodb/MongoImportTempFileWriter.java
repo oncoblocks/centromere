@@ -16,8 +16,9 @@
 
 package org.oncoblocks.centromere.mongodb;
 
-import org.oncoblocks.centromere.core.dataimport.component.DataImportException;
-import org.oncoblocks.centromere.core.dataimport.component.AbstractRecordFileWriter;
+import org.oncoblocks.centromere.core.dataimport.RecordWriter;
+import org.oncoblocks.centromere.core.dataimport.DataImportException;
+import org.oncoblocks.centromere.core.dataimport.AbstractRecordFileWriter;
 import org.oncoblocks.centromere.core.model.Model;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
@@ -25,7 +26,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * Implementation of {@link org.oncoblocks.centromere.core.dataimport.component.RecordWriter} that 
+ * Implementation of {@link RecordWriter} that 
  *   creates temporary files with {@link Model} records formatted in JSON, for importing via 
  *   MongoImport.
  * 

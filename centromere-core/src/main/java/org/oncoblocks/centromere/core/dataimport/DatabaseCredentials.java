@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.component;
-
-import java.lang.annotation.*;
+package org.oncoblocks.centromere.core.dataimport;
 
 /**
- * Identifies an annotated {@link RecordProcessor} as the primary handler of the specified data types.
+ * Defines basic connection information necessary for accessing a database.  Designed for use with 
+ *   {@link RecordImporter} implementations that use specific CLT database import utilities.
+ *   TODO: Find better existing class to handle this, preferably without storing the password as plain text.
+ * 
  * @author woemler
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
-public @interface DataTypes {
-	String[] value();
+public interface DatabaseCredentials {
+	String getUsername();
+	String getPassword();
+	String getHost();
+	String getPort();
+	String getDatabase();
 }

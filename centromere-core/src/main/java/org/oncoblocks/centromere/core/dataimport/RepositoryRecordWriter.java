@@ -14,46 +14,43 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.component;
+package org.oncoblocks.centromere.core.dataimport;
 
 import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.repository.RepositoryOperations;
 
-import java.io.Serializable;
-
 /**
- * Simple implementation of {@link RecordWriter}, that updates existing database records
+ * Simple implementation of {@link RecordWriter}, that writes all records directly to the database
  *   using a {@link RepositoryOperations} implementation.
- *   
  * 
  * @author woemler
  */
-public class RepositoryRecordUpdater<T extends Model<ID>, ID extends Serializable> implements RecordWriter<T> {
+public class RepositoryRecordWriter<T extends Model<?>> implements RecordWriter<T> {
 	
-	private RepositoryOperations<T, ID> repository;
+	private RepositoryOperations<T, ?> repository;
 
-	public RepositoryRecordUpdater() { }
+	public RepositoryRecordWriter() { }
 
-	public RepositoryRecordUpdater(
-			RepositoryOperations<T, ID> repository) {
+	public RepositoryRecordWriter(
+			RepositoryOperations<T, ?> repository) {
 		this.repository = repository;
 	}
 
 	/**
 	 * Writes the input {@link Model} record to the target {@link RepositoryOperations} implementation,
-	 *   using an update operation.
- 	 * @param entity
-	 */
+	 *   using an insert operation.
+	 * @param entity
+	 */ 
 	public void writeRecord(T entity) {
-		repository.update(entity);	
+		repository.insert(entity);	
 	}
 
-	public RepositoryOperations<T, ID> getRepository() {
+	public RepositoryOperations<T, ?> getRepository() {
 		return repository;
 	}
 
 	public void setRepository(
-			RepositoryOperations<T, ID> repository) {
+			RepositoryOperations<T, ?> repository) {
 		this.repository = repository;
 	}
 
@@ -66,7 +63,6 @@ public class RepositoryRecordUpdater<T extends Model<ID>, ID extends Serializabl
 	public void doBefore(String destination) throws DataImportException {
 		return;
 	}
-
 
 	/**
 	 * Performs no action.

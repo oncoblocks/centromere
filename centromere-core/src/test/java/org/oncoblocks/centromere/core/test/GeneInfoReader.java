@@ -16,8 +16,8 @@
 
 package org.oncoblocks.centromere.core.test;
 
-import org.oncoblocks.centromere.core.dataimport.component.DataImportException;
-import org.oncoblocks.centromere.core.dataimport.component.AbstractRecordFileReader;
+import org.oncoblocks.centromere.core.dataimport.DataImportException;
+import org.oncoblocks.centromere.core.dataimport.AbstractRecordFileReader;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;

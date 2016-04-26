@@ -16,7 +16,7 @@
 
 package org.oncoblocks.centromere.core.test;
 
-import org.oncoblocks.centromere.core.dataimport.pipeline.BasicImportOptions;
+import org.oncoblocks.centromere.core.dataimport.BasicImportOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

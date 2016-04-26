@@ -17,7 +17,12 @@
 package org.oncoblocks.centromere.dataimport.cli;
 
 import com.beust.jcommander.Parameter;
-import org.oncoblocks.centromere.core.dataimport.pipeline.BasicImportOptions;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.oncoblocks.centromere.core.dataimport.BasicImportOptions;
+import org.oncoblocks.centromere.core.model.support.BasicDataSetMetadata;
+import org.oncoblocks.centromere.core.model.support.DataSetMetadata;
+
+import java.io.IOException;
 
 /**
  * @author woemler
@@ -30,7 +35,7 @@ public class ImportCommandArguments {
 	@Parameter(names = { "-t", "--data-type" }, required = true, description = "")
 	private String dataType;
 	
-	@Parameter(names = { "-d", "--data-set" }, required = true, description = "")
+	@Parameter(names = { "-d", "--data-set" }, description = "")
 	private String dataSet;
 	
 	@Parameter(names = { "-T", "--temp-dir" }, description = "")
@@ -122,4 +127,30 @@ public class ImportCommandArguments {
 		return options;
 	}
 	
+	public DataSetMetadata getDataSetMetadata(){
+		ObjectMapper mapper = new ObjectMapper();
+		DataSetMetadata metadata = null;
+		if (this.dataSet != null && !"".equals(this.dataSet)){
+			try {
+				metadata = mapper.readValue(this.dataSet, BasicDataSetMetadata.class);
+			} catch (IOException e){
+				e.printStackTrace();
+			}
+		}
+		return metadata;
+	}
+
+	@Override 
+	public String toString() {
+		return "ImportCommandArguments{" +
+				"inputFilePath='" + inputFilePath + '\'' +
+				", dataType='" + dataType + '\'' +
+				", dataSet='" + dataSet + '\'' +
+				", tempFilePath='" + tempFilePath + '\'' +
+				", skipInvalidRecords=" + skipInvalidRecords +
+				", skipInvalidGenes=" + skipInvalidGenes +
+				", skipInvalidSamples=" + skipInvalidSamples +
+				", skipInvalidDataSets=" + skipInvalidDataSets +
+				'}';
+	}
 }

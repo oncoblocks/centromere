@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.component;
+package org.oncoblocks.centromere.core.dataimport;
+
+import org.oncoblocks.centromere.core.model.support.DataSetMetadata;
 
 /**
- * Data import component designed to take a temporary record file and import it directly into the 
- *   database, via a specified utility (eg. MySQLImport of MongoImport).  
+ * Data import components that implement this interface are assumed to have information about the 
+ *   currently processed data set assigned to them, for annotating processed records.
  * 
  * @author woemler
  */
-public interface RecordImporter {
-
-	/**
-	 * Runs the data import on the specified temp file.
-	 * 
-	 * @param filePath
-	 * @throws DataImportException
-	 */
-	void importFile(String filePath) throws DataImportException;
+public interface DataSetAware {
+	void setDataSetMetadata(DataSetMetadata dataSetMetadata);
 }

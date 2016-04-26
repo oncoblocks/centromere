@@ -17,12 +17,12 @@
 package org.oncoblocks.centromere.dataimport.cli;
 
 import com.google.common.collect.Iterables;
-import org.oncoblocks.centromere.core.dataimport.component.DataImportException;
-import org.oncoblocks.centromere.core.dataimport.component.RecordProcessor;
-import org.oncoblocks.centromere.core.dataimport.pipeline.BasicImportOptions;
-import org.oncoblocks.centromere.core.dataimport.pipeline.DataFileAware;
-import org.oncoblocks.centromere.core.dataimport.pipeline.DataSetAware;
-import org.oncoblocks.centromere.core.dataimport.pipeline.ImportOptionsAware;
+import org.oncoblocks.centromere.core.dataimport.DataImportException;
+import org.oncoblocks.centromere.core.dataimport.RecordProcessor;
+import org.oncoblocks.centromere.core.dataimport.BasicImportOptions;
+import org.oncoblocks.centromere.core.dataimport.DataFileAware;
+import org.oncoblocks.centromere.core.dataimport.DataSetAware;
+import org.oncoblocks.centromere.core.dataimport.ImportOptionsAware;
 import org.oncoblocks.centromere.core.model.support.BasicDataFileMetadata;
 import org.oncoblocks.centromere.core.model.support.DataFileMetadata;
 import org.oncoblocks.centromere.core.model.support.DataSetMetadata;
@@ -62,7 +62,7 @@ public class ImportCommandRunner {
 			throw new DataImportException(String.format("Input file is not valid: %s", inputFilePath));
 		}
 		if (processor instanceof DataSetAware){
-			dataSetMetadata = this.getDataSetMetadata(arguments.getDataSet());
+			dataSetMetadata = this.getDataSetMetadata(arguments);
 			((DataSetAware) processor).setDataSetMetadata(dataSetMetadata);
 		}
 		if (processor instanceof ImportOptionsAware){
@@ -87,9 +87,10 @@ public class ImportCommandRunner {
 			((DataFileAware) processor).setDataFileMetadata(dataFileMetadata);
 		}
 		processor.doBefore();
-		processor.run(inputFile.getAbsolutePath());
+		processor.run(inputFile.getCanonicalPath());
 		processor.doAfter();
 	}
+	
 	private RecordProcessor getProcessorByDataType(String dataType) throws DataImportException{
 		if (!manager.isSupportedDataType(dataType)){
 			throw new DataImportException(String.format("Unable to identify appropriate RecordProcessor "
@@ -99,13 +100,19 @@ public class ImportCommandRunner {
 		return manager.getDataTypeProcessor(dataType);
 	}
 	
-	private DataSetMetadata getDataSetMetadata(String label) throws DataImportException {
-		DataSetMetadata dataSet = manager.getDataSet(label);
-		if (dataSet == null){
-			throw new DataImportException(String.format("DataSet for label does not exist: %s", label));
-		} else if (dataSet.getId() == null){
-			throw new DataImportException(String.format("DataSet record does not have ID, and may not have "
-					+ "been persisted to the database: %s", dataSet.getLabel()));
+	private DataSetMetadata getDataSetMetadata(ImportCommandArguments args) throws DataImportException {
+		DataSetMetadata dataSet = args.getDataSetMetadata();
+		if (dataSet == null) {
+			if (args.getDataSet() != null){
+				dataSet = manager.getDataSet(args.getDataSet());
+				if (dataSet == null) {
+					throw new DataImportException(String.format("DataSet for label does not exist: %s", args.getDataSet()));
+				} else if (dataSet.getId() == null) {
+					throw new DataImportException(
+							String.format("DataSet record does not have ID, and may not have "
+									+ "been persisted to the database: %s", dataSet.getLabel()));
+				}
+			}
 		}
 		return dataSet;
 	}

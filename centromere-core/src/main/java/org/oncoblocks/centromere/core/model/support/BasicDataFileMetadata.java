@@ -66,4 +66,16 @@ public class BasicDataFileMetadata implements DataFileMetadata<String> {
 	public void setDataSet(DataSetMetadata dataSet) {
 		this.dataSet = dataSet;
 	}
+
+	@Override 
+	public String toString() {
+		return "BasicDataFileMetadata{" +
+				"id='" + id + '\'' +
+				", dataType='" + dataType + '\'' +
+				", filePath='" + filePath + '\'' +
+				", dataFileId=" + dataFileId +
+				", dataSet=" + dataSet +
+				'}';
+	}
+	
 }

@@ -14,14 +14,21 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.pipeline;
+package org.oncoblocks.centromere.core.dataimport;
 
 /**
- * Data import components that implement this interface are assumed to reference the {@link BasicImportOptions}
- *   for the containing data file or data set processing components.
+ * Data import component designed to take a temporary record file and import it directly into the 
+ *   database, via a specified utility (eg. MySQLImport of MongoImport).  
  * 
  * @author woemler
  */
-public interface ImportOptionsAware {
-	void setImportOptions(ImportOptions importOptions);
+public interface RecordImporter {
+
+	/**
+	 * Runs the data import on the specified temp file.
+	 * 
+	 * @param filePath
+	 * @throws DataImportException
+	 */
+	void importFile(String filePath) throws DataImportException;
 }

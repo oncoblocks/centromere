@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.component;
+package org.oncoblocks.centromere.core.dataimport;
 
 /**
- * Generic exception thrown when a data import component has an unresolvable problem.
+ * Data import components that implement this interface are assumed to reference the {@link BasicImportOptions}
+ *   for the containing data file or data set processing components.
  * 
  * @author woemler
  */
-public class DataImportException extends Exception {
-	public DataImportException(String message) {
-		super(message);
-	}
+public interface ImportOptionsAware {
+	void setImportOptions(ImportOptions importOptions);
 }

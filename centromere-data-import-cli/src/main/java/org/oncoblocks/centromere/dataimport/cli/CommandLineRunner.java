@@ -21,6 +21,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author woemler
  */
@@ -40,6 +43,7 @@ public class CommandLineRunner {
 	}
 
 	public void run(String[] args) throws Exception {
+		Date start = new Date();
 		Assert.notNull(addCommandRunner, "AddCommandRunner must not be null!");
 		ImportCommandArguments importArguments = new ImportCommandArguments();
 		AddCommandArguments addArguments = new AddCommandArguments();
@@ -47,18 +51,37 @@ public class CommandLineRunner {
 		jc.addCommand("import", importArguments);
 		jc.addCommand("add", addArguments);
 		jc.parse(args);
-		
+		logger.info("[CENTROMERE] Starting command line import utility.");
 		switch (jc.getParsedCommand()){
 			case "import":
+				logger.info(String.format("[CENTROMERE] Running 'import' command with arguments: %s", importArguments.toString()));
 				importCommandRunner.run(importArguments);
 				break;
 			case "add":
+				logger.info(String.format("[CENTROMERE] Running 'add' command with arguments: %s", addArguments.toString()));
 				addCommandRunner.run(addArguments);
 				break;
 			default:
 				jc.usage();
 		}
+		Date end = new Date();
+		logger.info(String.format("[CENTROMERE] Finished.  Elapsed time: %s", formatInterval(end.getTime() - start.getTime())));
 		
+	}
+
+	/**
+	 * From http://stackoverflow.com/a/6710604/1458983
+	 * Converts a long-formatted timespan into a human-readable string that denotes the length of time 
+	 *   that has elapsed.
+	 * @param l
+	 * @return
+	 */
+	private static String formatInterval(final long l) {
+		final long hr = TimeUnit.MILLISECONDS.toHours(l);
+		final long min = TimeUnit.MILLISECONDS.toMinutes(l - TimeUnit.HOURS.toMillis(hr));
+		final long sec = TimeUnit.MILLISECONDS.toSeconds(l - TimeUnit.HOURS.toMillis(hr) - TimeUnit.MINUTES.toMillis(min));
+		final long ms = TimeUnit.MILLISECONDS.toMillis(l - TimeUnit.HOURS.toMillis(hr) - TimeUnit.MINUTES.toMillis(min) - TimeUnit.SECONDS.toMillis(sec));
+		return String.format("%02d:%02d:%02d.%03d", hr, min, sec, ms);
 	}
 
 	public AddCommandRunner getAddCommandRunner() {

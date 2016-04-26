@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package org.oncoblocks.centromere.core.dataimport.component;
+package org.oncoblocks.centromere.core.dataimport;
 
-import org.oncoblocks.centromere.core.dataimport.pipeline.*;
 import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.model.support.DataFileMetadata;
 import org.oncoblocks.centromere.core.model.support.DataSetMetadata;
@@ -45,8 +44,8 @@ public class GenericRecordProcessor<T extends Model<?>>
 	private RecordWriter<T> writer;
 	private RecordImporter importer;
 	private BasicImportOptions options;
-	private DataSetMetadata<?> dataSet;
-	private DataFileMetadata<?> dataFile;
+	private DataSetMetadata dataSet;
+	private DataFileMetadata dataFile;
 	private static final Logger logger = LoggerFactory.getLogger(GenericRecordProcessor.class);
 
 	public GenericRecordProcessor() { }
@@ -217,15 +216,15 @@ public class GenericRecordProcessor<T extends Model<?>>
 		return dataSet;
 	}
 
-	public void setDataSetMetadata(DataSetMetadata<?> dataSet) {
+	public void setDataSetMetadata(DataSetMetadata dataSet) {
 		this.dataSet = dataSet;
 	}
 
-	public void setDataFileMetadata(DataFileMetadata<?> dataFileMetadata) {
+	public void setDataFileMetadata(DataFileMetadata dataFileMetadata) {
 		this.dataFile = dataFileMetadata;
 	}
 	
-	public DataFileMetadata<?> getDataFile(){
+	public DataFileMetadata getDataFile(){
 		return dataFile;
 	}
 	

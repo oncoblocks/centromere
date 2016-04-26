@@ -81,4 +81,14 @@ public class BasicDataSetMetadata implements DataSetMetadata<String> {
 		this.notes = notes;
 	}
 
+	@Override public String toString() {
+		return "BasicDataSetMetadata{" +
+				"id='" + id + '\'' +
+				", label='" + label + '\'' +
+				", dataSetId=" + dataSetId +
+				", name='" + name + '\'' +
+				", source='" + source + '\'' +
+				", notes='" + notes + '\'' +
+				'}';
+	}
 }
