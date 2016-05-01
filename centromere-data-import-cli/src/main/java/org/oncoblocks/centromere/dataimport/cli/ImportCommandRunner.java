@@ -32,6 +32,9 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 
 /**
+ * Handles execution of the {@code import} command arguments.  This command attempts to process
+ *   data from a referenced input file and load it into the data warehouse.
+ * 
  * @author woemler
  */
 public class ImportCommandRunner {
@@ -48,21 +51,27 @@ public class ImportCommandRunner {
 	 * Runs the import of the file provided in the input arguments.  Will choose the appropriate 
 	 *   {@link RecordProcessor} instance, based on the supplied data type.  
 	 * 
-	 * @param arguments
+	 * @param arguments {@link ImportCommandArguments} instance, parsed from command line args.
 	 * @throws Exception
 	 */
 	public void run(ImportCommandArguments arguments) throws Exception {
+		logger.debug(String.format("[CENTROMERE] Starting ImportCommandRunner with arguments: %s", 
+				 arguments.toString()));
 		RecordProcessor processor = this.getProcessorByDataType(arguments.getDataType());
+		logger.debug(String.format("[CENTROMERE] Using processor %s for data type %s.", 
+				processor.getClass().getName(), arguments.getDataType()));
 		BasicImportOptions options = arguments.getImportOptions();
+		logger.debug(String.format("[CENTROMERE] Running import with options: %s", options.toString()));
 		DataSetMetadata dataSetMetadata = null;
 		DataFileMetadata dataFileMetadata = null;
 		String inputFilePath = arguments.getInputFilePath();
 		File inputFile = new File(inputFilePath);
 		if (!inputFile.exists() || !inputFile.isFile() || !inputFile.canRead()){
-			throw new DataImportException(String.format("Input file is not valid: %s", inputFilePath));
+			throw new CommandLineRunnerException(String.format("Input file is not valid: %s", inputFilePath));
 		}
 		if (processor instanceof DataSetAware){
 			dataSetMetadata = this.getDataSetMetadata(arguments);
+			logger.debug(String.format("[CENTROMERE] Using DataSetMetadata: %s", dataSetMetadata.toString()));
 			((DataSetAware) processor).setDataSetMetadata(dataSetMetadata);
 		}
 		if (processor instanceof ImportOptionsAware){
@@ -75,13 +84,14 @@ public class ImportCommandRunner {
 				df.setDataType(arguments.getDataType());
 				df.setDataSet(dataSetMetadata);
 				dataFileMetadata = df;
+				logger.debug(String.format("[CENTROMERE] Using DataFileMetadata: %s", dataFileMetadata.toString()));
 			} else {
 				if (options.isSkipExistingFiles()){
 					logger.info(String.format("[CENTROMERE] Skipping existing data file: %s", arguments.getInputFilePath()));
 					return;
 				} else {
 					logger.warn(String.format("Data file already exists: %s", arguments.getInputFilePath()));
-					throw new DataImportException(String.format("Data file already exists: %s", arguments.getInputFilePath()));
+					throw new CommandLineRunnerException(String.format("Data file already exists: %s", arguments.getInputFilePath()));
 				}
 			}
 			((DataFileAware) processor).setDataFileMetadata(dataFileMetadata);
@@ -89,8 +99,17 @@ public class ImportCommandRunner {
 		processor.doBefore();
 		processor.run(inputFile.getCanonicalPath());
 		processor.doAfter();
+		logger.debug("[CENTROMERE] Import task complete.");
 	}
-	
+
+	/**
+	 * Returns reference to a {@link RecordProcessor} instance, assuming it has been registered with
+	 *   the {@link DataImportManager} instance.  Throws an exception if no mapping exists.
+	 * 
+	 * @param dataType String label associated with a particular {@link RecordProcessor}
+	 * @return {@link RecordProcessor}
+	 * @throws DataImportException
+	 */
 	private RecordProcessor getProcessorByDataType(String dataType) throws DataImportException{
 		if (!manager.isSupportedDataType(dataType)){
 			throw new DataImportException(String.format("Unable to identify appropriate RecordProcessor "
@@ -99,7 +118,16 @@ public class ImportCommandRunner {
 		}
 		return manager.getDataTypeProcessor(dataType);
 	}
-	
+
+	/**
+	 * Returns the {@link DataSetMetadata} object passed as a command line argument, or reference to
+	 *   an existing object that has been registered with the {@link DataImportManager}.  Throws an
+	 *   exception if no metadata can be resolved.
+	 * 
+	 * @param args {@link ImportCommandArguments} instance, parsed from command line args.
+	 * @return {@link DataSetMetadata} object instance.
+	 * @throws DataImportException
+	 */
 	private DataSetMetadata getDataSetMetadata(ImportCommandArguments args) throws DataImportException {
 		DataSetMetadata dataSet = args.getDataSetMetadata();
 		if (dataSet == null) {
@@ -108,7 +136,7 @@ public class ImportCommandRunner {
 				if (dataSet == null) {
 					throw new DataImportException(String.format("DataSet for label does not exist: %s", args.getDataSet()));
 				} else if (dataSet.getId() == null) {
-					throw new DataImportException(
+					throw new CommandLineRunnerException(
 							String.format("DataSet record does not have ID, and may not have "
 									+ "been persisted to the database: %s", dataSet.getLabel()));
 				}

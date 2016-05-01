@@ -16,41 +16,37 @@
 
 package org.oncoblocks.centromere.dataimport.cli.test;
 
-import org.oncoblocks.centromere.dataimport.cli.AddCommandRunner;
-import org.oncoblocks.centromere.dataimport.cli.DataImportManager;
-import org.oncoblocks.centromere.dataimport.cli.ImportCommandRunner;
-import org.oncoblocks.centromere.dataimport.cli.test.support.DataFileRepository;
-import org.oncoblocks.centromere.dataimport.cli.test.support.DataSetRepository;
+import com.mongodb.Mongo;
+import cz.jirutka.spring.embedmongo.EmbeddedMongoBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
+import org.springframework.data.mongodb.core.MongoTemplate;
+
+import java.io.IOException;
 
 /**
  * @author woemler
  */
+
 @Configuration
+@PropertySource({ "classpath:test-mongo-data-source.properties" })
 @ComponentScan(basePackages = { "org.oncoblocks.centromere.dataimport.cli.test" })
-public class TestConfig {
-	
-	@Autowired private ApplicationContext applicationContext;
-	@Autowired private DataSetRepository dataSetRepository;
-	@Autowired private DataFileRepository dataFileRepository;
-	
-	@Bean
-	public DataImportManager dataImportManager(){
-		return new DataImportManager(applicationContext, dataSetRepository, dataFileRepository);
+public class TestMongoConfig {
+
+	@Autowired private Environment env;
+
+	@Bean(destroyMethod = "close")
+	public Mongo mongo() throws IOException {
+		return new EmbeddedMongoBuilder().build();
 	}
-	
+
 	@Bean
-	public AddCommandRunner addCommandRunner(){
-		return new AddCommandRunner(dataImportManager());
-	}
-	
-	@Bean
-	public ImportCommandRunner importCommandRunner(){
-		return new ImportCommandRunner(dataImportManager());
+	public MongoTemplate mongoTemplate(Mongo mongo){
+		return new MongoTemplate(mongo, env.getRequiredProperty("mongo.name"));
 	}
 	
 }

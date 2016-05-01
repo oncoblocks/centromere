@@ -26,13 +26,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Command line argument configuration for the ADD command.
+ * Command line argument configuration for the {@code add} command.  The {@code add} command expects
+ *   three arguments: a category, label, and object body.  The category refers to the type of 
+ *   record to be added.  The label is a unique string identifier that will be shorthand reference
+ *   to the added record, used in the {@link DataImportManager}.  The body can be a complete JSON
+ *   representation of the added object, a reference to a bean or class. 
  * 
  * @author woemler
  */
 public class AddCommandArguments {
 	
-	@Parameter(description = "Positional arguments.  The first should be the ")
+	@Parameter(description = "Positional argument format example: java -jar import.jar category label body")
 	private List<String> args = new ArrayList<>();
 
 	public List<String> getArgs() {

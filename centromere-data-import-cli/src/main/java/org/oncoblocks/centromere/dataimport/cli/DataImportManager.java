@@ -23,6 +23,7 @@ import org.oncoblocks.centromere.core.repository.support.DataFileMetadataReposit
 import org.oncoblocks.centromere.core.repository.support.DataSetMetadataRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.Assert;
 
@@ -30,7 +31,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Configures required component classes for command line data import tool.
+ * Manages mappings of data sets and data types used in the import process.  Links string labels to
+ *   registered {@link RecordProcessor} beans, and to new or existing {@link DataSetMetadata}
+ *   records.
  * 
  * @author woemler
  */
@@ -137,7 +140,11 @@ public class DataImportManager {
 					= (Class<? extends RecordProcessor>) Class.forName(beanReference);
 			processor = applicationContext.getBean(processorClass);
 		} catch (ClassNotFoundException e){
-			processor = (RecordProcessor) applicationContext.getBean(beanReference);
+			try {
+				processor = (RecordProcessor) applicationContext.getBean(beanReference);
+			} catch (NoSuchBeanDefinitionException ex){
+				throw new CommandLineRunnerException(String.format("No processor bean found: %s", beanReference));
+			}
 		}
 		addDataTypeMapping(label, processor);
 	}

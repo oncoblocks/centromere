@@ -23,6 +23,10 @@ What Centromere is _**not**_:
 
 The core module, containing common dependencies classes for creating data model, repository, and data import component classes.
 
+#### Centromere Data Import CLI
+
+Utility classes for creating command line import tools.  Builds on the data import components in the `centromere-core` module and adds some default behaviors for a command line interface.
+
 #### Centromere MongoDB and SQL
 
 Database-specific implementations of the core repository interfaces and data import classes.  MongoDB is the preferred database technology, but MySQL is currently supported at an experimental level.
@@ -59,6 +63,10 @@ Please see each individual module's README for instructions on getting started. 
     <version>0.3.0</version>
 </dependency>
 ```
+
+## Demo
+
+A demo implementation of a Centromere data warehouse and web API is available as a [GitHub repository](https://github.com/oncoblocks/centromere-demo).  This demo utilizes a small data set of cancer genomic data from the TCGA to showcase the features of Centromere's web service and data import utilities.  A hosted instance of this demo is coming soon.
 
 ## Contact
 

@@ -50,13 +50,26 @@ public class GenericRecordProcessor<T extends Model<?>>
 
 	public GenericRecordProcessor() { }
 
-	public GenericRecordProcessor(
-			Class<T> model,
-			RecordReader<T> reader, 
-			Validator validator,
+	public GenericRecordProcessor(Class<T> model, RecordReader<T> reader, Validator validator, 
+			RecordWriter<T> writer) {
+		this.model = model;
+		this.reader = reader;
+		this.validator = validator;
+		this.writer = writer;
+	}
+
+	public GenericRecordProcessor(Class<T> model, RecordReader<T> reader, Validator validator,
 			RecordWriter<T> writer,
-			RecordImporter importer,
-			BasicImportOptions options) {
+			RecordImporter importer) {
+		this.model = model;
+		this.reader = reader;
+		this.validator = validator;
+		this.writer = writer;
+		this.importer = importer;
+	}
+
+	public GenericRecordProcessor(Class<T> model, RecordReader<T> reader, Validator validator,
+			RecordWriter<T> writer, RecordImporter importer, BasicImportOptions options) {
 		this.model = model;
 		this.reader = reader;
 		this.validator = validator;

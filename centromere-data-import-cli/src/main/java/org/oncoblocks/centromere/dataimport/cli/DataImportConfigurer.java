@@ -27,6 +27,11 @@ import org.springframework.context.annotation.Bean;
 import java.util.Map;
 
 /**
+ * Helper class for handling default creation of command line importer bean classes and configurations.
+ *   Includes several classes that can be overridden to provide customized behavior.  Assumes that
+ *   an instance of both a {@link DataSetMetadataRepository} and {@link DataFileMetadataRepository}
+ *   have been created.
+ * 
  * @author woemler
  */
 

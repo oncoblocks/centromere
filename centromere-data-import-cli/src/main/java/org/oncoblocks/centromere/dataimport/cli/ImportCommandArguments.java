@@ -25,6 +25,9 @@ import org.oncoblocks.centromere.core.model.support.DataSetMetadata;
 import java.io.IOException;
 
 /**
+ * Command line arguments for the {@code import} command.  Includes arguments for specifying the
+ *   input file, associated data type and data sets, and flags for modifying import behavior.  
+ * 
  * @author woemler
  */
 public class ImportCommandArguments {
@@ -116,7 +119,14 @@ public class ImportCommandArguments {
 	public void setSkipInvalidDataSets(boolean skipInvalidDataSets) {
 		this.skipInvalidDataSets = skipInvalidDataSets;
 	}
-	
+
+	/**
+	 * Uses user-inputted and default flag values to create a {@link org.oncoblocks.centromere.core.dataimport.ImportOptions}
+	 *   instance that can be passed to {@link org.oncoblocks.centromere.core.dataimport.RecordProcessor}
+	 *   instances to modify their behavior.
+	 * 
+	 * @return
+	 */
 	public BasicImportOptions getImportOptions(){
 		BasicImportOptions options = new BasicImportOptions();
 		options.setSkipInvalidDataSets(this.skipInvalidDataSets);
@@ -126,7 +136,12 @@ public class ImportCommandArguments {
 		options.setTempDirectoryPath(this.tempFilePath);
 		return options;
 	}
-	
+
+	/**
+	 * Attempts to parse the inputted data set argument into a {@link DataSetMetadata} object.
+	 * 
+	 * @return
+	 */
 	public DataSetMetadata getDataSetMetadata(){
 		ObjectMapper mapper = new ObjectMapper();
 		DataSetMetadata metadata = null;
