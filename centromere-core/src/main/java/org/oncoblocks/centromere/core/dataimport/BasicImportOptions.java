@@ -159,4 +159,18 @@ public class BasicImportOptions implements ImportOptions {
 	public String getTempDirectoryPath() {
 		return tempDirectoryPath;
 	}
+
+	@Override 
+	public String toString() {
+		return "BasicImportOptions{" +
+				"options=" + options +
+				", skipInvalidSamples=" + skipInvalidSamples +
+				", skipInvalidDataSets=" + skipInvalidDataSets +
+				", skipInvalidGenes=" + skipInvalidGenes +
+				", skipInvalidMetadata=" + skipInvalidMetadata +
+				", skipInvalidRecords=" + skipInvalidRecords +
+				", skipExistingFiles=" + skipExistingFiles +
+				", tempDirectoryPath='" + tempDirectoryPath + '\'' +
+				'}';
+	}
 }

@@ -71,8 +71,13 @@ public class ImportCommandRunner {
 		}
 		if (processor instanceof DataSetAware){
 			dataSetMetadata = this.getDataSetMetadata(arguments);
-			logger.debug(String.format("[CENTROMERE] Using DataSetMetadata: %s", dataSetMetadata.toString()));
-			((DataSetAware) processor).setDataSetMetadata(dataSetMetadata);
+			if (dataSetMetadata != null) {
+				logger.debug(
+						String.format("[CENTROMERE] Using DataSetMetadata: %s", dataSetMetadata.toString()));
+				((DataSetAware) processor).setDataSetMetadata(dataSetMetadata);
+			} else {
+				logger.warn("[CENTROMERE] Data set metadata is null.");
+			}
 		}
 		if (processor instanceof ImportOptionsAware){
 			((ImportOptionsAware) processor).setImportOptions(options);

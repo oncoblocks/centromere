@@ -32,28 +32,28 @@ import java.io.IOException;
  */
 public class ImportCommandArguments {
 	
-	@Parameter(names = { "-i", "--input" }, required = true, description = "")
+	@Parameter(names = { "-i", "--input" }, required = true, description = "File to be imported.  Required.")
 	private String inputFilePath;
 	
-	@Parameter(names = { "-t", "--data-type" }, required = true, description = "")
+	@Parameter(names = { "-t", "--data-type" }, required = true, description = "Data type label for the target file.  Required.")
 	private String dataType;
 	
-	@Parameter(names = { "-d", "--data-set" }, description = "")
+	@Parameter(names = { "-d", "--data-set" }, description = "Data set label or JSON representation.  If not provided, no data set will be associated with the file.")
 	private String dataSet;
 	
-	@Parameter(names = { "-T", "--temp-dir" }, description = "")
+	@Parameter(names = { "-T", "--temp-dir" }, description = "Directory to write temporary files to.  Defaults to '/tmp'.")
 	private String tempFilePath = "/tmp";
 	
-	@Parameter(names = {"--skip-invalid-records"}, description = "")
+	@Parameter(names = {"--skip-invalid-records"}, description = "When true, records that fail validation will be skipped, rather than throwing an exception.")
 	private boolean skipInvalidRecords = false;
 
-	@Parameter(names = {"--skip-invalid-genes"}, description = "")
+	@Parameter(names = {"--skip-invalid-genes"}, description = "When true, records that do not match a valid gene will be skipped, rather than throw an exception.")
 	private boolean skipInvalidGenes = false;
 
-	@Parameter(names = {"--skip-invalid-samples"}, description = "")
+	@Parameter(names = {"--skip-invalid-samples"}, description = "When true, records that do not match valid samples will be skipped, rather than throw an exception.")
 	private boolean skipInvalidSamples = false;
 
-	@Parameter(names = {"--skip-invalid-data-sets"}, description = "")
+	@Parameter(names = {"--skip-invalid-data-sets"}, description = "When true, records and files associated with invalid or existing data sets will be skipped, rather than throw an exception.")
 	private boolean skipInvalidDataSets = false;
 
 	public String getInputFilePath() {

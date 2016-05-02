@@ -69,5 +69,47 @@ public class Main {
 Data import tools tools built with `centromere-data-import-cli` can run as executable JAR files on command line.  When run with the default arguments and configuration, such as is described above, the command line tool syntax is as follows:
 
 ```
-java -jar data-import.jar
+# Import command
+Usage: import [options]
+  Options:
+    -d, --data-set
+       Data set label or JSON representation.  If not provided, no data set will
+       be associated with the file.
+  * -t, --data-type
+       Data type label for the target file.  Required.
+  * -i, --input
+       File to be imported.  Required.
+    --skip-invalid-data-sets
+       When true, records and files associated with invalid or existing data
+       sets will be skipped, rather than throw an exception.
+       Default: false
+    --skip-invalid-genes
+       When true, records that do not match a valid gene will be skipped, rather
+       than throw an exception.
+       Default: false
+    --skip-invalid-records
+       When true, records that fail validation will be skipped, rather than
+       throwing an exception.
+       Default: false
+    --skip-invalid-samples
+       When true, records that do not match valid samples will be skipped,
+       rather than throw an exception.
+       Default: false
+    -T, --temp-dir
+       Directory to write temporary files to.  Defaults to '/tmp'.
+       Default: /tmp
+       
+# Add command
+Usage: add category label body
+  Positional arguments:
+    category
+      Used to specify the record type to be added.  Currently supports 'data_type'
+      and 'data_set'.
+    label
+      Unique string identifier to associate with the record to be added.  Used
+      for identification in the import command.
+    body
+      Content of the record.  For the 'data_type' category, this should be the 
+      name of a RecordProcessor class or existing bean.  For the 'data_set'
+      category, this should be a JSON representation of the data set metadata.
 ```
