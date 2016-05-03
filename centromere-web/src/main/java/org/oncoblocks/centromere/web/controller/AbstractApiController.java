@@ -16,6 +16,7 @@
 
 package org.oncoblocks.centromere.web.controller;
 
+import com.google.common.reflect.TypeToken;
 import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.repository.QueryCriteria;
 import org.oncoblocks.centromere.core.repository.RepositoryOperations;
@@ -30,6 +31,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityLinks;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.Resources;
@@ -74,6 +76,13 @@ public abstract class AbstractApiController<T extends Model<ID>, ID extends Seri
 		this.repository = repository;
 		this.model = model;
 		this.assembler = assembler;
+	}
+
+	public AbstractApiController(RepositoryOperations<T, ID> repository, EntityLinks entityLinks) {
+		this.repository = repository;
+		TypeToken<T> typeToken = new TypeToken<T>(getClass()) {};
+		this.model = (Class<T>) typeToken.getRawType();
+		this.assembler = new ModelResourceAssembler<>(getClass(), model, entityLinks);
 	}
 
 	/**

@@ -21,6 +21,7 @@ import org.oncoblocks.centromere.core.repository.RepositoryOperations;
 import org.oncoblocks.centromere.web.exceptions.RequestFailureException;
 import org.oncoblocks.centromere.web.exceptions.ResourceNotFoundException;
 import org.oncoblocks.centromere.web.util.ApiMediaTypes;
+import org.springframework.hateoas.EntityLinks;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -46,6 +47,10 @@ public class CrudApiController<T extends Model<ID>, ID extends Serializable>
 	public CrudApiController(RepositoryOperations<T, ID> repository, Class<T> model,
 			ResourceAssemblerSupport<T, FilterableResource> assembler) {
 		super(repository, model, assembler);
+	}
+
+	public CrudApiController(RepositoryOperations<T, ID> repository, EntityLinks entityLinks) {
+		super(repository, entityLinks);
 	}
 
 	/**

@@ -16,7 +16,6 @@
 
 package org.oncoblocks.centromere.web.test.controller;
 
-import org.oncoblocks.centromere.web.controller.ModelResourceAssembler;
 import org.oncoblocks.centromere.web.controller.ReadOnlyApiController;
 import org.oncoblocks.centromere.web.test.models.CopyNumber;
 import org.oncoblocks.centromere.web.test.repository.CopyNumberRepository;
@@ -35,7 +34,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class CopyNumberController extends ReadOnlyApiController<CopyNumber, String> {
 	@Autowired
 	public CopyNumberController(CopyNumberRepository repository, EntityLinks entityLinks) {
-		super(repository, CopyNumber.class,
-				new ModelResourceAssembler<>(CopyNumberController.class, CopyNumber.class, entityLinks));
+		super(repository, entityLinks);
 	}
 }

@@ -35,7 +35,7 @@ public class EntrezGeneRepository extends GenericMongoRepository<EntrezGene, Lon
 	
 	@Autowired
 	public EntrezGeneRepository(MongoTemplate mongoTemplate) {
-		super(mongoTemplate, EntrezGene.class);
+		super(mongoTemplate);
 	}
 
 	public EntrezGene findByEntrezGeneId(Long entrezGeneId) {

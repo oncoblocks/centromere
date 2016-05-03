@@ -16,6 +16,7 @@
 
 package org.oncoblocks.centromere.core.dataimport;
 
+import com.google.common.reflect.TypeToken;
 import org.oncoblocks.centromere.core.model.Model;
 import org.oncoblocks.centromere.core.model.support.DataFileMetadata;
 import org.oncoblocks.centromere.core.model.support.DataSetMetadata;
@@ -49,23 +50,35 @@ public class GenericRecordProcessor<T extends Model<?>>
 	private static final Logger logger = LoggerFactory.getLogger(GenericRecordProcessor.class);
 
 	public GenericRecordProcessor() { }
+	
+	public GenericRecordProcessor(RecordReader<T> reader, Validator validator, RecordWriter<T> writer){
+		this(reader, validator, writer, null, null);
+	}
 
-	public GenericRecordProcessor(Class<T> model, RecordReader<T> reader, Validator validator, 
-			RecordWriter<T> writer) {
-		this.model = model;
+	public GenericRecordProcessor(RecordReader<T> reader, Validator validator, RecordWriter<T> writer,
+			RecordImporter importer){
+		this(reader, validator, writer, importer, null);
+	}
+	
+	public GenericRecordProcessor(RecordReader<T> reader,  Validator validator, RecordWriter writer,
+			RecordImporter importer, BasicImportOptions options){
+		this.model = (Class<T>) new TypeToken<T>(getClass()) {}.getRawType();
 		this.reader = reader;
 		this.validator = validator;
 		this.writer = writer;
+		this.importer = importer;
+		this.options = options;
+	}
+
+	public GenericRecordProcessor(Class<T> model, RecordReader<T> reader, Validator validator, 
+			RecordWriter<T> writer) {
+		this(model, reader, validator, writer, null, null);
 	}
 
 	public GenericRecordProcessor(Class<T> model, RecordReader<T> reader, Validator validator,
 			RecordWriter<T> writer,
 			RecordImporter importer) {
-		this.model = model;
-		this.reader = reader;
-		this.validator = validator;
-		this.writer = writer;
-		this.importer = importer;
+		this(model, reader, validator, writer, importer, null);
 	}
 
 	public GenericRecordProcessor(Class<T> model, RecordReader<T> reader, Validator validator,

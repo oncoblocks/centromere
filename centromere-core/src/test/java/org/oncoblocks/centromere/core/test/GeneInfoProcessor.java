@@ -33,7 +33,7 @@ public class GeneInfoProcessor extends GenericRecordProcessor<EntrezGene> {
 
 	@Autowired
 	public GeneInfoProcessor(Validator validator, TestRepository testRepository, BasicImportOptions importOptions) {
-		super(EntrezGene.class, new GeneInfoReader(), validator, new RepositoryRecordWriter<>(testRepository), null, importOptions);
+		super(new GeneInfoReader(), validator, new RepositoryRecordWriter<>(testRepository), null, importOptions);
 		this.testRepository = testRepository;
 	}
 

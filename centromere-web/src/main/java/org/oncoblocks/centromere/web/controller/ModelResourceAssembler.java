@@ -16,6 +16,7 @@
 
 package org.oncoblocks.centromere.web.controller;
 
+import com.google.common.reflect.TypeToken;
 import org.oncoblocks.centromere.core.model.ForeignKey;
 import org.oncoblocks.centromere.core.model.Model;
 import org.springframework.hateoas.EntityLinks;
@@ -44,6 +45,14 @@ public class ModelResourceAssembler<T extends Model<?>>
 		this.modelController = controllerClass;
 		this.model = model;
 		this.entityLinks = entityLinks;
+	}
+
+	public ModelResourceAssembler(Class<?> controllerClass, EntityLinks entityLinks) {
+		super(controllerClass, FilterableResource.class);
+		this.modelController = controllerClass;
+		this.entityLinks = entityLinks;
+		TypeToken<T> typeToken = new TypeToken<T>(getClass()) {};
+		this.model = (Class<T>) typeToken.getRawType();
 	}
 
 	/**

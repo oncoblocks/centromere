@@ -17,6 +17,7 @@
 package org.oncoblocks.centromere.mongodb;
 
 
+import com.google.common.reflect.TypeToken;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
@@ -61,6 +62,13 @@ public class GenericMongoRepository<T extends Model<ID>, ID extends Serializable
 		Assert.notNull(model);
 		this.mongoOperations = mongoOperations;
 		this.model = model;
+	}
+
+	public GenericMongoRepository(MongoOperations mongoOperations) {
+		Assert.notNull(mongoOperations);
+		this.mongoOperations = mongoOperations;
+		TypeToken<T> typeToken = new TypeToken<T>(getClass()){};
+		model = (Class<T>) typeToken.getRawType();
 	}
 
 	/**

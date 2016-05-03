@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.oncoblocks.centromere</groupId>
         <artifactId>centromere-parent</artifactId>
-        <version>0.4.0</version>
+        <version>0.4.1-SNAPSHOT</version>
         <relativePath>../centromere-parent</relativePath>
     </parent>
     
@@ -69,7 +69,7 @@
     </distributionManagement>
 
     <properties>
-        <centromere.version>0.4.0</centromere.version>
+        <centromere.version>0.4.1-SNAPSHOT</centromere.version>
     </properties>
 
     <dependencies>
