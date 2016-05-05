@@ -141,7 +141,33 @@ public class TestRepository implements RepositoryOperations<EntrezGene, Long> {
 		geneMap.remove(aLong);
 	}
 
-	@Override public void deleteAll() {
+	@Override 
+	public <S extends EntrezGene> S save(S s) {
+		return null;
+	}
+
+	@Override 
+	public <S extends EntrezGene> Iterable<S> save(Iterable<S> iterable) {
+		return null;
+	}
+
+	@Override 
+	public Iterable<EntrezGene> findAll(Iterable<Long> iterable) {
+		return null;
+	}
+
+	@Override 
+	public void delete(EntrezGene entrezGene) {
+
+	}
+
+	@Override 
+	public void delete(Iterable<? extends EntrezGene> iterable) {
+
+	}
+
+	@Override 
+	public void deleteAll() {
 		geneMap = new HashMap<>();
 	}
 }

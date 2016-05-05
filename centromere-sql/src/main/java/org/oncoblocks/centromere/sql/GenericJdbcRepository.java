@@ -53,7 +53,8 @@ import static org.oncoblocks.centromere.sql.sqlbuilder.SqlBuilder.*;
  * 
  * @author woemler
  */
-public class GenericJdbcRepository<T extends Model<ID>, ID extends Serializable>  implements RepositoryOperations<T, ID> {
+public class GenericJdbcRepository<T extends Model<ID>, ID extends Serializable>  
+		implements RepositoryOperations<T, ID> {
 
 	private JdbcTemplate jdbcTemplate;
 	private ComplexTableDescription tableDescription;
@@ -167,6 +168,17 @@ public class GenericJdbcRepository<T extends Model<ID>, ID extends Serializable>
 		List<T> objects = jdbcTemplate.query(sqlBuilder.toSql(), rowMapper);
 		Long rowCount = count();
 		return new PageImpl<>(objects, pageable, rowCount);
+	}
+
+	/**
+	 * {@link org.springframework.data.repository.PagingAndSortingRepository#findAll(Iterable)}
+	 */
+	public List<T> findAll(Iterable<ID> iterable) {
+		List<T> found = new ArrayList<>();
+		for (ID id: iterable){
+			found.add(this.findOne(id));
+		}
+		return found;
 	}
 
 	/**
@@ -330,6 +342,44 @@ public class GenericJdbcRepository<T extends Model<ID>, ID extends Serializable>
 			updatedList.add(update(entity));
 		}
 		return updatedList;
+	}
+
+	/**
+	 * {@link org.springframework.data.repository.PagingAndSortingRepository#save(Iterable)}
+	 */
+	public <S extends T> List<S> save(Iterable<S> iterable) {
+		List<S> saved = new ArrayList<>();
+		for (S s: iterable){
+			saved.add(this.save(s));
+		}
+		return saved;
+	}
+
+	/**
+	 * {@link org.springframework.data.repository.PagingAndSortingRepository#save(Object)} )}
+	 */
+	public <S extends T> S save(S s) {
+		if (this.exists(s.getId())){
+			return this.update(s);
+		} else {
+			return this.insert(s);
+		}
+	}
+
+	/**
+	 * {@link org.springframework.data.repository.PagingAndSortingRepository#delete(Iterable)}
+	 */
+	public void delete(Iterable<? extends T> iterable) {
+		for (T t: iterable){
+			this.delete(t.getId());
+		}
+	}
+
+	/**
+	 * {@link org.springframework.data.repository.PagingAndSortingRepository#delete(Object)}
+	 */
+	public void delete(T t) {
+		this.delete(t.getId());
 	}
 
 	/**
