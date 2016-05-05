@@ -1,4 +1,5 @@
-# Centromere [![Build Status](https://travis-ci.org/oncoblocks/centromere.svg?branch=master)](https://travis-ci.org/oncoblocks/centromere)  [![Codacy Badge](https://api.codacy.com/project/badge/grade/0de4199b97fa4d55aae439674e0c4879)](https://www.codacy.com/app/willoemler/centromere)
+# Centromere [![Build Status](https://travis-ci.org/oncoblocks/centromere.svg?branch=master)](https://travis-ci.org/oncoblocks/centromere)  [![Codacy Badge](https://api.codacy.com/project/badge/grade/0de4199b97fa4d55aae439674e0c4879)](https://www.codacy.com/app/willoemler/centromere)  [![codecov](https://codecov.io/gh/oncoblocks/centromere/branch/master/graph/badge.svg)](https://codecov.io/gh/oncoblocks/centromere)
+
 ### Genomics Data Warehouse and REST API Framework
 
 ## About
