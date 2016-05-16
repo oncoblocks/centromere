@@ -1,6 +1,8 @@
-# Centromere [![Build Status](https://travis-ci.org/oncoblocks/centromere.svg?branch=master)](https://travis-ci.org/oncoblocks/centromere)  [![Codacy Badge](https://api.codacy.com/project/badge/grade/0de4199b97fa4d55aae439674e0c4879)](https://www.codacy.com/app/willoemler/centromere)  [![codecov](https://codecov.io/gh/oncoblocks/centromere/branch/master/graph/badge.svg)](https://codecov.io/gh/oncoblocks/centromere)
+# Centromere 
 
 ### Genomics Data Warehouse and REST API Framework
+
+## This repository has moved: [https://github.com/blueprintmedicines/centromere](https://github.com/blueprintmedicines/centromere)
 
 ## About
 
@@ -17,63 +19,6 @@ What Centromere is _**not**_:
 - A repository for raw genomic data.
 - An analysis platform.
 - An end-user GUI application.
-
-## Modules
-
-#### Centromere Core
-
-The core module, containing common dependencies classes for creating data model, repository, and data import component classes.
-
-#### Centromere Data Import CLI
-
-Utility classes for creating command line import tools.  Builds on the data import components in the `centromere-core` module and adds some default behaviors for a command line interface.
-
-#### Centromere MongoDB and SQL
-
-Database-specific implementations of the core repository interfaces and data import classes.  MongoDB is the preferred database technology, but MySQL is currently supported at an experimental level.
-
-#### Centromere Web
-
-The web module contains all components of the REST web services, including security and API documentation tools.
-
-## Quick Start
-Please see each individual module's README for instructions on getting started.  Artifacts for Centromere release builds are available from the Maven Central Repository:
-
-```xml
-<dependency>
-    <groupId>org.oncoblocks.centromere</groupId>
-    <artifactId>centromere-core</artifactId>
-    <version>0.4.0</version>
-</dependency>
-
-<dependency>
-    <groupId>org.oncoblocks.centromere</groupId>
-    <artifactId>centromere-data-import-cli</artifactId>
-    <version>0.4.0</version>
-</dependency>
-
-<dependency>
-    <groupId>org.oncoblocks.centromere</groupId>
-    <artifactId>centromere-mongodb</artifactId>
-    <version>0.4.0</version>
-</dependency>
-
-<dependency>
-    <groupId>org.oncoblocks.centromere</groupId>
-    <artifactId>centromere-sql</artifactId>
-    <version>0.4.0</version>
-</dependency>
-
-<dependency>
-    <groupId>org.oncoblocks.centromere</groupId>
-    <artifactId>centromere-web</artifactId>
-    <version>0.4.0</version>
-</dependency>
-```
-
-## Demo
-
-A demo implementation of a Centromere data warehouse and web API is available as a [GitHub repository](https://github.com/oncoblocks/centromere-demo).  This demo utilizes a small data set of cancer genomic data from the TCGA to showcase the features of Centromere's web service and data import utilities.  A hosted instance of this demo is coming soon.
 
 ## Contact
 
