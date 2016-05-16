@@ -4,6 +4,8 @@
 
 ## This repository has moved: [https://github.com/blueprintmedicines/centromere](https://github.com/blueprintmedicines/centromere)
 
+This repository is no longer actively updated.  Please see the repository at the link above for the most up-to-date code, documentation, and issue tracking.
+
 ## About
 
 Centromere is a set of tools for developing scalable data warehouses and RESTful web services for processed genomic data.  It is designed to be modular and flexible, allowing you to mold it to fit your data model and business needs. Centromere is developed using the open-source, enterprise-grade Spring Framework, and supports integration with multiple database technologies.  You can use Centromere to create a new data warehouse from scratch, or bootstrap one or more existing databases, and make your data available via a customizable REST API.
